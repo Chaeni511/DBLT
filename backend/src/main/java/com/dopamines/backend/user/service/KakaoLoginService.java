@@ -1,6 +1,7 @@
 package com.dopamines.backend.user.service;
 
 //import org.apache.tomcat.util.json.JSONParser;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 //import org.apache.tomcat.util.json.ParseException;
@@ -11,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public class KakaoLoginService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=2aad40910868e3c5fa9594f8de34a07b");
+            sb.append("&client_id=b1ad2839ad51d75ceb55ee5ed706608e");
             sb.append("&redirect_uri=http://localhost:8080/member/kakao");
             sb.append("&code=" + code);
 
@@ -50,7 +52,8 @@ public class KakaoLoginService {
 //            JSONParser parser = new JSONParser();
             JsonParser parser = new JsonParser();
 //            JSONObject jsonObject = new JSONObject();
-            JsonObject elem = (JsonObject) parser.(result);
+//            JsonObject elem = (JsonObject) parser.(result);
+            JsonObject elem = parser.parse(result).getAsJsonObject();
 //            JSONObject elem = new JSONObject(result)
 
 
@@ -65,7 +68,7 @@ public class KakaoLoginService {
             bw.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -99,10 +102,10 @@ public class KakaoLoginService {
             System.out.println("res = " + res);
 
 
-            JSONParser parser = new JSONParser();
-            JSONObject obj = (JSONObject) parser.parse(res);
-            JSONObject kakao_account = (JSONObject) obj.get("kakao_account");
-            JSONObject properties = (JSONObject) obj.get("properties");
+            JsonParser parser = new JsonParser();
+            JsonObject obj = parser.parse(res).getAsJsonObject();
+            JsonObject kakao_account = obj.get("kakao_account").getAsJsonObject();
+            JsonObject properties = obj.get("properties").getAsJsonObject();
 
 
             String id = obj.get("id").toString();
@@ -116,7 +119,7 @@ public class KakaoLoginService {
             br.close();
 
 
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

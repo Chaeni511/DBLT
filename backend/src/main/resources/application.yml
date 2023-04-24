@@ -1,0 +1,19 @@
+spring:
+  jpa:
+    database: mysql
+  #    database-platform: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect
+    hibernate:
+      ddl-auto: update
+      #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties:
+      hibernate:
+      show_sql: false
+      format_sql: true
+      defer-datasource-initialization: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/prac?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: ssafy1234
+
+#  kakao.secrect.key=b1ad2839ad51d75ceb55ee5ed706608e
