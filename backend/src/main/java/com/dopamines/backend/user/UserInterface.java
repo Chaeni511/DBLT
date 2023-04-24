@@ -4,6 +4,4 @@ import com.dopamines.backend.common.BaseTimeEntity;
 
 public interface UserInterface {
 
-
-
 }

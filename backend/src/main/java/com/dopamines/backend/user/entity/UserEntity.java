@@ -4,22 +4,26 @@ import com.dopamines.backend.common.BaseTimeEntity;
 
 import javax.persistence.*;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Id;
 
 @Entity(name="user")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@DynamicInsert
+@DynamicUpdate
 public class UserEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
+    @Column(nullable = false)
     private int userId;
 
     @Column(nullable = false, unique = true)
@@ -31,8 +35,8 @@ public class UserEntity extends BaseTimeEntity {
     @Column(nullable = false, length = 10, unique = true)
     private String nickname;
 
-    @Column(nullable = false)
-    private String profile;
+//    @Column(nullable = false)
+//    private String profile;
 
 //    @Column(nullable = false)
     private String address;
