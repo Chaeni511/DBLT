@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.dopamines.backend.user.entity.User;
 
+import java.security.AuthProvider;
 import java.util.Optional;
 
 @Repository
@@ -12,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Long countByNicknameIs(String nickname);
 
     Optional<User> findByNickname(String nickname);
+
+    boolean existsByIdAndAuthProvider(String id, AuthProvider authProvider);
 }

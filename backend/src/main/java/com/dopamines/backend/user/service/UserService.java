@@ -25,7 +25,7 @@ public class UserService {
 
     public Long signup(User user){
         System.out.println("UserService signup에서 찍음");
-        System.out.println(user.);
+        System.out.println(user);
         Optional<User> option = userRepository.findByEmail(user.getEmail());
         if(option.isPresent()) {
 //            String userNickname = user.getNickname();
