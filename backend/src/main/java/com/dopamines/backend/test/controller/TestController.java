@@ -6,6 +6,8 @@ import com.dopamines.backend.test.service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Api(value = "test", description = "테스트 컨트롤러입니다.")
 public class TestController {
+
+    private Logger log = LoggerFactory.getLogger(TestController.class);
 
     private final TestService teatservice;
 
