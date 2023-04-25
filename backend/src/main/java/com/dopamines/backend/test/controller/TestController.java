@@ -27,6 +27,7 @@ public class TestController {
         return "hello world!";
     }
 
+    
     //jpa가 기본적으로 제공하는 함수를 이용해 db와 상호작용
     @PostMapping("/testPost")
     @ApiOperation(value = "Jpa 기본 동작 확인", notes = "데이터베이스에 데이터 삽입")
