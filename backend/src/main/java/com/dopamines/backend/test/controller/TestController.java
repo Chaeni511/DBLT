@@ -6,10 +6,8 @@ import com.dopamines.backend.test.service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,7 +24,15 @@ public class TestController {
     @GetMapping("/hello")
     @ApiOperation(value = "hello world 출력", notes = "hello world 반환") //notes는 안적어도 상관없어요
     public String Hello(){
-        return "hello world";
+        return "hello world!";
+    }
+
+    //jpa가 기본적으로 제공하는 함수를 이용해 db와 상호작용
+    @PostMapping("/testPost")
+    @ApiOperation(value = "Jpa 기본 동작 확인", notes = "데이터베이스에 데이터 삽입")
+    public ResponseEntity<Void> postData(@RequestParam("name") String name) {
+        teatservice.saveData(name);
+        return ResponseEntity.ok().build();
     }
 
 

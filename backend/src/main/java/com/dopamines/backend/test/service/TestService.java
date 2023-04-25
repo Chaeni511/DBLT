@@ -20,6 +20,12 @@ public class TestService {
         return testRepository.count();
     }
 
+    public void saveData(String name) {
+        Test data = new Test();
+        data.setName(name);
+        testRepository.save(data);
+    }
+
     public List<TestDto> getCustom(String name) {
         List<Test> tests = testRepository.findByNameContaining(name);
         return tests.stream()
