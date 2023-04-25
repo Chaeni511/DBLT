@@ -1,0 +1,42 @@
+server:
+  port: 8080
+#  servlet:
+#    context-path: /api
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+#  ssl:
+#    enabled: false
+
+spring:
+  #db
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://k8d209.p.ssafy.io:3305/DLT
+    username: ssafy
+    password: P@ssw0rd
+
+  # JPA
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties:
+      hibernate:
+        show-sql: false
+
+  # Swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  #  spring boot image size
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+
+#  kakao.secrect.key=b1ad2839ad51d75ceb55ee5ed706608e
