@@ -1,16 +1,14 @@
 package com.dopamines.backend.user.controller;
 
 import com.dopamines.backend.user.entity.User;
-import com.dopamines.backend.user.service.KakaoLoginService;
 import com.dopamines.backend.user.service.UserService;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +34,22 @@ public class KakaoLoginController {
 
     final private UserService userService;
 
+    @PostMapping(value = "/signup", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+    String signup(@ModelAttribute String nickname, String email, String profile) {
+        System.out.println(nickname + email + profile);
+//            @RequestPart(value = "file", required = false) MultipartFile file,
+//            @RequestPart(value = "nickname") String nickname,
+//            @RequestPart(value = "email") String email,
+//            @RequestPart(value = "phone") String phone
+
+        User user = User.builder()
+                .nickname(nickname)
+                .email(email)
+                .profile(profile)
+                .build();
+        Long userId = userService.signup(user);
+        return makeToken(userId);
+    }
 
     String getInfo(String token) throws IOException {
         String reqURL = "https://kapi.kakao.com/v2/user/me";
@@ -102,11 +116,12 @@ public class KakaoLoginController {
             email = getInfo(accessToken);
             System.out.println(email);
 
-            if (email.equals("noEmail")) {
+            if (email.equals("no_email")) {
                 res.put("code", "noEmail");
+//                res.put("")
                 httpStatus = HttpStatus.OK;
             }
-            System.out.println("getAccessTokend에서 찍는 이메일이 없다.");
+            System.out.println("getAccessToken에서 찍는 이메일이 없다.");
 
             //이메일을 데이터베이스에서 뒤져요
             User user = userService.findUserByEmail(email);
@@ -130,3 +145,27 @@ public class KakaoLoginController {
 
 }
 
+//{
+//    "id":2762551263,
+//    "connected_at":"2023-04-25T01:08:22Z",
+//    "properties":{
+//        "nickname":"이채은",
+//        "profile_image":"http://k.kakaocdn.net/dn/CaTgY/btscyGINsid/Gd5TNMBYJkdD2ceLY4eWzk/img_640x640.jpg",
+//        "thumbnail_image":"http://k.kakaocdn.net/dn/CaTgY/btscyGINsid/Gd5TNMBYJkdD2ceLY4eWzk/img_110x110.jpg"
+//    },
+//    "kakao_account":{
+//        "profile_nickname_needs_agreement":false,
+//        "profile_image_needs_agreement":false,
+//        "profile":{
+//            "nickname":"이채은",
+//            "thumbnail_image_url":"http://k.kakaocdn.net/dn/CaTgY/btscyGINsid/Gd5TNMBYJkdD2ceLY4eWzk/img_110x110.jpg",
+//            "profile_image_url":"http://k.kakaocdn.net/dn/CaTgY/btscyGINsid/Gd5TNMBYJkdD2ceLY4eWzk/img_640x640.jpg",
+//            "is_default_image":false
+//        },
+//        "has_email":true,
+//        "email_needs_agreement":false,
+//        "is_email_valid":true,
+//        "is_email_verified":true,
+//        "email":"lce511@naver.com"
+//    }
+//}
