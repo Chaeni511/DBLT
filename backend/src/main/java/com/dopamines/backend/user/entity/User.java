@@ -5,7 +5,6 @@ import com.dopamines.backend.common.BaseTimeEntity;
 import javax.persistence.*;
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -19,12 +18,12 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
-public class UserEntity extends BaseTimeEntity {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private int userId;
+    private Long userId;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -42,22 +41,22 @@ public class UserEntity extends BaseTimeEntity {
     private String address;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
+//    @ColumnDefault("0")
     private int thyme;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
+//    @ColumnDefault("0")
     private int totalIn;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
+//    @ColumnDefault("0")
     private int totalOut;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
+//    @ColumnDefault("0")
     private int arrivalTime;
 
     @Column(nullable = false)
-    @ColumnDefault("false")
+//    @ColumnDefault("false")
     private boolean isDeleted;
 }

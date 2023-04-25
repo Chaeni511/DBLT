@@ -4,6 +4,7 @@ package com.dopamines.backend.user.service;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.springframework.stereotype.Service;
 //import org.apache.tomcat.util.json.ParseException;
 //import org.json.simple.JSONObject;
 
@@ -16,6 +17,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class KakaoLoginService {
     public String getToken(String code) throws IOException {
         // 인가코드로 토큰받기
@@ -71,7 +73,6 @@ public class KakaoLoginService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         return token;
     }
