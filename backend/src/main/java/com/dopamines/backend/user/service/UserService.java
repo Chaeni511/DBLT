@@ -22,4 +22,24 @@ public class UserService {
             return null;
         }
     }
+
+    public Long signup(User user){
+        System.out.println("UserService signup에서 찍음");
+        System.out.println(user);
+        Optional<User> option = userRepository.findByEmail(user.getEmail());
+        if(option.isPresent()) {
+//            String userNickname = user.getNickname();
+            user = option.get();
+            user.setNickname(user.getNickname());
+            user.setThyme(0);
+            user.setArrivalTime(0);
+            user.setTotalIn(0);
+            user.setTotalOut(0);
+            user.setDeleted(false);
+        }
+        User userEntity = userRepository.saveAndFlush(user);
+//        putMyProfileImg(userEntity.getId(), file, user.getNickname(), user.getPhone());
+        return userEntity.getUserId();
+//        return user;
+    }
 }

@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 import com.dopamines.backend.user.Role;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -42,23 +43,23 @@ public class User extends BaseTimeEntity {
 //    private String address;
 
     @Column(nullable = false)
-//    @ColumnDefault("0")
+    @ColumnDefault("0")
     private int thyme;
 
     @Column(nullable = false)
-//    @ColumnDefault("0")
+    @ColumnDefault("0")
     private int totalIn;
 
     @Column(nullable = false)
-//    @ColumnDefault("0")
+    @ColumnDefault("0")
     private int totalOut;
 
     @Column(nullable = false)
-//    @ColumnDefault("0")
+    @ColumnDefault("0")
     private int arrivalTime;
 
     @Column(nullable = false)
-//    @ColumnDefault("false")
+    @ColumnDefault("false")
     private boolean isDeleted;
 
     @Enumerated(EnumType.STRING)

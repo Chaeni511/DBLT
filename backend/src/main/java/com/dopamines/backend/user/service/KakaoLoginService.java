@@ -4,7 +4,12 @@ package com.dopamines.backend.user.service;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 //import org.apache.tomcat.util.json.ParseException;
 //import org.json.simple.JSONObject;
 
@@ -13,12 +18,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class KakaoLoginService {
+
     public String getToken(String code) throws IOException {
         // 인가코드로 토큰받기
         String host = "https://kauth.kakao.com/oauth/token";
