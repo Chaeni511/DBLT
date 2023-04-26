@@ -32,7 +32,7 @@ public class TestController {
     }
 
     
-    //jpa가 기본적으로 제공하는 함수를 이용해 db와 상호작용
+    //jpa가 기본적으로 제공하는 함수를 이용해 db와 상호작용 (post)
     @PostMapping("/testPost")
     @ApiOperation(value = "Jpa 기본 동작 확인", notes = "데이터베이스에 데이터 삽입")
     public ResponseEntity<Void> postData(@RequestParam("name") String name) {
@@ -41,7 +41,7 @@ public class TestController {
     }
 
 
-    //jpa가 기본적으로 제공하는 함수를 이용해 db와 상호작용
+    //jpa가 기본적으로 제공하는 함수를 이용해 db와 상호작용 (get)
     @GetMapping("/testDefault")
     @ApiOperation(value = "jpa 기본 동작 확인", notes = "테스트 테이블의 칼럼 수 반환")
     public long getCount(){
