@@ -49,7 +49,7 @@ public class TestController {
     }
 
 
-    //jpa가 기본적으로 제공하지 않지만, 비교적 간단한 쿼리문인 경우
+    //jpa가 기본적으로 제공하지 않지만, dto 이용
     @GetMapping("/testCustom")
     @ApiOperation(value = "jpa dto 동작 확인", notes = "이름에 '안녕'을 포함하는 칼럼 리스트를 반환")
     public List<TestDto> getTest(){
