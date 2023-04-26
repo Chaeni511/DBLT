@@ -26,7 +26,7 @@ public class TestController {
 
     //db와 상호작용 필요없는 일반 api
     @GetMapping("/hello")
-    @ApiOperation(value = "hello world 출력", notes = "hello world 반환") //notes는 안적어도 상관없어요
+    @ApiOperation(value = "hello world 출력", notes = "hello world 반환") //notes는 안적어도 상관없음!
     public String Hello(){
         return "hello world!";
     }
