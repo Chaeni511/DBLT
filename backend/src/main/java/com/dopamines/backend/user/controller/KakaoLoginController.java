@@ -107,8 +107,8 @@ public class KakaoLoginController {
     }
 
     @GetMapping("/login")
-//    ResponseEntity<Map<String, Object>> getAccessToken(@RequestParam String accessToken) {
-    Map<String, Object> getAccessToken(@RequestParam String accessToken) {
+    ResponseEntity<Map<String, Object>> getAccessToken(@RequestParam String accessToken) {
+//    Map<String, Object> getAccessToken(@RequestParam String accessToken) {
 
 //    	String access_Token = map.get("key");
         System.out.println("access token : " + accessToken);
@@ -144,10 +144,8 @@ public class KakaoLoginController {
             httpStatus = HttpStatus.EXPECTATION_FAILED;
         }
         System.out.println(res+"---------------------------------");
-//        return new ResponseEntity<>(res, httpStatus);
-        return res;
-
-
+        return new ResponseEntity<>(res, httpStatus);
+//        return res;
     }
 
     @PostMapping("/test")

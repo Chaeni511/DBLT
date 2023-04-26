@@ -5,6 +5,8 @@ import com.dopamines.backend.config.auth.dto.SessionUser;
 import com.dopamines.backend.user.UserRepository;
 import com.dopamines.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -20,6 +22,8 @@ import java.util.Collections;
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+
+    Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
     private final UserRepository userRepository;
     private final HttpSession httpSession;
 
@@ -43,6 +47,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private User saveOrUpdate(OAuthAttributes attributes) {
+        logger.info(attributes.toString());
         User user = userRepository.findByEmail(attributes.getEmail())
                 .map(entity -> entity.update(attributes.getNickname(), attributes.getProfile()))
                 .orElse(attributes.toEntity());

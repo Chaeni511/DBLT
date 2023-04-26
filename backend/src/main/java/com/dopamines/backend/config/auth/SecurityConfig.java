@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/", "/css/**", "/images/**",
-                        "/js/**", "/h2-console/**").permitAll()
+                        "/js/**", "/h2-console/**", "/user/**", "/oauth2/**").permitAll()
                 .antMatchers("/api/v1/**").hasRole(Role.
                         USER.name())
                 .anyRequest().authenticated()
