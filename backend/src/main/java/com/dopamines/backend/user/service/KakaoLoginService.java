@@ -1,17 +1,8 @@
 package com.dopamines.backend.user.service;
 
-//import org.apache.tomcat.util.json.JSONParser;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
-//import org.apache.tomcat.util.json.ParseException;
-//import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;

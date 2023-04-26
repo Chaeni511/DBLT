@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,7 +107,9 @@ public class KakaoLoginController {
     }
 
     @GetMapping("/login")
-    ResponseEntity<Map<String, Object>> getAccessToken(@RequestParam String accessToken) {
+//    ResponseEntity<Map<String, Object>> getAccessToken(@RequestParam String accessToken) {
+    Map<String, Object> getAccessToken(@RequestParam String accessToken) {
+
 //    	String access_Token = map.get("key");
         System.out.println("access token : " + accessToken);
         Map<String, Object> res = new HashMap<>();
@@ -140,12 +143,17 @@ public class KakaoLoginController {
             res.put("code", e.getMessage());
             httpStatus = HttpStatus.EXPECTATION_FAILED;
         }
-        System.out.println(res);
-        return new ResponseEntity<>(res, httpStatus);
+        System.out.println(res+"---------------------------------");
+//        return new ResponseEntity<>(res, httpStatus);
+        return res;
+
+
     }
 
-//    @PostMapping("/test")
-
+    @PostMapping("/test")
+    DefaultOAuth2User test(){
+        return null;
+    }
 }
 
 //{
