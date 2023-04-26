@@ -43,7 +43,7 @@ public class TestController {
 
     //jpa가 기본적으로 제공하는 함수를 이용해 db와 상호작용
     @GetMapping("/testDefault")
-    @ApiOperation(value = "jpa 기본 동작 확인", notes = "테스트 테이블의 칼럼 수를 반환")
+    @ApiOperation(value = "jpa 기본 동작 확인", notes = "테스트 테이블의 칼럼 수 반환")
     public long getCount(){
         return teatservice.getCount();
     }
@@ -51,7 +51,7 @@ public class TestController {
 
     //jpa가 기본적으로 제공하지 않지만, dto 이용
     @GetMapping("/testCustom")
-    @ApiOperation(value = "jpa dto 동작 확인", notes = "이름에 '안녕'을 포함하는 칼럼 리스트를 반환")
+    @ApiOperation(value = "jpa dto 동작 확인", notes = "이름에 '안녕'을 포함하는 칼럼 리스트 반환")
     public List<TestDto> getTest(){
         return teatservice.getCustom("안녕");
     }
