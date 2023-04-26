@@ -1,14 +1,11 @@
 package com.dopamines.backend.user.controller;
 
 import com.dopamines.backend.user.entity.User;
-import com.dopamines.backend.user.service.KakaoLoginService;
 import com.dopamines.backend.user.service.UserService;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -125,8 +122,11 @@ public class KakaoLoginController {
             res.put("code", e.getMessage());
             httpStatus = HttpStatus.EXPECTATION_FAILED;
         }
+        System.out.println(res);
         return new ResponseEntity<>(res, httpStatus);
     }
+
+//    @PostMapping("/test")
 
 }
 
