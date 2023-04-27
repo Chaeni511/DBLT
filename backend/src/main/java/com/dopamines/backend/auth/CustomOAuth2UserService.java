@@ -1,7 +1,7 @@
-package com.dopamines.backend.config.auth;
+package com.dopamines.backend.auth;
 
-import com.dopamines.backend.config.auth.dto.OAuthAttributes;
-import com.dopamines.backend.config.auth.dto.SessionUser;
+import com.dopamines.backend.auth.dto.OAuthAttributes;
+import com.dopamines.backend.auth.dto.SessionUser;
 import com.dopamines.backend.user.UserRepository;
 import com.dopamines.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +29,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        System.out.println("loadUser 실생함");
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 

@@ -1,11 +1,10 @@
-package com.dopamines.backend.config.auth.dto;
+package com.dopamines.backend.auth.dto;
 
 import com.dopamines.backend.user.Role;
 import com.dopamines.backend.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter

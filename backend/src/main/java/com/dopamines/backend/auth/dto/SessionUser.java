@@ -1,4 +1,4 @@
-package com.dopamines.backend.config.auth.dto;
+package com.dopamines.backend.auth.dto;
 
 import com.dopamines.backend.user.entity.User;
 import lombok.Getter;
