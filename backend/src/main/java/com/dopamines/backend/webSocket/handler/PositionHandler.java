@@ -40,10 +40,12 @@ public class PositionHandler extends TextWebSocketHandler {
         log.info("payload : {}", payload);
 
         log.info("-------------------------------------session 차례");
+
         MessageDto positionMessage = objectMapper.readValue(payload, MessageDto.class);
         log.info("session : {}", positionMessage.toString());
 
         log.info("-------------------------------------planRoom 차례");
+
         PlanRoomDto planRoom = positionService.findRoomById(positionMessage.getRoomId());
         log.info("planRoom : {}", planRoom.toString());
 
