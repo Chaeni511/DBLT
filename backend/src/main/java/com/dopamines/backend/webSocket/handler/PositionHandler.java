@@ -39,27 +39,14 @@ public class PositionHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("payload : {}", payload);
 
-        log.info("-------------------------------------session 차례");
-
         MessageDto positionMessage = objectMapper.readValue(payload, MessageDto.class);
         log.info("session : {}", positionMessage.toString());
-
-        log.info("-------------------------------------planRoom 차례");
 
         PlanRoomDto planRoom = positionService.findRoomById(positionMessage.getRoomId());
         log.info("planRoom : {}", planRoom.toString());
 
         planRoom.handleAction(session, positionMessage, positionService);
 
-
-
-        /* =================== 테스트 코드 =================== */
-//        Map<String, String> testRes = new HashMap<>();
-//        testRes.put("testRes", "ㅎㅎㅎ");
-//        for(WebSocketSession s : sessionList) {
-//            s.sendMessage(new TextMessage("'testRes':'ggg'"));
-//        }
-        /* =================== 테스트 코드 끝 ==================== */
     }
 
 
