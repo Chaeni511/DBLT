@@ -39,14 +39,27 @@ public class PositionHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("payload : {}", payload);
 
-        MessageDto positionMessage = objectMapper.readValue(payload, MessageDto.class);
-        log.info("session : {}", positionMessage.toString());
+        try {
+            MessageDto positionMessage = objectMapper.readValue(payload, MessageDto.class);
+            log.info("session : {}", positionMessage.toString());
 
-        PlanRoomDto planRoom = positionService.findRoomById(positionMessage.getRoomId());
-        log.info("planRoom : {}", planRoom.toString());
+            PlanRoomDto planRoom = positionService.findRoomById(positionMessage.getRoomId());
+            if (planRoom == null) {
+                // 해당 방이 존재하지 않는 경우 클라이언트에게 메시지를 보내기
+                session.sendMessage(new TextMessage("해당 방이 존재하지 않습니다."));
+                log.info("해당 방이 존재하지 않습니다.");
+                return;
+            }
 
-        planRoom.handleAction(session, positionMessage, positionService);
+            log.info("planRoom : {}", planRoom.toString());
 
+            planRoom.handleAction(session, positionMessage, positionService);
+
+        } catch (Exception e) {
+            log.error("Exception occurred while processing message: {}", e.getMessage());
+            // 클라이언트에게 에러 메시지를 보내기
+            session.sendMessage(new TextMessage("잘못된 요청입니다."));
+        }
     }
 
 

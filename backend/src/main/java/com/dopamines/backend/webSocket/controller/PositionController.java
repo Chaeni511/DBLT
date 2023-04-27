@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -31,9 +32,17 @@ public class PositionController {
 
     @GetMapping
     @ApiOperation(value = "WebSocket의 모든 room 가져오기", notes = "소켓이 열려있는 모든 방을 가져옵니다.")
-    public List<PlanRoomDto> findAllRooms(){
-        return positionService.findAllRoom();
+    public List<String> findAllRooms() {
+        List<String> roomIds = new ArrayList<>();
+        for (PlanRoomDto room : positionService.findAllRoom()) {
+            roomIds.add(room.getRoomId());
+        }
+        return roomIds;
     }
+
+//    public List<PlanRoomDto> findAllRooms(){
+//        return positionService.findAllRoom();
+//    }
 
 
 }
