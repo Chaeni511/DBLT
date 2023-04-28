@@ -1,5 +1,6 @@
 package com.dopamines.backend.webSocket.handler;
 
+import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.webSocket.dto.MessageDto;
 import com.dopamines.backend.webSocket.dto.PlanRoomDto;
 import com.dopamines.backend.webSocket.service.PositionService;
@@ -13,10 +14,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -27,6 +24,8 @@ public class PositionHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper;
     private final PositionService positionService;
+    private final ParticipantService participantService;
+
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {

@@ -10,7 +10,7 @@ public class MessageDto {
 
     // 메시지 타입 : 입장, 움직임
     public enum MessageType{
-        ENTER, MOVE
+        ENTER, MOVE, ARRIVE
     }
     private MessageType type; // 메시지 타입
     private String roomId;// 약속 방 번호
