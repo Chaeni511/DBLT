@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 
         // endpoint 설정 : /ws/position
-        // 이를 통해서 ws://localhost:8080/ws/position 으로 요청이 들어오면 websocket 통신을 진행합니다.
+        // 이를 통해서 ws://localhost:8081/ws/position 으로 요청이 들어오면 websocket 통신을 진행합니다.
         registry.addHandler(positionHandler, "ws/position").setAllowedOrigins("*");
 
         // WebSocket에 접속하기 위한 Endpoint는 /position 으로 설정
