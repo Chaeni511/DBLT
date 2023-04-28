@@ -26,12 +26,6 @@ public class PlanRoomDto {
         this.roomId = roomId;
     }
 
-    @Autowired
-    private ParticipantService participantService;
-
-    @Autowired
-    private PlanService planService;
-
 
     public void handleAction(WebSocketSession session, MessageDto message, PositionService positionService) {
         // message 에 담긴 타입을 확인
@@ -41,7 +35,7 @@ public class PlanRoomDto {
             sessions.add(session);
             // message 에는 입장하였다는 메시지를 전송
             message.setMessage(message.getSender() + "님이 입장했습니다.");
-            participantService.updateIsArrived(message.getRoomId(), message.getSender(), false);
+//            positionService.updateIsArrived(message.getRoomId(), message.getSender(), false);
         }
 
         else if (message.getType().equals(MessageDto.MessageType.ARRIVE)) {
@@ -49,8 +43,8 @@ public class PlanRoomDto {
             // message 에는 도착하였다는 메시지를 전송
             message.setMessage(message.getSender() + "님이 도착했습니다.");
             // 도착시간, 약속시간과 차이, 도착여부 저장
-            participantService.updateIsArrived(message.getRoomId(), message.getSender(), true);
-            positionService.arrivedAllParticipant(this, message.getRoomId());
+//            positionService.updateIsArrived(message.getRoomId(), message.getSender(), true);
+//            positionService.arrivedAllParticipant(this, message.getRoomId());
         }
         sendMessage(message, positionService);
     }
@@ -59,8 +53,5 @@ public class PlanRoomDto {
     public <T> void sendMessage(MessageDto message, PositionService positionService) {
         sessions.parallelStream().forEach(session -> positionService.sendMessage(session, message));
     }
-
-
-
 
 }
