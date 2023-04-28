@@ -21,13 +21,13 @@ import java.time.ZoneId;
 public class ParticipantService {
 
     @Autowired
-    ParticipantRepository participantRepository;
+    private ParticipantRepository participantRepository;
 
     @Autowired
-    PlanRepository planRepository;
+    private PlanRepository planRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
 
     // 도착하면 도착상태, 도착시간, 지각시간 업데이트

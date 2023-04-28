@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface ParticipantRepository extends JpaRepository<Participant, Long> {
+public interface ParticipantRepository extends JpaRepository<Participant, Integer> {
+
     List<Participant> findByPlan(Plan plan);
     Optional<Participant> findByPlanAndUser(Plan plan, User user);
 

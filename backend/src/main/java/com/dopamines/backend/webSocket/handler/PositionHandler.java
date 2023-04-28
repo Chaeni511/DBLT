@@ -24,7 +24,6 @@ public class PositionHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper;
     private final PositionService positionService;
-    private final ParticipantService participantService;
 
 
     @Override

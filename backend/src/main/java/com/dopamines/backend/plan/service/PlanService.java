@@ -17,10 +17,10 @@ import java.util.List;
 public class PlanService {
 
     @Autowired
-    PlanRepository planRepository;
+    private PlanRepository planRepository;
 
     @Autowired
-    ParticipantRepository participantRepository;
+    private ParticipantRepository participantRepository;
 
 
     // 모든 참가자가 도착한 경우 true 반환환
