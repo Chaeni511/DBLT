@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,8 +96,8 @@ public class PlanController {
 
     @PutMapping("/update")
     @ApiOperation(value = "약속 수정 api 입니다.", notes = "PlanId를 입력하여 약속 정보를 불러와 약속 정보을 수정합니다. 약속이 생성되면 PlanId를 반환합니다. participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
-    public ResponseEntity<Void> createPlan(
-            @RequestParam("useeId") Integer userId,
+    public ResponseEntity<Void> updatePlan(
+            @RequestParam("userId") Integer userId,
             @RequestParam("planId") Integer planId,
             @RequestParam("title") String title,
             @RequestParam("description") String description,
@@ -107,8 +108,12 @@ public class PlanController {
             @RequestParam(value = "participantIds", required = false) String participantIdsStr // 입력값: 1,2,3,4
     ) {
 
-        planService.updatePlan(userId, planId, title, description, planDate, planTime, location, find, participantIdsStr);
-
+        try {
+            planService.updatePlanAndParticipants(userId, planId, title, description, planDate, planTime, location, find, participantIdsStr);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
     }
 

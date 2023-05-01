@@ -13,5 +13,4 @@ public interface ParticipantRepository extends JpaRepository<Participant, Intege
 
     List<Participant> findByPlan(Plan plan);
     Optional<Participant> findByPlanAndUser(Plan plan, User user);
-
 }
