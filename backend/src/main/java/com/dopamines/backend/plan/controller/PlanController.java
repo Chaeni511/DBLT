@@ -35,8 +35,9 @@ public class PlanController {
     @Autowired
     ParticipantService participantService;
 
+
     @PostMapping("/create")
-    @ApiOperation(value = "약속 생성 api 입니다.", notes = "participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
+    @ApiOperation(value = "약속 생성 api 입니다.", notes = "약속 정보를 입력하여 약속을 생성합니다. 약속이 생성되면 PlanId를 반환합니다. participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
     public ResponseEntity<Integer> createPlan(
             @RequestParam("userId") Integer userId,
             @RequestParam("title") String title,
