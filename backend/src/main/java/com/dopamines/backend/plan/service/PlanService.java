@@ -4,11 +4,15 @@ import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
+import com.dopamines.backend.user.entity.User;
+import com.dopamines.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -22,12 +26,41 @@ public class PlanService {
     @Autowired
     private ParticipantRepository participantRepository;
 
+    @Autowired
+    private UserService userService;
+
 
     public Plan savePlan(Plan plan) {
         planRepository.save(plan);
         return plan;
+    }
+
+    public void updatePlan(Integer userId, Integer planId, String title, String description, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr) {
+
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
+
+        if (!plan.getUser().getUserId().equals(userId)) {
+            throw new NotRoomOwnerException("You are not the owner of this room.");
+        }
+
+        plan.setTitle(title);
+        plan.setDescription(description);
+        plan.setPlanDate(planDate);
+        plan.setPlanTime(planTime);
+        plan.setLocation(location);
+        plan.setFind(find);
+        planRepository.save(plan);
+
+
+
+
+
 
     }
+
+
+
 
     // 모든 참가자가 도착한 경우 true 반환환
     public boolean isAllMemberArrived(Integer planId) {

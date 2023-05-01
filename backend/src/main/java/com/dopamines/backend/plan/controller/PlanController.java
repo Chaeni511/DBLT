@@ -79,7 +79,7 @@ public class PlanController {
             String[] participantIds = participantIdsStr.split(",");
             for (String participantId : participantIds) {
                 User participant = userService.findByUserId(Integer.valueOf(participantId));
-                
+
                 participantService.saveParticipant(
                         Participant.builder()
                                 .user(participant)
@@ -92,4 +92,25 @@ public class PlanController {
 
         return ResponseEntity.ok(plan.getPlanId());
     }
+
+    @PutMapping("/update")
+    @ApiOperation(value = "약속 수정 api 입니다.", notes = "PlanId를 입력하여 약속 정보를 불러와 약속 정보을 수정합니다. 약속이 생성되면 PlanId를 반환합니다. participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
+    public ResponseEntity<Void> createPlan(
+            @RequestParam("useeId") Integer userId,
+            @RequestParam("planId") Integer planId,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
+            @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
+            @RequestParam("location") String location,
+            @RequestParam("find") Integer find,
+            @RequestParam(value = "participantIds", required = false) String participantIdsStr // 입력값: 1,2,3,4
+    ) {
+
+        planService.updatePlan(userId, planId, title, description, planDate, planTime, location, find, participantIdsStr);
+
+
+    }
+
+
 }
