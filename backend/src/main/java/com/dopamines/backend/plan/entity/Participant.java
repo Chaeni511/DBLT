@@ -7,8 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -38,7 +37,7 @@ public class Participant {
     private boolean isArrived;
 
     @Column(name = "arrival_dt")
-    private LocalDateTime arrivalDt;
+    private LocalTime arrivalDt;
 
     @Column(name = "late_time")
     private Long lateTime;

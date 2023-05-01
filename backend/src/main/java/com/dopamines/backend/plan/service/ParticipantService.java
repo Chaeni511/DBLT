@@ -7,14 +7,16 @@ import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.user.entity.User;
 import com.dopamines.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -29,6 +31,9 @@ public class ParticipantService {
     @Autowired
     private UserRepository userRepository;
 
+    public void saveParticipant(Participant participant) {
+        participantRepository.save(participant);
+    }
 
     // 도착하면 도착상태, 도착시간, 지각시간 업데이트
     // 입장하면 도착상태 false로 변환
@@ -47,10 +52,10 @@ public class ParticipantService {
 
         // 도착했으면 시간저장
         if (isArrived) {
-            LocalDateTime arrivalTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+            LocalTime arrivalTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
             participant.setArrivalDt(arrivalTime);
             // 지각 시간 계산
-            Duration duration = Duration.between(arrivalTime, plan.getPlanDt());
+            Duration duration = Duration.between(arrivalTime, plan.getPlanTime());
             long minutesBetween = duration.toMinutes();
             participant.setLateTime(minutesBetween);
         }

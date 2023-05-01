@@ -7,7 +7,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -31,11 +31,14 @@ public class Plan {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "description")
+    private String description;
 
-    @Column(name = "plan_dt")
-    private LocalDateTime planDt;
+    @Column(name = "plan_date")
+    private LocalDate planDate;
+
+    @Column(name = "plan_time")
+    private LocalTime planTime;
 
     @Column(name="location")
     private String location;
@@ -44,6 +47,6 @@ public class Plan {
     private Integer find;
 
     @Column(name="status")
-    private Integer status;
+    private Integer status; // 0: 기본, 1: 위치공유(30분 전~약속시간), 2: 게임 활성화(약속시간~1시간 후), 3: 약속 종료(1시간 이후)
 
 }

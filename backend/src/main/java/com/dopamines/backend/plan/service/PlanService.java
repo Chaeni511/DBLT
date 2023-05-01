@@ -23,6 +23,12 @@ public class PlanService {
     private ParticipantRepository participantRepository;
 
 
+    public Plan savePlan(Plan plan) {
+        planRepository.save(plan);
+        return plan;
+
+    }
+
     // 모든 참가자가 도착한 경우 true 반환환
     public boolean isAllMemberArrived(Integer planId) {
         Plan plan = planRepository.findById(planId)

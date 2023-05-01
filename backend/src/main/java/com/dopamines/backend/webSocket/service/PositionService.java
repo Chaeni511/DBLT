@@ -21,6 +21,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -118,10 +119,10 @@ public class PositionService {
 
         // 도착했으면 시간저장
         if (isArrived) {
-            LocalDateTime arrivalTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+            LocalTime arrivalTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
             participant.setArrivalDt(arrivalTime);
             // 지각 시간 계산
-            Duration duration = Duration.between(arrivalTime, plan.getPlanDt());
+            Duration duration = Duration.between(arrivalTime, plan.getPlanTime());
             long minutesBetween = duration.toMinutes();
             participant.setLateTime(minutesBetween);
         }

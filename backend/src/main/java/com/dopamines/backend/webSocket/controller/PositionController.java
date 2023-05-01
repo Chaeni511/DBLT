@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/position")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@Api(value = "WebSocket", description = "WebSocket 컨트롤러입니다.")
+@Api(value = "webSocket", description = "webSocket 컨트롤러입니다.")
 public class PositionController {
 
     private final PositionService positionService;

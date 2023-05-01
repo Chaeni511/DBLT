@@ -44,6 +44,6 @@ public class User {
 
     // 탈퇴여부
     @Column(name = "is_deleted")
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
 }
