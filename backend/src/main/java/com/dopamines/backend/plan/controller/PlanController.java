@@ -2,6 +2,7 @@ package com.dopamines.backend.plan.controller;
 
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
+import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.user.entity.User;
@@ -35,6 +36,9 @@ public class PlanController {
 
     @Autowired
     ParticipantService participantService;
+
+    @Autowired
+    PlanRepository planRepository;
 
 
     @PostMapping("/create")
@@ -70,7 +74,17 @@ public class PlanController {
     ) {
 
         try {
-            planService.updatePlanAndParticipants(userId, planId, title, description, planDate, planTime, location, find, participantIdsStr);
+            Plan plan = planRepository.findById(planId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
+
+            // 방장 여부 확인
+            if (!plan.getUser().getUserId().equals(userId)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            planService.updatePlanAndParticipant(plan, title, description, planDate, planTime, location, find, participantIdsStr);
+            log.info("Plan with ID {} and title '{}' was updated by user with ID {}", planId, title, userId);
+
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
