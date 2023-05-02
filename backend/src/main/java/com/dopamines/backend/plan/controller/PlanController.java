@@ -17,7 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -55,7 +58,13 @@ public class PlanController {
             @RequestParam(value = "participantIds", required = false) String participantIdsStr // 입력값: 1,2,3,4
     ) {
 
+        if (!planService.isValidAppointmentTime(planDate, planTime)) {
+            log.warn("생성 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         Integer planId = planService.createPlan(userId, title, description, planDate, planTime, location, find, participantIdsStr);
+        log.info("약속이 생성되었습니다.");
         return ResponseEntity.ok(planId);
     }
 
@@ -85,6 +94,11 @@ public class PlanController {
             // 약속 상태 확인
             if (plan.getStatus() > 1) {
                 log.warn("약속이 진행 중 이므로 수정할 수 없습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+
+            if (!planService.isValidAppointmentTime(planDate, planTime)) {
+                log.warn("수정 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
             planService.updatePlanAndParticipant(plan, title, description, planDate, planTime, location, find, participantIdsStr);

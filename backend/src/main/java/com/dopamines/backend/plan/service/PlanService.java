@@ -100,27 +100,7 @@ public class PlanService {
     }
 
 
-    // 약속 상태 변경 함수
-    private void updatePlanStatus(Plan plan) {
-        LocalDateTime planDateTime = LocalDateTime.of(plan.getPlanDate(), plan.getPlanTime());
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-
-        long diffMinutes = ChronoUnit.MINUTES.between(now, planDateTime);
-
-        if (diffMinutes > 30) {
-            plan.setStatus(0); // 기본 상태
-        } else if (diffMinutes > 0) {
-            plan.setStatus(1); // 위치공유 (30분 전 ~ 약속시간)
-        } else if (diffMinutes >= -60) {
-            plan.setStatus(2); // 게임 활성화 (약속시간 ~ 1시간 후)
-        } else {
-            plan.setStatus(3); // 약속 종료 (1시간 이후)
-        }
-
-        planRepository.save(plan);
-    }
-
-
+    // 진행 중인 약속 상세 정보
     public PlanDto getPlanDetail(Integer planId) {
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
@@ -186,4 +166,37 @@ public class PlanService {
         return true;
     }
 
+    /////////////////////////////// 중복 사용 함수 ////////////////////////////////////////////
+    // 약속 시간 유효성 검사
+    public boolean isValidAppointmentTime(LocalDate planDate, LocalTime planTime) {
+        LocalDateTime planDateTime = LocalDateTime.of(planDate, planTime);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        long diffMinutes = ChronoUnit.MINUTES.between(now, planDateTime);
+
+        if (diffMinutes < 30) {
+            return false;
+        }
+        return true;
+    }
+
+
+    // 약속 상태 변경 함수
+    private void updatePlanStatus(Plan plan) {
+        LocalDateTime planDateTime = LocalDateTime.of(plan.getPlanDate(), plan.getPlanTime());
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        long diffMinutes = ChronoUnit.MINUTES.between(now, planDateTime);
+
+        if (diffMinutes > 30) {
+            plan.setStatus(0); // 기본 상태
+        } else if (diffMinutes > 0) {
+            plan.setStatus(1); // 위치공유 (30분 전 ~ 약속시간)
+        } else if (diffMinutes >= -60) {
+            plan.setStatus(2); // 게임 활성화 (약속시간 ~ 1시간 후)
+        } else {
+            plan.setStatus(3); // 약속 종료 (1시간 이후)
+        }
+
+        planRepository.save(plan);
+    }
 }
