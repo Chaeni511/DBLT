@@ -1,11 +1,10 @@
 package com.dopamines.backend.plan.controller;
 
-import com.dopamines.backend.plan.entity.Participant;
+import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
-import com.dopamines.backend.user.entity.User;
 import com.dopamines.backend.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -125,6 +126,23 @@ public class PlanController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+//    @GetMapping("/detail")
+//    @ApiOperation(value = "약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다.")
+//    public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Integer planId) {
+//        PlanDto plan = planService.getPlanDetail(planId);
+//        if (plan == null) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(plan, HttpStatus.OK);
+//    }
+
+    @GetMapping("/{planId}")
+    public ResponseEntity<Plan> getPlanById(@PathVariable Integer planId) {
+        Plan plan = planService.getPlanDetail(planId);
+        return ResponseEntity.ok(plan);
+    }
+
 
 
 

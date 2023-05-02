@@ -1,6 +1,7 @@
 package com.dopamines.backend.plan.entity;
 
 import com.dopamines.backend.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -26,6 +27,7 @@ public class Plan {
     @ManyToOne(fetch = FetchType.LAZY)  // 1:N
     @JoinColumn(name="user_id") //Join 기준
     @OnDelete(action = OnDeleteAction.CASCADE)
+//    @JsonIgnore
     private User user;
 
     @Column(name = "title")

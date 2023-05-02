@@ -1,5 +1,6 @@
 package com.dopamines.backend.plan.service;
 
+import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
@@ -34,9 +35,6 @@ public class PlanService {
 
     @Autowired
     private ParticipantRepository participantRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ParticipantService participantService;
@@ -95,15 +93,47 @@ public class PlanService {
     }
 
 
+    // 약속 삭제
     public void deletePlan(Plan plan) {
         planRepository.delete(plan);
     }
+
+    // 약속 정보 가져오기
+    public Plan getPlanDetail(Integer planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
+        return plan;
+    }
+
+//    public PlanDto getPlanDetail(Integer planId) {
+//        Plan plan = planRepository.findById(planId)
+//                .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
+//
+//        PlanDto planDto = new PlanDto();
+//        planDto.setPlanId(planId);
+//        planDto.setTitle(plan.getTitle());
+//        planDto.setDescription(plan.getDescription());
+//        planDto.setPlanDate(plan.getPlanDate());
+//        planDto.setPlanTime(plan.getPlanTime());
+//        planDto.setFind(plan.getFind());
+//        planDto.setLocation(plan.getLocation());
+//        planDto.setStatus(plan.getStatus());
+//
+//        User user = plan.getUser();
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setId(user.getId());
+//        userDTO.setName(user.getName());
+//        planDTO.setUser(userDTO);
+
+//        return planDto;
+//    }
+
 
 
     // 모든 참가자가 도착한 경우 true 반환환
     public boolean isAllMemberArrived(Integer planId) {
         Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
 
         List<Participant> participants = participantRepository.findByPlan(plan);
         // 현재 참여중인 멤버들의 도착 여부를 확인합니다.
