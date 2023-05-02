@@ -27,6 +27,7 @@ public class Participant {
     @JoinColumn(name="plan_id") //Join 기준
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Plan plan;
+
     // 참여자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
@@ -34,7 +35,7 @@ public class Participant {
     private User user;
 
     @Column(name = "is_arrived", nullable = false)
-    private boolean isArrived;
+    private Boolean isArrived;
 
     @Column(name = "arrival_dt")
     private LocalTime arrivalDt;

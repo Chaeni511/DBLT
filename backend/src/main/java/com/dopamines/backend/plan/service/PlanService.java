@@ -8,6 +8,7 @@ import com.dopamines.backend.user.entity.User;
 import com.dopamines.backend.user.repository.UserRepository;
 import com.dopamines.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class PlanService {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private PlanRepository planRepository;
@@ -36,12 +41,44 @@ public class PlanService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ParticipantService participantService;
 
-    public Plan savePlan(Plan plan) {
-        planRepository.save(plan);
-        return plan;
+
+    public Integer createPlan(Integer userId, String title, String description, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr) {
+
+        User user = userService.findByUserId(userId);
+
+        Plan plan = planRepository.save(
+                Plan.builder()
+                        .user(user)
+                        .title(title)
+                        .description(description)
+                        .planDate(planDate)
+                        .planTime(planTime)
+                        .location(location)
+                        .find(find)
+                        .status(0)
+                        .build()
+        );
+
+        // 방장 참가자로 추가
+        participantService.createParticipant(user, plan);
+
+        // 참가자 추가
+        if (participantIdsStr != null && !participantIdsStr.isEmpty()) {
+            String[] participantIds = participantIdsStr.split(",");
+            for (String participantId : participantIds) {
+                User participant = userService.findByUserId(Integer.valueOf(participantId));
+                participantService.createParticipant(participant, plan);
+            }
+        }
+
+        return plan.getPlanId();
     }
 
+
+    // 약속 수정
     public ResponseEntity<Void> updatePlanAndParticipants(Integer userId, Integer planId, String title, String description, LocalDate planDate, LocalTime planTime, String location, Integer find, String newParticipantIdsStr) {
 
         Plan plan = planRepository.findById(planId)
@@ -87,7 +124,7 @@ public class PlanService {
                 Participant newParticipant = new Participant();
                 newParticipant.setPlan(plan);
                 newParticipant.setUser(newUser);
-                newParticipant.setArrived(false);
+                newParticipant.setIsArrived(false);
                 participantsToAdd.add(newParticipant);
             }
         }
@@ -123,7 +160,7 @@ public class PlanService {
         // 현재 참여중인 멤버들의 도착 여부를 확인합니다.
         // 모두 도착했으면 true, 한사람이라도 도착하지 않았다면 false를 반환합니다.
         for (Participant participant : participants) {
-            if (!participant.isArrived()) {
+            if (!participant.getIsArrived()) {
                 return false;
             }
         }

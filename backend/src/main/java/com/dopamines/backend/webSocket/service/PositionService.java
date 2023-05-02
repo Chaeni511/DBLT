@@ -115,7 +115,7 @@ public class PositionService {
                 .orElseThrow(() -> new IllegalArgumentException("Participant not found"));
 
         // 도착상태 변화
-        participant.setArrived(isArrived);
+        participant.setIsArrived(isArrived);
 
         // 도착했으면 시간저장
         if (isArrived) {
