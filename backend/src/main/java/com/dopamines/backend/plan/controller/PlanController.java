@@ -76,21 +76,57 @@ public class PlanController {
         try {
             Plan plan = planRepository.findById(planId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
-
             // 방장 여부 확인
             if (!plan.getUser().getUserId().equals(userId)) {
+                log.warn("방장이 아닙니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
-
             planService.updatePlanAndParticipant(plan, title, description, planDate, planTime, location, find, participantIdsStr);
             log.info("Plan with ID {} and title '{}' was updated by user with ID {}", planId, title, userId);
 
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
+            log.error("Failed to update plan with ID {}: Invalid Plan ID", planId, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            // 기타 예외 발생 시, HttpStatus.INTERNAL_SERVER_ERROR 반환
+            log.error("Failed to update planId {}", planId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
     }
+
+
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "약속 삭제 api 입니다.", notes = "수정하려는 userId와 PlanId를 입력하여 약속 정보를 삭제합니다.")
+    public ResponseEntity<Void> deletePlan(
+            @RequestParam("userId") Integer userId,
+            @RequestParam("planId") Integer planId
+    ){
+
+        try {
+            Plan plan = planRepository.findById(planId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
+            // 방장 여부 확인
+            if (!plan.getUser().getUserId().equals(userId)) {
+                log.warn("방장이 아닙니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            planService.deletePlan(plan);
+            log.info("Plan with ID {} was deleted by user with ID {}", planId, userId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            // PlanId가 잘못된 경우, HttpStatus.BAD_REQUEST 반환
+            log.error("Failed to delete plan with ID {}: Invalid Plan ID", planId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            // 기타 예외 발생 시, HttpStatus.INTERNAL_SERVER_ERROR 반환
+            log.error("Failed to delete planId {}", planId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 
 
 }

@@ -95,6 +95,11 @@ public class PlanService {
     }
 
 
+    public void deletePlan(Plan plan) {
+        planRepository.delete(plan);
+    }
+
+
     // 모든 참가자가 도착한 경우 true 반환환
     public boolean isAllMemberArrived(Integer planId) {
         Plan plan = planRepository.findById(planId)
