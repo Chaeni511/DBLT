@@ -76,22 +76,27 @@ public class PlanController {
 
         try {
             Plan plan = planRepository.findById(planId)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
             // 방장 여부 확인
             if (!plan.getUser().getUserId().equals(userId)) {
                 log.warn("방장이 아닙니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
+            // 약속 상태 확인
+            if (plan.getStatus() > 1) {
+                log.warn("약속이 진행 중 이므로 수정할 수 없습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
             planService.updatePlanAndParticipant(plan, title, description, planDate, planTime, location, find, participantIdsStr);
-            log.info("Plan with ID {} and title '{}' was updated by user with ID {}", planId, title, userId);
+            log.info("planId {}이고 title '{}'인 약속이 userId {}에 의해 수정되었습니다.", planId, title, userId);
 
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            log.error("Failed to update plan with ID {}: Invalid Plan ID", planId, e);
+            log.error("수정 실패: planId {}는 존재하지 않는 planId 입니다.", planId, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             // 기타 예외 발생 시, HttpStatus.INTERNAL_SERVER_ERROR 반환
-            log.error("Failed to update planId {}", planId, e);
+            log.error("수정 실패: planId {}", planId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -107,44 +112,38 @@ public class PlanController {
 
         try {
             Plan plan = planRepository.findById(planId)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
             // 방장 여부 확인
             if (!plan.getUser().getUserId().equals(userId)) {
                 log.warn("방장이 아닙니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
+            // 약속 상태 확인
+            if (plan.getStatus() > 1) {
+                log.warn("약속이 진행 중 이므로 삭제할 수 없습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+
             planService.deletePlan(plan);
-            log.info("Plan with ID {} was deleted by user with ID {}", planId, userId);
+            log.info("PlanId {}인 약속이 userId {}에 의해 삭제되었습니다.", planId, userId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             // PlanId가 잘못된 경우, HttpStatus.BAD_REQUEST 반환
-            log.error("Failed to delete plan with ID {}: Invalid Plan ID", planId, e);
+            log.error("삭제 실패: planId {}는 존재하지 않는 planId 입니다.", planId, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             // 기타 예외 발생 시, HttpStatus.INTERNAL_SERVER_ERROR 반환
-            log.error("Failed to delete planId {}", planId, e);
+            log.error("삭제 실패: planId {}", planId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-//    @GetMapping("/detail")
-//    @ApiOperation(value = "약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다.")
-//    public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Integer planId) {
-//        PlanDto plan = planService.getPlanDetail(planId);
-//        if (plan == null) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        return new ResponseEntity<>(plan, HttpStatus.OK);
-//    }
+    @GetMapping("/detail")
+    @ApiOperation(value = "약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다.")
+    public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Integer planId) {
 
-    @GetMapping("/{planId}")
-    public ResponseEntity<Plan> getPlanById(@PathVariable Integer planId) {
-        Plan plan = planService.getPlanDetail(planId);
-        return ResponseEntity.ok(plan);
+        PlanDto planDto = planService.getPlanDetail(planId);
+        return new ResponseEntity<>(planDto, HttpStatus.OK);
     }
-
-
-
-
 
 }

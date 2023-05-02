@@ -1,25 +1,26 @@
 package com.dopamines.backend.plan.service;
 
+import com.dopamines.backend.plan.dto.ParticipantDto;
 import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.user.entity.User;
-import com.dopamines.backend.user.repository.UserRepository;
 import com.dopamines.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -98,36 +99,75 @@ public class PlanService {
         planRepository.delete(plan);
     }
 
-    // 약속 정보 가져오기
-    public Plan getPlanDetail(Integer planId) {
-        Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
-        return plan;
+
+    // 약속 상태 변경 함수
+    private void updatePlanStatus(Plan plan) {
+        LocalDateTime planDateTime = LocalDateTime.of(plan.getPlanDate(), plan.getPlanTime());
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        long diffMinutes = ChronoUnit.MINUTES.between(now, planDateTime);
+
+        if (diffMinutes > 30) {
+            plan.setStatus(0); // 기본 상태
+        } else if (diffMinutes > 0) {
+            plan.setStatus(1); // 위치공유 (30분 전 ~ 약속시간)
+        } else if (diffMinutes >= -60) {
+            plan.setStatus(2); // 게임 활성화 (약속시간 ~ 1시간 후)
+        } else {
+            plan.setStatus(3); // 약속 종료 (1시간 이후)
+        }
+
+        planRepository.save(plan);
     }
 
-//    public PlanDto getPlanDetail(Integer planId) {
-//        Plan plan = planRepository.findById(planId)
-//                .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
-//
-//        PlanDto planDto = new PlanDto();
-//        planDto.setPlanId(planId);
-//        planDto.setTitle(plan.getTitle());
-//        planDto.setDescription(plan.getDescription());
-//        planDto.setPlanDate(plan.getPlanDate());
-//        planDto.setPlanTime(plan.getPlanTime());
-//        planDto.setFind(plan.getFind());
-//        planDto.setLocation(plan.getLocation());
-//        planDto.setStatus(plan.getStatus());
-//
-//        User user = plan.getUser();
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setId(user.getId());
-//        userDTO.setName(user.getName());
-//        planDTO.setUser(userDTO);
 
-//        return planDto;
-//    }
+    public PlanDto getPlanDetail(Integer planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
 
+        updatePlanStatus(plan);
+
+        PlanDto planDto = new PlanDto();
+        planDto.setPlanId(planId);
+        planDto.setTitle(plan.getTitle());
+        planDto.setDescription(plan.getDescription());
+        planDto.setPlanDate(plan.getPlanDate());
+        planDto.setPlanTime(plan.getPlanTime());
+        planDto.setFind(plan.getFind());
+        planDto.setLocation(plan.getLocation());
+        planDto.setStatus(plan.getStatus());
+
+        // 참가자 리스트 정보
+        List<Participant> participants = participantRepository.findByPlan(plan);
+
+        // 참가자 정보 dto 추가
+        List<ParticipantDto> participantDtoList = new ArrayList<>();
+        for (Participant participant : participants) {
+
+            int designation = 0;
+            Integer ArrivalTime = participant.getUser().getArrivalTime();
+
+            if (ArrivalTime < 0) {
+                // 일찍 오는 사람
+                designation = 1;
+            } else if (ArrivalTime > 0) {
+                // 늦게 오는 사람
+                designation = 2;
+            }
+
+            ParticipantDto participantDto = new ParticipantDto();
+            participantDto.setUserId(participant.getUser().getUserId());
+            participantDto.setNickname(participant.getUser().getNickname());
+            participantDto.setProfile(participant.getUser().getProfile());
+            participantDto.setIsHost(participant.getUser().equals(plan.getUser()));
+            participantDto.setIsArrived(participant.getIsArrived());
+            participantDto.setDesignation(designation);
+            participantDtoList.add(participantDto);
+        }
+        planDto.setParticipantList(participantDtoList);
+
+        return planDto;
+    }
 
 
     // 모든 참가자가 도착한 경우 true 반환환

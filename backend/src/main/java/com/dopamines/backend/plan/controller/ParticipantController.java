@@ -35,12 +35,4 @@ public class ParticipantController {
     @Autowired
     ParticipantRepository participantRepository;
 
-    @GetMapping("/{planId}")
-    public ResponseEntity<List<Participant>> getPlanById(@PathVariable Integer planId) {
-
-        Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
-        List<Participant> participant = participantRepository.findByPlan(plan);
-        return ResponseEntity.ok(participant);
-    }
 }
