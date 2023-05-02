@@ -25,11 +25,6 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-/**
- * @author : Hunseong-Park
- * @date : 2022-07-04
- */
-
 @Slf4j
 @Component
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
@@ -40,12 +35,16 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         String authrizationHeader = request.getHeader(AUTHORIZATION);
 
         // 로그인, 리프레시 요청이라면 토큰 검사하지 않음
-        if (servletPath.equals("/acount/login")
-                || servletPath.equals("/acount/refresh")
+        if (servletPath.equals("/account/login")
+                || servletPath.equals("/account/refresh")
                 || servletPath.equals("/oauth")
-                || servletPath.equals("/acount/signup")
+                || servletPath.equals("/account/signup")
+                || servletPath.equals("/account/oauth")
         ) {
             filterChain.doFilter(request, response);
+            System.out.println("====================================");
+            System.out.println(request.getParameter("email"));
+            System.out.println(request.getParameter("kakao_id"));
         } else if (authrizationHeader == null || !authrizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
             // 토큰값이 없거나 정상적이지 않다면 400 오류
             log.info("CustomAuthorizationFilter : JWT Token이 존재하지 않습니다.");

@@ -10,10 +10,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * @author : Hunseong-Park
- * @date : 2022-07-04
- */
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -25,10 +21,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        System.out.println("username: "+ username);
-        System.out.println("password: "+ password);
+        String username = request.getParameter("email");
+        String password = request.getParameter("kakao_id");
+        System.out.println("email: "+ username);
+        System.out.println("kakao_id: "+ password);
 
         System.out.println("CustomAuthenticationFilter에서 attemptAuthentication");
 //        String code = request.getParameter("code");

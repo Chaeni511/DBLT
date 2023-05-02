@@ -9,17 +9,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountRequestDto {
-    private String username;
-    private String password;
+    private String email;
+    private String kakaoId;
+    private String nickname;
 
     public Account toEntity() {
         return Account.builder()
-                .username(username)
-                .password(password)
+                .email(email)
+                .kakaoId(kakaoId)
+                .nickname(nickname)
+                .thyme(0)
+                .totalIn(0)
+                .totalOut(0)
+                .arrivalTime(0)
+                .isDeleted(false)
                 .build();
     }
 
     public void encodePassword(String encodedPassword) {
-        this.password = encodedPassword;
+        this.kakaoId = encodedPassword;
     }
 }

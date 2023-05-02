@@ -1,9 +1,5 @@
 package com.dopamines.backend.account.security;
 
-/**
- * @author : Hunseong-Park
- * @date : 2022-07-04
- */
 public class JwtConstants {
 
     // Expiration Time
@@ -16,7 +12,7 @@ public class JwtConstants {
     public static final long RT_EXP_TIME =  10 * MINUTE;
 
     // Secret
-    public static final String JWT_SECRET = "jwt_secret_key_hunseong_secret_key_jwt";
+    public static final String JWT_SECRET = "e9502266904ad5f16469bddbd9c105cfe02543a2eb9f0bd498b0597a511955473cda9249979274e78adb33474179f443f22f2c98f98c685656915a2fcead9b60";
 
     // Header
     public static final String AT_HEADER = "access_token";

@@ -13,10 +13,6 @@ import java.io.IOException;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-/**
- * @author : Hunseong-Park
- * @date : 2022-07-04
- */
 @Component
 public class CustomFailureHandler implements AuthenticationFailureHandler {
 

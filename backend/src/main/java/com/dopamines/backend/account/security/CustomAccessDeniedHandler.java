@@ -13,7 +13,6 @@ import java.io.IOException;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 

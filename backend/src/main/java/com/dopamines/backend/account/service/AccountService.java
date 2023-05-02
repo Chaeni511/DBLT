@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public interface AccountService {
     Long saveAccount(AccountRequestDto dto);
+//    Long saveAccount(String email, Long kakaoId);
+
     Long saveRole(String roleName);
     Long addRoleToUser(RoleToUserRequestDto dto);
 

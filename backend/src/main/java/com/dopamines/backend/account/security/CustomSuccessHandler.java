@@ -26,11 +26,6 @@ import static com.dopamines.backend.account.security.JwtConstants.*;
 import static com.dopamines.backend.account.security.JwtConstants.RT_HEADER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-/**
- * @author : Hunseong-Park
- * @date : 2022-07-04
- */
-
 @RequiredArgsConstructor
 @Component
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {

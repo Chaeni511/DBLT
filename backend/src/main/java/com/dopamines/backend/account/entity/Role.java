@@ -8,10 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-/**
- * @author : Hunseong-Park
- * @date : 2022-07-04
- */
 @Getter
 @NoArgsConstructor
 @Entity
