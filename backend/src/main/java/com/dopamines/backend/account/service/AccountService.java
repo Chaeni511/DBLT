@@ -9,9 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 public interface AccountService {
-//    Account editNickname(String user,String nickname);
     Account editNickname(String email, String nickname);
 //    Optional<Account> editNickname(String nickname);
 
     Account editProfileMessage(String email, String profileMessage);
+
+    void deleteAccount(String email);
 }

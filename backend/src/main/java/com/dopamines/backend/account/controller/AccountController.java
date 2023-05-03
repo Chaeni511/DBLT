@@ -34,4 +34,11 @@ public class AccountController {
         log.info("profileMessage 찍는 user: " + user);
         return ResponseEntity.ok(accountService.editProfileMessage(user, profileMessage));
     }
+
+    @PutMapping("/delete")
+    public ResponseEntity deleteAccount(HttpServletRequest request){
+        String email = request.getRemoteUser();
+        accountService.deleteAccount(email);
+        return ResponseEntity.ok().build();
+    }
 }

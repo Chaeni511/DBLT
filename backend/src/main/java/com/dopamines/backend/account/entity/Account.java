@@ -27,7 +27,7 @@ public class Account extends BaseTimeEntity {
 //    @Column(nullable = false, length = 10, unique = true)
     private String nickname;
 
-    @Column(nullable = false, unique = true)
+//    @Column(nullable = false, unique = true)
     private String kakaoId;
 
 //    @Column(nullable = false)
@@ -49,7 +49,7 @@ public class Account extends BaseTimeEntity {
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    private int arrivalTime;
+    private int accumulatedTime;
 
     @Column(nullable = false)
     @ColumnDefault("false")

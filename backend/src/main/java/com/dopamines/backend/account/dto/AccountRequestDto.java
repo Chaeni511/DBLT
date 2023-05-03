@@ -22,7 +22,7 @@ public class AccountRequestDto {
                 .thyme(0)
                 .totalIn(0)
                 .totalOut(0)
-                .arrivalTime(0)
+                .accumulatedTime(0)
                 .isDeleted(false)
                 .build();
     }

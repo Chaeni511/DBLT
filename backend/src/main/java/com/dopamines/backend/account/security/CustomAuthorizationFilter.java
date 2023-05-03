@@ -33,7 +33,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String servletPath = request.getServletPath();
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-
+        log.info("CustomAuthorizationFilter의 doFilterInternal에서 찍는 authorizationHeader: "+ authorizationHeader);
         // 로그인, 리프레시 요청이라면 토큰 검사하지 않음
         if (servletPath.equals("/account/login")
                 || servletPath.equals("/account/refresh")
@@ -48,7 +48,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             log.info("CustomAuthorizationFilter : JWT Token이 존재하지 않습니다.");
             log.info("CustomAuthorizationFilter에서 찍는 authrizationHeader: " + authorizationHeader);
             log.info("CustomAuthorizationFilter에서 찍는 !authrizationHeader.startsWith(TOKEN_HEADER_PREFIX): " + !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX));
-
             response.setStatus(SC_BAD_REQUEST);
             response.setContentType(APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("utf-8");
