@@ -1,12 +1,12 @@
 package com.dopamines.backend.webSocket.service;
 
+import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.PlanService;
-import com.dopamines.backend.user.entity.User;
-import com.dopamines.backend.user.repository.UserRepository;
 import com.dopamines.backend.webSocket.dto.PlanRoomDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,12 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -41,7 +43,7 @@ public class PositionService {
     private PlanRepository planRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
 
     private final ObjectMapper objectMapper;
     private Map<String, PlanRoomDto> planRooms;
@@ -84,7 +86,7 @@ public class PositionService {
     // 모든 참가자가 도착했는지 확인하고 모두 도착했으면 세션을 종료하고 방을 제거
     public void arrivedAllParticipant(PlanRoomDto room, String planId) {
 
-        if (planService.isAllMemberArrived(Integer.parseInt(planId))) {
+        if (planService.isAllMemberArrived(Long.parseLong(planId))) {
             // 모든 참가자가 도착한 경우
             log.info("All members arrived for planId : {}", planId);
 
@@ -106,12 +108,12 @@ public class PositionService {
     // 입장하면 도착상태 false로 변환
     @Transactional
     public void updateIsArrived(String planId, String nickname, boolean isArrived) {
-        Plan plan = planRepository.findById(Integer.parseInt(planId))
+        Plan plan = planRepository.findById(Long.parseLong(planId))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
-        User user = userRepository.findByNickname(nickname)
+        Account account = accountRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Participant participant = participantRepository.findByPlanAndUser(plan, user)
+        Participant participant = participantRepository.findByPlanAndAccount(plan, account)
                 .orElseThrow(() -> new IllegalArgumentException("Participant not found"));
 
         // 도착상태 변화

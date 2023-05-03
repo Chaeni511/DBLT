@@ -1,6 +1,5 @@
 package com.dopamines.backend.webSocket.handler;
 
-import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.webSocket.dto.MessageDto;
 import com.dopamines.backend.webSocket.dto.PlanRoomDto;
 import com.dopamines.backend.webSocket.service.PositionService;

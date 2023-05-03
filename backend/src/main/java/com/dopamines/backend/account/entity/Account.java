@@ -33,6 +33,7 @@ public class Account extends BaseTimeEntity {
     private String kakaoId;
 
 //    @Column(nullable = false)
+    @Column(length = 2500)
     private String profile;
 
     @Column(nullable = false)
