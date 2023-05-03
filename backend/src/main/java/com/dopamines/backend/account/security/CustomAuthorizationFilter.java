@@ -42,9 +42,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 || servletPath.equals("/account/oauth")
         ) {
             filterChain.doFilter(request, response);
-            System.out.println("====================================");
-            System.out.println(request.getParameter("email"));
-            System.out.println(request.getParameter("kakao_id"));
+
         } else if (authrizationHeader == null || !authrizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
             // 토큰값이 없거나 정상적이지 않다면 400 오류
             log.info("CustomAuthorizationFilter : JWT Token이 존재하지 않습니다.");
@@ -57,7 +55,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             try {
                 // Access Token만 꺼내옴
                 String accessToken = authrizationHeader.substring(TOKEN_HEADER_PREFIX.length());
-
+                log.info("CustomAuthorizationFilter에서 찍는 accessToken: " + accessToken);
                 // === Access Token 검증 === //
                 JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(JWT_SECRET.getBytes()).build();
                 Jws<Claims> claimsJws = jwtParser.parseClaimsJws(accessToken);

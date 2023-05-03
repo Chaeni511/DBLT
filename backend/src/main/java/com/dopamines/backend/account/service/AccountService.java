@@ -1,22 +1,17 @@
 package com.dopamines.backend.account.service;
 
-import com.dopamines.backend.account.dto.AccountRequestDto;
-import com.dopamines.backend.account.dto.RoleToUserRequestDto;
+import com.dopamines.backend.account.entity.Account;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
+import java.util.Optional;
 
-/**
- * @author : Hunseong-Park
- * @date : 2022-07-04
- */
 public interface AccountService {
-    Long saveAccount(AccountRequestDto dto);
-//    Long saveAccount(String email, Long kakaoId);
+//    Account editNickname(String user,String nickname);
+    Account editNickname(String nickname);
+//    Optional<Account> editNickname(String nickname);
 
-    Long saveRole(String roleName);
-    Long addRoleToUser(RoleToUserRequestDto dto);
-
-    void updateRefreshToken(String username, String refreshToken);
-
-    Map<String, String> refresh(String refreshToken);
+    Account editProfileMessage(String profileMessage);
 }

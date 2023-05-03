@@ -3,7 +3,7 @@ package com.dopamines.backend.account.security;
 //import com.auth0.jwt.JWT;
 //import com.auth0.jwt.algorithms.Algorithm;
 
-import com.dopamines.backend.account.service.AccountService;
+import com.dopamines.backend.account.service.KakaoLoginService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,7 +30,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Component
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final AccountService accountService;
+    private final KakaoLoginService accountService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {

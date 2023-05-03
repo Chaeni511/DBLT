@@ -1,16 +1,14 @@
 package com.dopamines.backend.account.entity;
 
 import com.dopamines.backend.common.BaseTimeEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
 @Getter
 @Builder
 @AllArgsConstructor
@@ -35,6 +33,7 @@ public class Account extends BaseTimeEntity {
 //    @Column(nullable = false)
     private String profile;
 
+    private String profileMessage;
     @Column(nullable = false)
     @ColumnDefault("0")
     private int thyme;
