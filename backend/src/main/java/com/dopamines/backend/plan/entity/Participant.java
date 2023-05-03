@@ -1,9 +1,7 @@
 package com.dopamines.backend.plan.entity;
 
 
-import com.dopamines.backend.user.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.dopamines.backend.account.entity.Account;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -22,7 +20,7 @@ public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "participant_id")
-    private Integer participantId;
+    private Long participantId;
 
     // 약속
     @ManyToOne(fetch = FetchType.LAZY)  // 1:N
@@ -33,9 +31,9 @@ public class Participant {
 
     // 참여자
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="account_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    private Account account;
 
     @Column(name = "is_host")
     private Boolean isHost;

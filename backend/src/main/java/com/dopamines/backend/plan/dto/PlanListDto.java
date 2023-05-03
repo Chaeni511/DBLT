@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class PlanListDto {
-    private Integer planId;
+    private Long planId;
     private String title;
     private LocalDate planDate;
     private LocalTime planTime;

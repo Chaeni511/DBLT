@@ -1,13 +1,12 @@
 package com.dopamines.backend.plan.controller;
 
+import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.service.UserService;
 import com.dopamines.backend.plan.dto.PlanDto;
-import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
-import com.dopamines.backend.user.entity.User;
-import com.dopamines.backend.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -49,8 +43,8 @@ public class PlanController {
 
     @PostMapping("/create")
     @ApiOperation(value = "약속 생성 api 입니다.", notes = "약속 정보를 입력하여 약속을 생성합니다. 약속이 생성되면 PlanId를 반환합니다. participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
-    public ResponseEntity<Integer> createPlan(
-            @RequestParam("userId") Integer userId,
+    public ResponseEntity<Long> createPlan(
+            @RequestParam("accountId") Long accountId,
             @RequestParam("title") String title,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
@@ -65,7 +59,7 @@ public class PlanController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Integer planId = planService.createPlan(userId, title, planDate, planTime, location, find, participantIdsStr);
+        Long planId = planService.createPlan(accountId, title, planDate, planTime, location, find, participantIdsStr);
         log.info("약속이 생성되었습니다.");
         return ResponseEntity.ok(planId);
     }
@@ -74,8 +68,8 @@ public class PlanController {
     @PutMapping("/update")
     @ApiOperation(value = "약속 수정 api 입니다.", notes = "PlanId를 입력하여 약속 정보를 불러와 약속 정보을 수정합니다. 약속이 생성되면 PlanId를 반환합니다. participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
     public ResponseEntity<Void> updatePlan(
-            @RequestParam("userId") Integer userId,
-            @RequestParam("planId") Integer planId,
+            @RequestParam("accountId") Long accountId,
+            @RequestParam("planId") Long planId,
             @RequestParam("title") String title,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
@@ -85,13 +79,12 @@ public class PlanController {
     ) {
 
         try {
-            Plan plan = planRepository.findById(planId)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
+            Plan plan = planService.getPlanById(planId);
 
-            User user = userService.findByUserId(userId);
+            Account account = userService.findByAccountId(accountId);
 
             // 방장 여부 확인
-            if (!participantService.findIsHostByPlanAndUser(plan, user)) {
+            if (!participantService.findIsHostByPlanAndUser(plan, account)) {
                 log.warn("방장이 아닙니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
@@ -107,7 +100,7 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
             planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, find, participantIdsStr);
-            log.info("planId {}이고 title '{}'인 약속이 userId {}에 의해 수정되었습니다.", planId, title, userId);
+            log.info("planId {}이고 title '{}'인 약속이 userId {}에 의해 수정되었습니다.", planId, title, accountId);
 
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
@@ -125,18 +118,17 @@ public class PlanController {
     @DeleteMapping("/delete")
     @ApiOperation(value = "약속 삭제 api 입니다.", notes = "수정하려는 userId와 PlanId를 입력하여 약속 정보를 삭제합니다.")
     public ResponseEntity<Void> deletePlan(
-            @RequestParam("userId") Integer userId,
-            @RequestParam("planId") Integer planId
+            @RequestParam("accountId") Long accountId,
+            @RequestParam("planId") Long planId
     ){
 
         try {
-            Plan plan = planRepository.findById(planId)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
+            Plan plan = planService.getPlanById(planId);
 
-            User user = userService.findByUserId(userId);
+            Account account = userService.findByAccountId(accountId);
 
             // 방장 여부 확인
-            if (!participantService.findIsHostByPlanAndUser(plan, user)) {
+            if (!participantService.findIsHostByPlanAndUser(plan, account)) {
                 log.warn("방장이 아닙니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
@@ -148,7 +140,7 @@ public class PlanController {
 
             planService.deletePlan(plan);
 
-            log.info("PlanId {}인 약속이 userId {}에 의해 삭제되었습니다.", planId, userId);
+            log.info("PlanId {}인 약속이 userId {}에 의해 삭제되었습니다.", planId, accountId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             // PlanId가 잘못된 경우, HttpStatus.BAD_REQUEST 반환
@@ -163,7 +155,7 @@ public class PlanController {
 
     @GetMapping("/detail")
     @ApiOperation(value = "약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다.")
-    public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Integer planId) {
+    public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Long planId) {
 
         PlanDto planDto = planService.getPlanDetail(planId);
         return new ResponseEntity<>(planDto, HttpStatus.OK);

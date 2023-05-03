@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class ParticipantDto {
 
-    private Integer userId;
+    private Long accountId;
     private String nickname;
     private String profile;
     private Boolean isHost;

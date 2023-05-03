@@ -1,11 +1,8 @@
 package com.dopamines.backend.webSocket.dto;
 
-import com.dopamines.backend.plan.service.ParticipantService;
-import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.webSocket.service.PositionService;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.*;

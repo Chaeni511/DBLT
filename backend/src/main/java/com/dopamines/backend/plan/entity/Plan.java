@@ -1,10 +1,6 @@
 package com.dopamines.backend.plan.entity;
 
-import com.dopamines.backend.user.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -21,7 +17,7 @@ public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "plan_id")
-    private Integer planId;
+    private Long planId;
 
     @Column(name = "title")
     private String title;

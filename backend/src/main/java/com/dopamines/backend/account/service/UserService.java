@@ -1,7 +1,7 @@
-package com.dopamines.backend.user.service;
+package com.dopamines.backend.account.service;
 
-import com.dopamines.backend.user.entity.User;
-import com.dopamines.backend.user.repository.UserRepository;
+import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +11,10 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    UserRepository userRepository;
+    AccountRepository accountRepository;
 
-    public User findByUserId(Integer userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
+    public Account findByAccountId(Long accountId) {
+        Optional<Account> optionalUser = accountRepository.findById(accountId);
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         } else {
@@ -22,8 +22,8 @@ public class UserService {
         }
     }
 
-    public User findByEmail(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+    public Account findByEmail(String email) {
+        Optional<Account> optionalUser = accountRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         } else {
