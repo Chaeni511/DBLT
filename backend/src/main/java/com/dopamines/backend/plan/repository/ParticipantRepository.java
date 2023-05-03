@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
     List<Participant> findByPlan(Plan plan);
+    List<Participant> findByAccount(Account account);
     Optional<Participant> findByPlanAndAccount(Plan plan, Account account);
 }

@@ -3,6 +3,7 @@ package com.dopamines.backend.plan.controller;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.UserService;
 import com.dopamines.backend.plan.dto.PlanDto;
+import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.ParticipantService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -53,7 +55,7 @@ public class PlanController {
             @RequestParam(value = "participantIds", required = false) String participantIdsStr // 입력값: 1,2,3,4
     ) {
 
-        if (!planService.isValidAppointmentTime(planDate, planTime)) {
+        if (planService.getTimeMinutesDifference(planDate, planTime) <= 0) {
 //            log.warn("생성 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
             log.warn("생성 실패: 약속 시간은 현재 시간 최소 1분전에 생성할 수 있습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -94,7 +96,7 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
 
-            if (!planService.isValidAppointmentTime(plan.getPlanDate(), plan.getPlanTime())) {
+            if (planService.getTimeMinutesDifference(plan.getPlanDate(), plan.getPlanTime()) <= 0) {
 //                log.warn("수정 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
                 log.warn("수정 실패: 약속 시간은 현재 시간 최소 1분전에 수정할 수 있습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -161,14 +163,14 @@ public class PlanController {
         return new ResponseEntity<>(planDto, HttpStatus.OK);
     }
 
-//    @GetMapping("/list")
-//    @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다.")
-//    public ResponseEntity<PlanDto> planDetail(
-//            @RequestParam("userId") Integer userId,
-//            @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate) {
+    @GetMapping("/list")
+    @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다.")
+    public ResponseEntity<List<PlanListDto>> planList(
+            @RequestParam("accountId") Long accountId,
+            @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate) {
 
-
-//        return new ResponseEntity<>(planDto, HttpStatus.OK);
-//    }
+        List<PlanListDto> planListDto = planService.getPlanList(accountId, planDate);
+        return new ResponseEntity<>(planListDto, HttpStatus.OK);
+    }
 
 }
