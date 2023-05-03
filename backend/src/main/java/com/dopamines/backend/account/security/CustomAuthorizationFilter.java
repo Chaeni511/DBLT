@@ -43,6 +43,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         ) {
             filterChain.doFilter(request, response);
             System.out.println("====================================");
+            System.out.println(request.getParameter("code"));
             System.out.println(request.getParameter("email"));
             System.out.println(request.getParameter("kakao_id"));
         } else if (authrizationHeader == null || !authrizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
