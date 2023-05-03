@@ -5,7 +5,6 @@ import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
-import com.dopamines.backend.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +71,7 @@ public class ParticipantServiceImpl implements ParticipantService {
             if (!oldParticipantIds.contains(newParticipantId)) {
                 // 새로운 참가자 객체 생성
                 Account newUser = accountRepository.findById(newParticipantId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid User ID: " + newParticipantId));
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다.: " + newParticipantId));
                 Participant newParticipant = new Participant();
                 newParticipant.setPlan(plan);
                 newParticipant.setAccount(newUser);

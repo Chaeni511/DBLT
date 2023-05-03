@@ -100,7 +100,7 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
             planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, find, participantIdsStr);
-            log.info("planId {}이고 title '{}'인 약속이 userId {}에 의해 수정되었습니다.", planId, title, accountId);
+            log.info("planId {}이고 title '{}'인 약속이 방장 {}에 의해 수정되었습니다.", planId, title, account.getNickname());
 
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
@@ -116,7 +116,7 @@ public class PlanController {
 
 
     @DeleteMapping("/delete")
-    @ApiOperation(value = "약속 삭제 api 입니다.", notes = "수정하려는 userId와 PlanId를 입력하여 약속 정보를 삭제합니다.")
+    @ApiOperation(value = "약속 삭제 api 입니다.", notes = "수정하려는 accountId와 PlanId를 입력하여 약속 정보를 삭제합니다.")
     public ResponseEntity<Void> deletePlan(
             @RequestParam("accountId") Long accountId,
             @RequestParam("planId") Long planId
@@ -140,7 +140,7 @@ public class PlanController {
 
             planService.deletePlan(plan);
 
-            log.info("PlanId {}인 약속이 userId {}에 의해 삭제되었습니다.", planId, accountId);
+            log.info("PlanId {}인 약속이 방장 {}에 의해 삭제되었습니다.", planId, account.getNickname());
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             // PlanId가 잘못된 경우, HttpStatus.BAD_REQUEST 반환

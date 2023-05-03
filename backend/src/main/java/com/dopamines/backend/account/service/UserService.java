@@ -18,7 +18,7 @@ public class UserService {
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         } else {
-            throw new RuntimeException("User not found");
+            throw new RuntimeException("존재하지 않는 회원입니다.");
         }
     }
 
@@ -27,7 +27,7 @@ public class UserService {
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         } else {
-            throw new RuntimeException("User not found");
+            throw new RuntimeException("존재하지 않는 회원입니다.");
         }
     }
 
