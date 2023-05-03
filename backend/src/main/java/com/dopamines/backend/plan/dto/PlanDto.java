@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PlanDto {
-    private Integer planId;
+    private Long planId;
     private String title;
     private LocalDate planDate;
     private LocalTime planTime;
