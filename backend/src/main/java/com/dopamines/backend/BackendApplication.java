@@ -11,6 +11,7 @@ public class BackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
+		System.out.println("빌드 성공 했어요!");
 	}
 
 	@Bean
