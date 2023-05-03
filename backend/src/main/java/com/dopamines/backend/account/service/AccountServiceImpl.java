@@ -16,20 +16,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class AccountServiceImpl implements AccountService {
-    AccountRepository accountRepository;
-    Account account;
+    private final AccountRepository accountRepository;
     @Override
-    public Account editNickname(String nickname) {
-//        log.info("의 에서 찍는 : " + nickname);
+    public Account editNickname(String email, String nickname) {
         log.info("AccountServiceImpl의 editNickname에서 찍는 nickname: " + nickname);
-//        log.info("AccountServiceImpl의 editNickname에서 찍는 user: " );
 
         // 닉네임 중복확인
         validateDuplicateNickname(nickname);
 
-        account.setNickname(nickname);
+        Optional<Account> optional = accountRepository.findByEmail(email);
+        Account account = null;
 
-        return accountRepository.getByNickname(nickname);
+        if(optional.isEmpty()) {
+            account = new Account();
+            log.info("AccountServiceImpl의 editNickname에서");
+        }else {
+            account = optional.get();
+            account.setNickname(nickname);
+            accountRepository.save(account);
+        }
+
+        return account;
     }
 
     private void validateDuplicateNickname(String nickname) {
@@ -40,9 +47,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account editProfileMessage(String profileMessage) {
-        account.setProfileMessage(profileMessage);
+    public Account editProfileMessage(String email, String profileMessage) {
+        log.info("AccountServiceImpl의 에서 찍는 profileMessage: " + profileMessage);
 
-        return accountRepository.getByNickname(profileMessage);
+        Optional<Account> optional = accountRepository.findByEmail(email);
+        Account account = null;
+
+        if(optional.isEmpty()) {
+            account = new Account();
+            log.info("AccountServiceImpl의 profileMessage에서");
+
+        }else {
+            account = optional.get();
+            account.setProfileMessage(profileMessage);
+            accountRepository.save(account);
+        }
+
+        return account;
     }
 }

@@ -59,15 +59,27 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 // === Access Token 검증 === //
                 JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(JWT_SECRET.getBytes()).build();
                 Jws<Claims> claimsJws = jwtParser.parseClaimsJws(accessToken);
+                log.info("CustomAuthorizationFilter에서 찍는 jwtParser: " + jwtParser);
 
                 // === Access Token 내 Claim에서 Authorities 꺼내 Authentication 객체 생성 & SecurityContext에 저장 === //
                 List<String> strAuthorities = claimsJws.getBody().get("roles", List.class);
+                log.info("CustomAuthorizationFilter에서 찍는 strAuthorities: " + strAuthorities);
+
                 List<SimpleGrantedAuthority> authorities = strAuthorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+                log.info("CustomAuthorizationFilter에서 찍는 authorities: " + authorities);
+
                 String username = claimsJws.getBody().getSubject();
+                log.info("CustomAuthorizationFilter에서 찍는 username: " + username);
+
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                log.info("CustomAuthorizationFilter에서 찍는 authenticationToken: " + authenticationToken);
+
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                log.info("SecurityContextHolder.getContext().setAuthentication(authenticationToken)");
+
 
                 filterChain.doFilter(request, response);
+                log.info("filterChain 까지 넘어감");
             } catch (ExpiredJwtException e) {
                 log.info("CustomAuthorizationFilter : Access Token이 만료되었습니다.");
                 response.setStatus(SC_UNAUTHORIZED);
@@ -77,6 +89,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 new ObjectMapper().writeValue(response.getWriter(), errorResponse);
             } catch (Exception e) {
                 log.info("CustomAuthorizationFilter : JWT 토큰이 잘못되었습니다. message : {}", e.getMessage());
+                e.printStackTrace();
                 response.setStatus(SC_BAD_REQUEST);
                 response.setContentType(APPLICATION_JSON_VALUE);
                 response.setCharacterEncoding("utf-8");
