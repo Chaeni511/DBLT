@@ -1,6 +1,5 @@
 package com.dopamines.backend.account.controller;
 
-import antlr.Token;
 import com.dopamines.backend.account.config.KakaoLoginConfig;
 import com.dopamines.backend.account.config.KakaoUserInfo;
 import com.dopamines.backend.account.dto.AccountRequestDto;
@@ -15,14 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.spring.web.json.Json;
+import reactor.core.publisher.Flux;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.net.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,72 +42,46 @@ public class KakaoLoginController {
     private final KakaoLoginConfig kakaoLoginConfig;
     private final AccountRepository accountRepository;
 
-//    @PostMapping("/login")
-//    public ResponseEntity<TokenResponseDto> kakaoLogin(@RequestParam String email, @RequestParam Long kakaoId) {
-//
-//    }
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/oauth")
     @ResponseBody
-    public Optional<TokenResponseDto> kakaoOauth(@RequestParam("code") String code) throws IOException {
+    public ResponseEntity<AccountRequestDto> kakaoOauth(@RequestParam("code") String code) throws IOException {
+
         System.out.println("code: " + code);
 
-
-//        KakaoTokenResponse kakaoTokenResponse = kakaoTokenJsonData.getToken(code);
-//        log.info("토큰에 대한 정보입니다.{}",kakaoTokenResponse);
-//        KakaoUserInfoResponse userInfo = kakaoUserInfo.getUserInfo(kakaoTokenResponse.getAccess_token());
         KakaoUserInfoResponseDto userInfo = kakaoUserInfo.getUserInfo(code);
         System.out.println("회원 정보 입니다.{}" + userInfo);
 
         String email = userInfo.getKakao_account().getEmail();
         Long kakaoId = userInfo.getId();
         String nickname = userInfo.getKakao_account().getProfile().getNickname();
-        Optional<Account> optional = accountRepository.findByEmail(email);
 
+        Optional<Account> optional = accountRepository.findByEmail(email);
+        System.out.println("KakaoLoginController에서 찍는 optional: " + optional);
+
+        Boolean signup;
         // 회원이 아니면 회원가입
         if (optional.isEmpty()) {
-            // default 프사 이미지 url 생기면 판별 후 profile에 url 추가 필수!!
-            AccountRequestDto  accountRequestDto = new AccountRequestDto(email, kakaoId.toString(), nickname);
+           signup = false;
 
-            signup(accountRequestDto);
-//            optional = Optional.ofNullable(accountService.createUser(email, userInfo.getKakao_account().getProfile().getNickname(), userInfo.getId()));
+            // default 프사 이미지 url 생기면 판별 후 profile에 url 추가 필수!!
+//            signup(accountRequestDto);
+        } else {
+            signup = true;
         }
 
-        // 로그인 후에 AT & RT 발급
+        AccountRequestDto  accountRequestDto = new AccountRequestDto(signup, email, kakaoId.toString(), nickname);
 
-        //            String reqURL = "http://localhost:8081/account/login";
-//            URL url;
-//            url = new URL(reqURL);
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestMethod("POST");
-//            conn.setDoOutput(true);
-//            conn.setRequestProperty("Authorization", "Bearer " + code);
-//            int responseCode = conn.getResponseCode();
-//            System.out.println("responseCode : " + responseCode);
-
-
-//        System.out.println(accountRequestDto);
-//        return optional;
-        return kakaoLoginConfig.login(email, kakaoId).blockOptional();
+        return ResponseEntity.ok(accountRequestDto);
 
     }
 
-
-    public ResponseEntity<Object> exRedirect5() throws URISyntaxException {
-        URI redirectUri = new URI("http://www.naver.com");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(redirectUri);
-        return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
-    }
 
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@RequestBody AccountRequestDto dto) {
         return ResponseEntity.ok(accountService.saveAccount(dto));
     }
-//    public ResponseEntity<Long> signup(@RequestParam String email, @RequestParam Long kakaoId) {
-//        return ResponseEntity.ok(accountService.saveAccount(email, kakaoId));
-//    }
-
 
     @PostMapping("/role")
     public ResponseEntity<Long> saveRole(@RequestBody String roleName) {

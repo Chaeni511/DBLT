@@ -22,7 +22,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = request.getParameter("email");
-        String password = request.getParameter("kakao_id");
+        String password = request.getParameter("kakaoId");
         System.out.println("email: "+ username);
         System.out.println("kakao_id: "+ password);
 

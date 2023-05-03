@@ -21,7 +21,7 @@ public class Account extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(nullable = false)
-    private Long id;
+    private Long accountId;
 
     @Column(nullable = false, unique = true)
     private String email;

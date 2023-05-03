@@ -57,7 +57,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         System.out.println("saveAccount에서 찍는 nickname " + dto.getNickname());
         validateDuplicateUsername(dto);
         dto.encodePassword(passwordEncoder.encode(dto.getKakaoId()));
-        return accountRepository.save(dto.toEntity()).getId();
+        return accountRepository.save(dto.toEntity()).getAccountId();
     }
 
     private void validateDuplicateUsername(AccountRequestDto dto) {
@@ -83,7 +83,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         Account account = accountRepository.findByEmail(dto.getUsername()).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         Role role = roleRepository.findByName(dto.getRoleName()).orElseThrow(() -> new RuntimeException("ROLE을 찾을 수 없습니다."));
         account.getRoles().add(role);
-        return account.getId();
+        return account.getAccountId();
     }
 
     // =============== TOKEN ============ //
