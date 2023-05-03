@@ -4,6 +4,8 @@ import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.UserService;
 import com.dopamines.backend.plan.dto.ParticipantDto;
 import com.dopamines.backend.plan.dto.PlanDto;
+import com.dopamines.backend.plan.dto.PlanListDto;
+import com.dopamines.backend.plan.dto.PlanListParticipantDto;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
@@ -108,6 +110,7 @@ public class PlanServiceImpl implements PlanService {
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 약속의 약속 정보가 없습니다."));
 
+        // 시간에 따른 약속 상태 변경
         updatePlanStatus(plan);
 
         PlanDto planDto = new PlanDto();
@@ -162,6 +165,62 @@ public class PlanServiceImpl implements PlanService {
     }
 
 
+    // 약속 리스트
+    @Override
+    public List<PlanListDto> getPlanList(Long accountId, LocalDate planDate) {
+        Account account = userService.findByAccountId(accountId);
+
+        // 해당 account가 참여하고 있는 participant 목록 가져오기
+        List<Participant> participants = participantRepository.findByAccount(account);
+
+        List<PlanListDto> planHomeListDto = new ArrayList<>();
+        for (Participant participant : participants) {
+            // 참여한 약속
+            Plan plan = participant.getPlan();
+
+            // 입력한 날짜와 같은 약속이면
+            if (plan.getPlanDate().equals(planDate)) {
+
+                // 시간에 따른 약속 상태 변경
+                updatePlanStatus(plan);
+
+                // 해당 약속 정보 저장
+                PlanListDto planListDto = new PlanListDto();
+                planListDto.setPlanId(plan.getPlanId());
+                planListDto.setTitle(plan.getTitle());
+                planListDto.setPlanDate(planDate);
+                planListDto.setPlanTime(plan.getPlanTime());
+                planListDto.setLocation(plan.getLocation());
+                planListDto.setStatus(plan.getStatus());
+                planListDto.setDiffHours(getTimeHoursDifference(plan.getPlanDate(),plan.getPlanTime()));
+                planListDto.setDiffMinutes(getTimeMinutesDifference(plan.getPlanDate(),plan.getPlanTime()));
+
+                // 해당 약속의 참가자 리스트 정보
+                List<Participant> participantList = participantRepository.findByPlan(plan);
+                // 해당 약속의 참가자 수 저장
+                planListDto.setParticipantCount(participantList.size());
+
+                // 참가자 정보 dto 추가
+                List<PlanListParticipantDto> planHomeListParticipantDto = new ArrayList<>();
+                for (Participant user : participantList) {
+                    PlanListParticipantDto planListParticipantDto = new PlanListParticipantDto();
+                    planListParticipantDto.setAccountId(user.getAccount().getAccountId());
+                    planListParticipantDto.setProfile(user.getAccount().getProfile());
+                    planHomeListParticipantDto.add(planListParticipantDto);
+                }
+                // 해당 약속의 참가자 저장
+                planListDto.setParticipantList(planHomeListParticipantDto);
+
+                // 해당 날짜의 약속 리스트에 현재 약속 정보 저장
+                planHomeListDto.add(planListDto);
+            }
+
+        }
+        return planHomeListDto;
+
+    }
+
+
     // 모든 참가자가 도착한 경우 true 반환환
     @Override
     public boolean isAllMemberArrived(Long planId) {
@@ -181,6 +240,25 @@ public class PlanServiceImpl implements PlanService {
 
     /////////////////////////////// 중복 사용 함수 ////////////////////////////////////////////
 
+    // 약속 시간 유효성 검사
+    // 약속 시간 차이
+    // 시간
+    @Override
+    public long getTimeHoursDifference(LocalDate planDate, LocalTime planTime) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        LocalDateTime planDateTime = LocalDateTime.of(planDate, planTime);
+
+        return ChronoUnit.HOURS.between(now, planDateTime);
+    }
+    // 분
+    @Override
+    public long getTimeMinutesDifference(LocalDate planDate, LocalTime planTime) {
+        LocalDateTime planDateTime = LocalDateTime.of(planDate, planTime);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        return ChronoUnit.MINUTES.between(now, planDateTime);
+    }
+
     // 약속 유효성 검사
     @Override
     public Plan getPlanById(Long planId) {
@@ -188,15 +266,6 @@ public class PlanServiceImpl implements PlanService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
     }
 
-    // 약속 시간 유효성 검사
-    @Override
-    public boolean isValidAppointmentTime(LocalDate planDate, LocalTime planTime) {
-        LocalDateTime planDateTime = LocalDateTime.of(planDate, planTime);
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        long diffMinutes = ChronoUnit.MINUTES.between(now, planDateTime);
-
-        return diffMinutes > 0;
-    }
 
 
     // 약속 상태 변경 함수
