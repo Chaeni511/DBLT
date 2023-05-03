@@ -9,9 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class PlanDto {
+public class PlanListDto {
     private Integer planId;
     private String title;
     private LocalDate planDate;
@@ -22,4 +20,5 @@ public class PlanDto {
     private Integer participantCount;
     private Integer status;
     private List<ParticipantDto> participantList;
+
 }

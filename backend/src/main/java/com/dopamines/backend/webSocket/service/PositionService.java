@@ -120,7 +120,7 @@ public class PositionService {
         // 도착했으면 시간저장
         if (isArrived) {
             LocalTime arrivalTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
-            participant.setArrivalDt(arrivalTime);
+            participant.setArrivalTime(arrivalTime);
             // 지각 시간 계산
             Duration duration = Duration.between(arrivalTime, plan.getPlanTime());
             long minutesBetween = duration.toMinutes();

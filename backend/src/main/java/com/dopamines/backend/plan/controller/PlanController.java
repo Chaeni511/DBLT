@@ -1,10 +1,12 @@
 package com.dopamines.backend.plan.controller;
 
 import com.dopamines.backend.plan.dto.PlanDto;
+import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
+import com.dopamines.backend.user.entity.User;
 import com.dopamines.backend.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,7 +52,6 @@ public class PlanController {
     public ResponseEntity<Integer> createPlan(
             @RequestParam("userId") Integer userId,
             @RequestParam("title") String title,
-            @RequestParam("description") String description,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
             @RequestParam("location") String location,
@@ -59,11 +60,12 @@ public class PlanController {
     ) {
 
         if (!planService.isValidAppointmentTime(planDate, planTime)) {
-            log.warn("생성 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
+//            log.warn("생성 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
+            log.warn("생성 실패: 약속 시간은 현재 시간 최소 1분전에 생성할 수 있습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Integer planId = planService.createPlan(userId, title, description, planDate, planTime, location, find, participantIdsStr);
+        Integer planId = planService.createPlan(userId, title, planDate, planTime, location, find, participantIdsStr);
         log.info("약속이 생성되었습니다.");
         return ResponseEntity.ok(planId);
     }
@@ -75,7 +77,6 @@ public class PlanController {
             @RequestParam("userId") Integer userId,
             @RequestParam("planId") Integer planId,
             @RequestParam("title") String title,
-            @RequestParam("description") String description,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
             @RequestParam("location") String location,
@@ -86,8 +87,11 @@ public class PlanController {
         try {
             Plan plan = planRepository.findById(planId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
+
+            User user = userService.findByUserId(userId);
+
             // 방장 여부 확인
-            if (!plan.getUser().getUserId().equals(userId)) {
+            if (!participantService.findIsHostByPlanAndUser(plan, user)) {
                 log.warn("방장이 아닙니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
@@ -97,11 +101,12 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
 
-            if (!planService.isValidAppointmentTime(planDate, planTime)) {
-                log.warn("수정 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
+            if (!planService.isValidAppointmentTime(plan.getPlanDate(), plan.getPlanTime())) {
+//                log.warn("수정 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
+                log.warn("수정 실패: 약속 시간은 현재 시간 최소 1분전에 수정할 수 있습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-            planService.updatePlanAndParticipant(plan, title, description, planDate, planTime, location, find, participantIdsStr);
+            planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, find, participantIdsStr);
             log.info("planId {}이고 title '{}'인 약속이 userId {}에 의해 수정되었습니다.", planId, title, userId);
 
             return ResponseEntity.ok().build();
@@ -127,8 +132,11 @@ public class PlanController {
         try {
             Plan plan = planRepository.findById(planId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
+
+            User user = userService.findByUserId(userId);
+
             // 방장 여부 확인
-            if (!plan.getUser().getUserId().equals(userId)) {
+            if (!participantService.findIsHostByPlanAndUser(plan, user)) {
                 log.warn("방장이 아닙니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
@@ -139,6 +147,7 @@ public class PlanController {
             }
 
             planService.deletePlan(plan);
+
             log.info("PlanId {}인 약속이 userId {}에 의해 삭제되었습니다.", planId, userId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
@@ -159,5 +168,15 @@ public class PlanController {
         PlanDto planDto = planService.getPlanDetail(planId);
         return new ResponseEntity<>(planDto, HttpStatus.OK);
     }
+
+//    @GetMapping("/list")
+//    @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다.")
+//    public ResponseEntity<PlanDto> planDetail(
+//            @RequestParam("userId") Integer userId,
+//            @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate) {
+
+
+//        return new ResponseEntity<>(planDto, HttpStatus.OK);
+//    }
 
 }

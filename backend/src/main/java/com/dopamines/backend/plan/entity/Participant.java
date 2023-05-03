@@ -37,11 +37,14 @@ public class Participant {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
+    @Column(name = "is_host")
+    private Boolean isHost;
+
     @Column(name = "is_arrived", nullable = false)
     private Boolean isArrived;
 
-    @Column(name = "arrival_dt")
-    private LocalTime arrivalDt;
+    @Column(name = "arrival_time")
+    private LocalTime arrivalTime;
 
     @Column(name = "late_time")
     private Long lateTime;

@@ -42,15 +42,13 @@ public class PlanService {
 
 
     // 약속 생성
-    public Integer createPlan(Integer userId, String title, String description, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr) {
+    public Integer createPlan(Integer userId, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr) {
 
         User user = userService.findByUserId(userId);
 
         Plan plan = planRepository.save(
                 Plan.builder()
-                        .user(user)
                         .title(title)
-                        .description(description)
                         .planDate(planDate)
                         .planTime(planTime)
                         .location(location)
@@ -60,14 +58,17 @@ public class PlanService {
         );
 
         // 방장 참가자로 추가
-        participantService.createParticipant(user, plan);
+        participantService.createParticipant(user, plan, true);
 
         // 참가자 추가
         if (participantIdsStr != null && !participantIdsStr.isEmpty()) {
             String[] participantIds = participantIdsStr.split(",");
             for (String participantId : participantIds) {
+                if (Integer.valueOf(participantId).equals(userId)) {
+                    continue;
+                }
                 User participant = userService.findByUserId(Integer.valueOf(participantId));
-                participantService.createParticipant(participant, plan);
+                participantService.createParticipant(participant, plan, false);
             }
         }
 
@@ -76,14 +77,13 @@ public class PlanService {
 
 
     // 약속 수정
-    public void updatePlanAndParticipant(Plan plan, String title, String description, LocalDate planDate, LocalTime planTime, String location, Integer find, String newParticipantIdsStr) {
+    public void updatePlanAndParticipant(Plan plan, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String newParticipantIdsStr) {
 
         // 참가자 수정
         participantService.updateParticipant(plan, newParticipantIdsStr);
 
         // 약속 정보를 업데이트
         plan.setTitle(title);
-        plan.setDescription(description);
         plan.setPlanDate(planDate);
         plan.setPlanTime(planTime);
         plan.setLocation(location);
@@ -103,22 +103,31 @@ public class PlanService {
     // 진행 중인 약속 상세 정보
     public PlanDto getPlanDetail(Integer planId) {
         Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 약속의 약속 정보가 없습니다."));
 
         updatePlanStatus(plan);
 
         PlanDto planDto = new PlanDto();
         planDto.setPlanId(planId);
         planDto.setTitle(plan.getTitle());
-        planDto.setDescription(plan.getDescription());
         planDto.setPlanDate(plan.getPlanDate());
         planDto.setPlanTime(plan.getPlanTime());
         planDto.setFind(plan.getFind());
         planDto.setLocation(plan.getLocation());
         planDto.setStatus(plan.getStatus());
 
+        // D-day 계산
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        long diffDay = ChronoUnit.DAYS.between(today, plan.getPlanDate());
+
+        // D-day
+        planDto.setDiffDay(diffDay);
+
         // 참가자 리스트 정보
         List<Participant> participants = participantRepository.findByPlan(plan);
+
+        // 참가자 수
+        planDto.setParticipantCount(participants.size());
 
         // 참가자 정보 dto 추가
         List<ParticipantDto> participantDtoList = new ArrayList<>();
@@ -139,7 +148,7 @@ public class PlanService {
             participantDto.setUserId(participant.getUser().getUserId());
             participantDto.setNickname(participant.getUser().getNickname());
             participantDto.setProfile(participant.getUser().getProfile());
-            participantDto.setIsHost(participant.getUser().equals(plan.getUser()));
+            participantDto.setIsHost(participant.getIsHost());
             participantDto.setIsArrived(participant.getIsArrived());
             participantDto.setDesignation(designation);
             participantDtoList.add(participantDto);
@@ -173,7 +182,8 @@ public class PlanService {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         long diffMinutes = ChronoUnit.MINUTES.between(now, planDateTime);
 
-        if (diffMinutes < 30) {
+//        if (diffMinutes < 30) {
+        if (diffMinutes <= 0) {
             return false;
         }
         return true;

@@ -23,18 +23,8 @@ public class Plan {
     @Column(name = "plan_id")
     private Integer planId;
 
-    // 방장
-    @ManyToOne(fetch = FetchType.LAZY)  // 1:N
-    @JoinColumn(name="user_id") //Join 기준
-    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JsonIgnore
-    private User user;
-
     @Column(name = "title")
     private String title;
-
-    @Column(name = "description")
-    private String description;
 
     @Column(name = "plan_date")
     private LocalDate planDate;

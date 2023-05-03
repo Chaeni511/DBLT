@@ -35,11 +35,12 @@ public class ParticipantService {
 
 
     // 참가자 생성
-    public void createParticipant(User user, Plan plan) {
+    public void createParticipant(User user, Plan plan, Boolean host) {
         Participant participant = Participant.builder()
                 .user(user)
                 .plan(plan)
                 .isArrived(false)
+                .isHost(host)
                 .build();
         participantRepository.save(participant);
         log.info(user.getEmail() + " 님이 참가되었습니다");
@@ -77,6 +78,7 @@ public class ParticipantService {
                 newParticipant.setPlan(plan);
                 newParticipant.setUser(newUser);
                 newParticipant.setIsArrived(false);
+                newParticipant.setIsHost(false);
                 participantsToAdd.add(newParticipant);
                 log.info("참가자 추가: " + newUser.getEmail());
             }
@@ -87,7 +89,7 @@ public class ParticipantService {
         for (Participant oldParticipant : oldParticipants) {
             // 새로운 참가자 목록에 없는 참가자이고 방장이 아닐 경우 삭제 대상에 추가
             if (!newParticipantIds.contains(oldParticipant.getUser().getUserId())
-                    && !oldParticipant.getUser().getUserId().equals(plan.getUser().getUserId())) {
+                    && !oldParticipant.getIsHost()) {
                 participantsToRemove.add(oldParticipant);
                 log.info("참가자 삭제: " + oldParticipant.getUser().getEmail());
             }
@@ -118,7 +120,7 @@ public class ParticipantService {
         // 도착했으면 시간저장
         if (isArrived) {
             LocalTime arrivalTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
-            participant.setArrivalDt(arrivalTime);
+            participant.setArrivalTime(arrivalTime);
             // 지각 시간 계산
             Duration duration = Duration.between(arrivalTime, plan.getPlanTime());
             long minutesBetween = duration.toMinutes();
@@ -127,4 +129,15 @@ public class ParticipantService {
         // 변경사항 저장
         participantRepository.save(participant);
     }
+
+    //////////////////////////// 중복 ////////////////////////////
+
+    // 방장 인지 확인
+    public Boolean findIsHostByPlanAndUser(Plan plan, User user) {
+        Participant participant = participantRepository.findByPlanAndUser(plan, user)
+                .orElseThrow(() -> new IllegalArgumentException("참가자가 아닙니다."));
+
+        return participant.getIsHost();
+    }
+
 }
