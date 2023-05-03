@@ -137,7 +137,7 @@ public class PlanServiceImpl implements PlanService {
         for (Participant participant : participants) {
 
             int designation = 0;
-            int ArrivalTime = participant.getAccount().getArrivalTime();
+            int ArrivalTime = participant.getAccount().getAccumulatedTime();
 
             if (ArrivalTime < 0) {
                 // 일찍 오는 사람
