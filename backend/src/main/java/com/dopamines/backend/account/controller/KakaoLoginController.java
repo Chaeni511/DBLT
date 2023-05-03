@@ -5,24 +5,18 @@ import com.dopamines.backend.account.config.KakaoUserInfo;
 import com.dopamines.backend.account.dto.AccountRequestDto;
 import com.dopamines.backend.account.dto.KakaoUserInfoResponseDto;
 import com.dopamines.backend.account.dto.RoleToUserRequestDto;
-import com.dopamines.backend.account.dto.TokenResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
-import com.dopamines.backend.account.service.AccountService;
+import com.dopamines.backend.account.service.KakaoLoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.*;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,7 +29,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RestController
 public class KakaoLoginController {
 
-    private final AccountService accountService;
+    private final KakaoLoginService accountService;
     @Autowired
     private final KakaoUserInfo kakaoUserInfo;
     @Autowired
@@ -79,7 +73,9 @@ public class KakaoLoginController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<Long> signup(@RequestBody AccountRequestDto dto) {
+    public ResponseEntity<Long> signup(@RequestParam String email, @RequestParam String kakaoId, @RequestParam String nickname) {
+//    public ResponseEntity<Long> signup(@RequestBody AccountRequestDto dto) {
+        AccountRequestDto dto = new AccountRequestDto(false, email, kakaoId, nickname);
         return ResponseEntity.ok(accountService.saveAccount(dto));
     }
 
