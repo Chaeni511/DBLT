@@ -1,11 +1,19 @@
 package com.dopamines.backend.test.controller;
 
+import com.amazonaws.SdkClientException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.Bucket;
 import com.dopamines.backend.test.dto.TestDto;
 import com.dopamines.backend.test.service.TestService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +62,32 @@ public class TestController {
     @ApiOperation(value = "jpa dto 동작 확인", notes = "이름에 '안녕'을 포함하는 칼럼 리스트 반환")
     public List<TestDto> getTest(){
         return teatservice.getCustom("안녕");
+    }
+
+    @GetMapping("/ftp")
+    public List<Bucket> getBucketList(){
+        final String endPoint = "https://kr.object.ncloudstorage.com";
+        final String regionName = "kr-standard";
+        final String accessKey = "jUWjiv3t6vIcjJ8Rrm13";
+        final String secretKey = "FCgMJ5wLWkbqWNHVRa445darB3eZ92IvP43AsPe8";
+
+// S3 client
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .build();
+
+        try {
+            List<Bucket> buckets = s3.listBuckets();
+            System.out.println("Bucket List: ");
+            for (Bucket bucket : buckets) {
+                System.out.println("    name=" + bucket.getName() + ", creation_date=" + bucket.getCreationDate() + ", owner=" + bucket.getOwner().getId());
+            }
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+        } catch(SdkClientException e) {
+            e.printStackTrace();
+        }
     }
 
 }
