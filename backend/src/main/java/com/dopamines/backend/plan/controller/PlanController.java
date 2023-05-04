@@ -61,8 +61,6 @@ public class PlanController {
         String userEmail = request.getRemoteUser();
 
         if (planService.getTimeMinutesDifference(planDate, planTime) <= 0) {
-//            log.warn("생성 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
-            System.out.println(planService.getTimeMinutesDifference(planDate, planTime));
             log.warn("생성 실패: 약속 시간은 현재 시간 이후 시간으로 생성할 수 있습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
