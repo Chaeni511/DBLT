@@ -8,6 +8,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.dopamines.backend.test.dto.TestDto;
 import com.dopamines.backend.test.service.TestService;
 import io.swagger.annotations.Api;
@@ -19,6 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -31,9 +35,10 @@ public class TestController {
     private String accessKey;
     @Value("${cloud.aws.credentials.secretKey}")
     private String secretKey;
-
     @Value("${cloud.aws.s3.endpoint}")
     private String endPoint;
+    @Value("${cloud.aws.region.static}")
+    private String regionName;
 
     private Logger log = LoggerFactory.getLogger(TestController.class);
 
@@ -73,10 +78,6 @@ public class TestController {
 
     @GetMapping("/ftp")
     public List<Bucket> getBucketList(){
-//        final String accessKey="jUWjiv3t6vIcjJ8Rrm13";
-//        final String secretKey= "FCgMJ5wLWkbqWNHVRa445darB3eZ92IvP43AsPe8";
-//        final String endPoint="https://kr.object.ncloudstorage.com";
-        final String regionName = "kr-standard";
 
 // S3 client
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
@@ -104,4 +105,44 @@ public class TestController {
         return null;
     }
 
+    @PostMapping("/upload")
+    public void uploadFile(){
+        // S3 client
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .build();
+
+        String bucketName = "dlt";
+
+// create folder
+        String folderName = "test/";
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(0L);
+        objectMetadata.setContentType("application/x-directory");
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName, new ByteArrayInputStream(new byte[0]), objectMetadata);
+
+        try {
+            s3.putObject(putObjectRequest);
+            System.out.format("Folder %s has been created.\n", folderName);
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+        } catch(SdkClientException e) {
+            e.printStackTrace();
+        }
+
+// upload local file
+        String objectName = "sample-object";
+        String filePath = "/Users/ichaeeun/Downloads/198722804_1_1663929902_w180.jpg";
+
+        try {
+            s3.putObject(bucketName, objectName, new File(filePath));
+            System.out.format("Object %s has been created.\n", objectName);
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+        } catch(SdkClientException e) {
+            e.printStackTrace();
+        }
+    }
 }
