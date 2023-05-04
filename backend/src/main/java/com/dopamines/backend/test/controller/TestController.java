@@ -1,5 +1,6 @@
 package com.dopamines.backend.test.controller;
 
+import com.dopamines.backend.test.dto.ObjectDto;
 import com.dopamines.backend.test.dto.TestDto;
 import com.dopamines.backend.test.service.TestService;
 
@@ -54,6 +55,13 @@ public class TestController {
     @ApiOperation(value = "jpa dto 동작 확인", notes = "이름에 '안녕'을 포함하는 칼럼 리스트 반환")
     public List<TestDto> getTest(){
         return teatservice.getCustom("안녕");
+    }
+
+    @GetMapping("/get")
+    public ObjectDto getObjectTest(){
+        ObjectDto objectDto = new ObjectDto(11L, "getObjectTest");
+
+        return objectDto;
     }
 
 }
