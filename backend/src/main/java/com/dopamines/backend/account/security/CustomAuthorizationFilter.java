@@ -32,6 +32,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String servletPath = request.getServletPath();
+        log.info("CustomAuthorizationFilter의 doFilterInternal에서 찍는 servletPath: "+ servletPath);
+
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         log.info("CustomAuthorizationFilter의 doFilterInternal에서 찍는 authorizationHeader: "+ authorizationHeader);
         // 로그인, 리프레시 요청이라면 토큰 검사하지 않음
@@ -40,8 +42,15 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 || servletPath.equals("/oauth")
                 || servletPath.equals("/account/signup")
                 || servletPath.equals("/account/oauth")
+<<<<<<< HEAD
                 || servletPath.equals("/v3/api-docs")
                 || servletPath.equals("/swagger-ui")
+=======
+                || servletPath.startsWith("/swagger-ui")
+                || servletPath.startsWith("/swagger-resources")
+                || servletPath.startsWith("/v3/api-docs")
+                || servletPath.startsWith("/pwabuilder-sw.js")
+>>>>>>> 42d20af32f6c747090a2652151c5f59f83bb460f
         ) {
             filterChain.doFilter(request, response);
 
@@ -49,7 +58,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             // 토큰값이 없거나 정상적이지 않다면 400 오류
             log.info("CustomAuthorizationFilter : JWT Token이 존재하지 않습니다.");
             log.info("CustomAuthorizationFilter에서 찍는 authrizationHeader: " + authorizationHeader);
-            log.info("CustomAuthorizationFilter에서 찍는 !authrizationHeader.startsWith(TOKEN_HEADER_PREFIX): " + !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX));
+//            log.info("CustomAuthorizationFilter에서 찍는 !authrizationHeader.startsWith(TOKEN_HEADER_PREFIX): " + !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX));
             response.setStatus(SC_BAD_REQUEST);
             response.setContentType(APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("utf-8");
