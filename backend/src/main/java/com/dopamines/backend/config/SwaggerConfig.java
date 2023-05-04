@@ -26,7 +26,7 @@ public class SwaggerConfig {
                 .apiInfo(this.apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors
-                        .basePackage("com.dopamines.backend.backend"))
+                        .basePackage("com.dopamines.backend"))
                 .paths(PathSelectors.ant("/**"))
                 .build();
     }
