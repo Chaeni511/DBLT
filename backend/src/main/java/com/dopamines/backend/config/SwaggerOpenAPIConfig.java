@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 @Component
-public class WorkAround implements WebMvcOpenApiTransformationFilter {
+public class SwaggerOpenAPIConfig implements WebMvcOpenApiTransformationFilter {
 
     @Override
     public OpenAPI transform(OpenApiTransformationContext<HttpServletRequest> context) {
