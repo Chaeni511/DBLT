@@ -11,7 +11,7 @@ import java.util.List;
 public interface PlanService {
 
     // 약속 생성
-    Long createPlan(Long accountId, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr);
+    Long createPlan(String userEmail, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr);
 
     // 약속 수정
     void updatePlanAndParticipant(Plan plan, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String newParticipantIdsStr);
@@ -23,7 +23,7 @@ public interface PlanService {
     PlanDto getPlanDetail(Long planId);
 
     // 해당 날짜의 약속 리스트
-    List<PlanListDto> getPlanList(Long accountId, LocalDate planDate);
+    List<PlanListDto> getPlanList(String userEmail, LocalDate planDate);
 
     // 모든 참가자가 도착한 경우 true 반환환
     boolean isAllMemberArrived(Long planId);

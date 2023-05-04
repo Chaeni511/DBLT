@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -46,7 +47,7 @@ public class PlanController {
     @PostMapping("/create")
     @ApiOperation(value = "약속 생성 api 입니다.", notes = "약속 정보를 입력하여 약속을 생성합니다. 약속이 생성되면 PlanId를 반환합니다. participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
     public ResponseEntity<Long> createPlan(
-            @RequestParam("accountId") Long accountId,
+            HttpServletRequest request,
             @RequestParam("title") String title,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
@@ -54,6 +55,8 @@ public class PlanController {
             @RequestParam("find") Integer find,
             @RequestParam(value = "participantIds", required = false) String participantIdsStr // 입력값: 1,2,3,4
     ) {
+        // 헤더에서 유저 이메일 가져옴
+        String userEmail = request.getRemoteUser();
 
         if (planService.getTimeMinutesDifference(planDate, planTime) <= 0) {
 //            log.warn("생성 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
@@ -61,7 +64,7 @@ public class PlanController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Long planId = planService.createPlan(accountId, title, planDate, planTime, location, find, participantIdsStr);
+        Long planId = planService.createPlan(userEmail, title, planDate, planTime, location, find, participantIdsStr);
         log.info("약속이 생성되었습니다.");
         return ResponseEntity.ok(planId);
     }
@@ -70,7 +73,7 @@ public class PlanController {
     @PutMapping("/update")
     @ApiOperation(value = "약속 수정 api 입니다.", notes = "PlanId를 입력하여 약속 정보를 불러와 약속 정보을 수정합니다. 약속이 생성되면 PlanId를 반환합니다. participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
     public ResponseEntity<Void> updatePlan(
-            @RequestParam("accountId") Long accountId,
+            HttpServletRequest request,
             @RequestParam("planId") Long planId,
             @RequestParam("title") String title,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
@@ -83,7 +86,9 @@ public class PlanController {
         try {
             Plan plan = planService.getPlanById(planId);
 
-            Account account = userService.findByAccountId(accountId);
+            String userEmail = request.getRemoteUser();
+
+            Account account = userService.findByEmail(userEmail);
 
             // 방장 여부 확인
             if (!participantService.findIsHostByPlanAndUser(plan, account)) {
@@ -118,16 +123,18 @@ public class PlanController {
 
 
     @DeleteMapping("/delete")
-    @ApiOperation(value = "약속 삭제 api 입니다.", notes = "수정하려는 accountId와 PlanId를 입력하여 약속 정보를 삭제합니다.")
+    @ApiOperation(value = "약속 삭제 api 입니다.", notes = "PlanId를 입력하여 약속 정보를 삭제합니다.")
     public ResponseEntity<Void> deletePlan(
-            @RequestParam("accountId") Long accountId,
+            HttpServletRequest request,
             @RequestParam("planId") Long planId
     ){
 
         try {
+
             Plan plan = planService.getPlanById(planId);
 
-            Account account = userService.findByAccountId(accountId);
+            String userEmail = request.getRemoteUser();
+            Account account = userService.findByEmail(userEmail);
 
             // 방장 여부 확인
             if (!participantService.findIsHostByPlanAndUser(plan, account)) {
@@ -166,10 +173,11 @@ public class PlanController {
     @GetMapping("/list")
     @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다.")
     public ResponseEntity<List<PlanListDto>> planList(
-            @RequestParam("accountId") Long accountId,
+            HttpServletRequest request,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate) {
 
-        List<PlanListDto> planListDto = planService.getPlanList(accountId, planDate);
+        String userEmail = request.getRemoteUser();
+        List<PlanListDto> planListDto = planService.getPlanList(userEmail, planDate);
         return new ResponseEntity<>(planListDto, HttpStatus.OK);
     }
 

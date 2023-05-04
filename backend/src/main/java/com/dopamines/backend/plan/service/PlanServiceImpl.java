@@ -45,9 +45,9 @@ public class PlanServiceImpl implements PlanService {
 
     // 약속 생성
     @Override
-    public Long createPlan(Long accountId, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr) {
+    public Long createPlan(String userEmail, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr) {
 
-        Account account = userService.findByAccountId(accountId);
+        Account account = userService.findByEmail(userEmail);
 
         Plan plan = planRepository.save(
                 Plan.builder()
@@ -67,7 +67,7 @@ public class PlanServiceImpl implements PlanService {
         if (participantIdsStr != null && !participantIdsStr.isEmpty()) {
             String[] participantIds = participantIdsStr.split(",");
             for (String participantId : participantIds) {
-                if (Long.valueOf(participantId).equals(accountId)) {
+                if (Long.valueOf(participantId).equals(account.getAccountId())) {
                     continue;
                 }
                 Account participant = userService.findByAccountId(Long.valueOf(participantId));
@@ -167,8 +167,9 @@ public class PlanServiceImpl implements PlanService {
 
     // 약속 리스트
     @Override
-    public List<PlanListDto> getPlanList(Long accountId, LocalDate planDate) {
-        Account account = userService.findByAccountId(accountId);
+    public List<PlanListDto> getPlanList(String userEmail, LocalDate planDate) {
+
+        Account account = userService.findByEmail(userEmail);
 
         // 해당 account가 참여하고 있는 participant 목록 가져오기
         List<Participant> participants = participantRepository.findByAccount(account);
