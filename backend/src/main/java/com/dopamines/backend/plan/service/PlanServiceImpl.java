@@ -242,7 +242,9 @@ public class PlanServiceImpl implements PlanService {
                 planListDto.setPlanTime(plan.getPlanTime());
                 planListDto.setLocation(plan.getLocation());
                 planListDto.setStatus(plan.getStatus());
+                // 남은 시간 (1이면 약속 시간 1시간 전)
                 planListDto.setDiffHours(getTimeHoursDifference(plan.getPlanDate(),plan.getPlanTime()));
+                // 남은 분 (40이면 약속 시간 40분 전)
                 planListDto.setDiffMinutes(getTimeMinutesDifference(plan.getPlanDate(),plan.getPlanTime()));
 
                 // 해당 약속의 참가자 리스트 정보
@@ -295,6 +297,7 @@ public class PlanServiceImpl implements PlanService {
 
     // 약속 시간 유효성 검사
     // 약속 시간 차이
+    // 현재시간 이전 이면 음수, 현재시간 이후면 양수
     // 시간
     @Override
     public long getTimeHoursDifference(LocalDate planDate, LocalTime planTime) {
@@ -313,11 +316,12 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
+    // 자세한 시간 차이를 계산 : 음수면 시간 지남, 양수면 시간 안됌
     public Duration getTimeDifference(LocalDate planDate, LocalTime planTime) {
         LocalDateTime planDateTime = LocalDateTime.of(planDate, planTime);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        return Duration.between(planDateTime, now);
+        return Duration.between(now, planDateTime);
     }
 
     // 약속 유효성 검사

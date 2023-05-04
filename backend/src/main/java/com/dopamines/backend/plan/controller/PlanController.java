@@ -60,10 +60,10 @@ public class PlanController {
         // 헤더에서 유저 이메일 가져옴
         String userEmail = request.getRemoteUser();
 
-        if (planService.getTimeMinutesDifference(planDate, planTime) >= 0) {
+        if (planService.getTimeMinutesDifference(planDate, planTime) <= 0) {
 //            log.warn("생성 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
             System.out.println(planService.getTimeMinutesDifference(planDate, planTime));
-            log.warn("생성 실패: 약속 시간은 현재 시간 최소 1분전에 생성할 수 있습니다.");
+            log.warn("생성 실패: 약속 시간은 현재 시간 이후 시간으로 생성할 수 있습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -108,11 +108,8 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
 
-            System.out.println(planService.getTimeDifference(plan.getPlanDate(), plan.getPlanTime()).toMinutes());
-            if (planService.getTimeDifference(plan.getPlanDate(), plan.getPlanTime()).toMinutes() >= 0) {
-                System.out.println(planService.getTimeDifference(plan.getPlanDate(), plan.getPlanTime()).toMinutes());
-//                log.warn("수정 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
-                log.warn("수정 실패: 약속 시간은 현재 시간 최소 1분전에 수정할 수 있습니다.");
+            if (planService.getTimeMinutesDifference(planDate, planTime) <= 0) {
+                log.warn("수정 실패: 약속 시간은 현재 시간 이후 시간으로 변경할 수 있습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
             planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, find, participantIdsStr);
@@ -183,7 +180,7 @@ public class PlanController {
     }
 
     @GetMapping("/list")
-    @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
+    @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다. diff시간이 음수이면 약속 시간이 지났고, 양수이면 약속 시간이 아직 남아 있음을 나타냅니다.")
     public ResponseEntity<List<PlanListDto>> planList(
             HttpServletRequest request,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate) {

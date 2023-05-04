@@ -33,8 +33,6 @@ public interface PlanService {
     // 모든 참가자가 도착한 경우 true 반환환
     boolean isAllMemberArrived(Long planId);
 
-    // 시간 차이 맘대로 가져오기
-    Duration getTimeDifference(LocalDate planDate, LocalTime planTime);
 
     //////////////// 중복 ///////////////////
 
@@ -49,5 +47,8 @@ public interface PlanService {
     long getTimeHoursDifference(LocalDate planDate, LocalTime planTime);
     // 분
     long getTimeMinutesDifference(LocalDate planDate, LocalTime planTime);
+
+    // 시간 차이 맘대로 가져오기 (자세한 시간 차이를 계산)
+    Duration getTimeDifference(LocalDate planDate, LocalTime planTime);
 
 }
