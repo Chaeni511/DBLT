@@ -2,9 +2,7 @@ package com.dopamines.backend.account.controller;
 
 import com.dopamines.backend.account.config.KakaoLoginConfig;
 import com.dopamines.backend.account.config.KakaoUserInfo;
-import com.dopamines.backend.account.dto.AccountRequestDto;
-import com.dopamines.backend.account.dto.KakaoUserInfoResponseDto;
-import com.dopamines.backend.account.dto.RoleToUserRequestDto;
+import com.dopamines.backend.account.dto.*;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.service.KakaoLoginService;
@@ -40,8 +38,8 @@ public class KakaoLoginController {
 
     @PostMapping("/oauth")
     @ResponseBody
-    public ResponseEntity<AccountRequestDto> kakaoOauth(@RequestParam("code") String code) throws IOException {
-
+    public ResponseEntity<AccountRequestDto> kakaoOauth(@RequestBody KakaoOauthDto kakaoOauthDto) throws IOException {
+        String code = kakaoOauthDto.getCode();
         System.out.println("code: " + code);
 
         KakaoUserInfoResponseDto userInfo = kakaoUserInfo.getUserInfo(code);
@@ -65,7 +63,7 @@ public class KakaoLoginController {
             signup = true;
         }
 
-        AccountRequestDto  accountRequestDto = new AccountRequestDto(signup, email, kakaoId.toString(), nickname);
+        AccountRequestDto accountRequestDto = new AccountRequestDto(signup, email, kakaoId.toString(), nickname);
 
         return ResponseEntity.ok(accountRequestDto);
 
