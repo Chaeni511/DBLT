@@ -2,6 +2,7 @@ package com.dopamines.backend.plan.controller;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.UserService;
+import com.dopamines.backend.plan.dto.EndPlanDto;
 import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Plan;
@@ -163,7 +164,7 @@ public class PlanController {
     }
 
     @GetMapping("/detail")
-    @ApiOperation(value = "약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다.")
+    @ApiOperation(value = "진행 중인 약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다.")
     public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Long planId) {
 
         PlanDto planDto = planService.getPlanDetail(planId);
@@ -179,6 +180,14 @@ public class PlanController {
         String userEmail = request.getRemoteUser();
         List<PlanListDto> planListDto = planService.getPlanList(userEmail, planDate);
         return new ResponseEntity<>(planListDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/endDetail")
+    @ApiOperation(value = "완료된 약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다.")
+    public ResponseEntity<EndPlanDto> endPlanDetail(@RequestParam("planId") Long planId) {
+
+        EndPlanDto endPlanDto = planService.getEndPlanDetail(planId);
+        return new ResponseEntity<>(endPlanDto, HttpStatus.OK);
     }
 
 }

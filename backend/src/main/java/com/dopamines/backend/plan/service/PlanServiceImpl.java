@@ -2,10 +2,7 @@ package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.UserService;
-import com.dopamines.backend.plan.dto.ParticipantDto;
-import com.dopamines.backend.plan.dto.PlanDto;
-import com.dopamines.backend.plan.dto.PlanListDto;
-import com.dopamines.backend.plan.dto.PlanListParticipantDto;
+import com.dopamines.backend.plan.dto.*;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
@@ -165,6 +162,68 @@ public class PlanServiceImpl implements PlanService {
     }
 
 
+    // 완료된 중인 약속 상세 정보
+    @Override
+    public EndPlanDto getEndPlanDetail(Long planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 약속의 약속 정보가 없습니다."));
+
+        // 시간에 따른 약속 상태 변경
+        updatePlanStatus(plan);
+
+        PlanDto planDto = new PlanDto();
+        planDto.setPlanId(planId);
+        planDto.setTitle(plan.getTitle());
+        planDto.setPlanDate(plan.getPlanDate());
+        planDto.setPlanTime(plan.getPlanTime());
+        planDto.setFind(plan.getFind());
+        planDto.setLocation(plan.getLocation());
+        planDto.setStatus(plan.getStatus());
+
+        // D-day 계산
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        long diffDay = ChronoUnit.DAYS.between(today, plan.getPlanDate());
+
+        // D-day
+        planDto.setDiffDay(diffDay);
+
+        // 참가자 리스트 정보
+        List<Participant> participants = participantRepository.findByPlan(plan);
+
+        // 참가자 수
+        planDto.setParticipantCount(participants.size());
+
+        // 참가자 정보 dto 추가
+        List<ParticipantDto> participantDtoList = new ArrayList<>();
+        for (Participant participant : participants) {
+
+            int designation = 0;
+            int ArrivalTime = participant.getAccount().getAccumulatedTime();
+
+            if (ArrivalTime < 0) {
+                // 일찍 오는 사람
+                designation = 1;
+            } else if (ArrivalTime > 0) {
+                // 늦게 오는 사람
+                designation = 2;
+            }
+
+            ParticipantDto participantDto = new ParticipantDto();
+            participantDto.setAccountId(participant.getAccount().getAccountId());
+            participantDto.setNickname(participant.getAccount().getNickname());
+            participantDto.setProfile(participant.getAccount().getProfile());
+            participantDto.setIsHost(participant.getIsHost());
+            participantDto.setIsArrived(participant.getIsArrived());
+            participantDto.setDesignation(designation);
+            participantDtoList.add(participantDto);
+        }
+        planDto.setParticipantList(participantDtoList);
+
+        return planDto;
+    }
+
+
+
     // 약속 리스트
     @Override
     public List<PlanListDto> getPlanList(String userEmail, LocalDate planDate) {
@@ -239,6 +298,9 @@ public class PlanServiceImpl implements PlanService {
         return true;
     }
 
+
+
+
     /////////////////////////////// 중복 사용 함수 ////////////////////////////////////////////
 
     // 약속 시간 유효성 검사
@@ -266,7 +328,6 @@ public class PlanServiceImpl implements PlanService {
         return planRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
     }
-
 
 
     // 약속 상태 변경 함수

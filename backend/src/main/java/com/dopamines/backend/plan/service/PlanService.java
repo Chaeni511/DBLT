@@ -1,5 +1,6 @@
 package com.dopamines.backend.plan.service;
 
+import com.dopamines.backend.plan.dto.EndPlanDto;
 import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Plan;
@@ -21,6 +22,9 @@ public interface PlanService {
 
     // 진행 중인 약속 상세 정보
     PlanDto getPlanDetail(Long planId);
+
+    // 진행 중인 약속 상세 정보
+    EndPlanDto getEndPlanDetail(Long planId);
 
     // 해당 날짜의 약속 리스트
     List<PlanListDto> getPlanList(String userEmail, LocalDate planDate);
