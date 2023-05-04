@@ -13,9 +13,9 @@ import com.dopamines.backend.test.service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +27,14 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Api(value = "test", description = "테스트 컨트롤러입니다.")
 public class TestController {
-    @Value("${external.record-year}")
+    @Value("${cloud.aws.credentials.accessKey}")
+    private String accessKey;
+    @Value("${cloud.aws.credentials.secretKey}")
+    private String secretKey;
+
+    @Value("${cloud.aws.s3.endpoint}")
+    private String endPoint;
+
     private Logger log = LoggerFactory.getLogger(TestController.class);
 
     private final TestService teatservice;
@@ -66,19 +73,23 @@ public class TestController {
 
     @GetMapping("/ftp")
     public List<Bucket> getBucketList(){
-        final String endPoint = "https://kr.object.ncloudstorage.com";
+//        final String accessKey="jUWjiv3t6vIcjJ8Rrm13";
+//        final String secretKey= "FCgMJ5wLWkbqWNHVRa445darB3eZ92IvP43AsPe8";
+//        final String endPoint="https://kr.object.ncloudstorage.com";
         final String regionName = "kr-standard";
-        final String accessKey = "jUWjiv3t6vIcjJ8Rrm13";
-        final String secretKey = "FCgMJ5wLWkbqWNHVRa445darB3eZ92IvP43AsPe8";
 
 // S3 client
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
                 .build();
+        log.info("endPoint: "+ endPoint.toString() + ", accessKey: "+ accessKey + ", secretKey: "+ secretKey);
+        log.info("TestController의 getBucketList에서 찍는 s3: " + s3);
 
         try {
             List<Bucket> buckets = s3.listBuckets();
+            log.info("TestController의 getBucketList에서 찍는 buckets: " + buckets);
+
             System.out.println("Bucket List: ");
             for (Bucket bucket : buckets) {
                 System.out.println("    name=" + bucket.getName() + ", creation_date=" + bucket.getCreationDate() + ", owner=" + bucket.getOwner().getId());
