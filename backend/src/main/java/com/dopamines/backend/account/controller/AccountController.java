@@ -1,6 +1,7 @@
 package com.dopamines.backend.account.controller;
 
 import com.dopamines.backend.account.dto.AccountRequestDto;
+import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.AccountService;
 import com.dopamines.backend.account.service.KakaoLoginService;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -40,5 +44,10 @@ public class AccountController {
         String email = request.getRemoteUser();
         accountService.deleteAccount(email);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<SearchResponseDto>> searchNickname(@RequestParam String keyword){
+        return ResponseEntity.ok(accountService.searchNickname(keyword));
     }
 }

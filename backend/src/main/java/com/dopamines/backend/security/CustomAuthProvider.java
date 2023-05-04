@@ -1,4 +1,4 @@
-package com.dopamines.backend.account.security;
+package com.dopamines.backend.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;

@@ -1,4 +1,4 @@
-package com.dopamines.backend.account.security;
+package com.dopamines.backend.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

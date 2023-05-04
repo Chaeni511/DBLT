@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.dopamines.backend.account.security.JwtConstants.*;
+import static com.dopamines.backend.security.JwtConstants.*;
 
 @Slf4j
 @Transactional
