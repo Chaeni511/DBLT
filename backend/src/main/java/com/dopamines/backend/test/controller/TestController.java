@@ -6,6 +6,7 @@ import com.dopamines.backend.test.service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/test")
 @RequiredArgsConstructor
@@ -67,6 +69,12 @@ public class TestController {
     }
     @PostMapping("/post")
     public Map<String, List<ObjectDto>> postObjectTest(String name){
+        if(name == null){
+            log.info("name이 null임");
+        } else {
+            log.info("name: " + name);
+        }
+
         Map<String, List<ObjectDto>> res = new HashMap<>();
         res.put("res", new ArrayList<ObjectDto>());
         for(long i = 0; i < 10L; i++) {
