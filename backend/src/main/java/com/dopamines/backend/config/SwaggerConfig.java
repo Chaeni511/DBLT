@@ -12,23 +12,27 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 public class SwaggerConfig {
+
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.OAS_30)
+                .useDefaultResponseMessages(false)
+                .groupName("dopamines")
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors
+                        .basePackage("com.dopamines.backend"))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("언제와: Don't Late Together")
                 .description("SSAFY 8기 구미 D209 DOPAMINES팀의 『언제와: Don't Late Together』 입니다.♡")
+                .version("1.0")
                 .build();
     }
 
-    @Bean
-    public Docket commonApi() {
-        return new Docket(DocumentationType.OAS_30)
-                .groupName("dopamines")
-                .apiInfo(this.apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors
-                        .basePackage("com.dopamines.backend"))
-                .paths(PathSelectors.ant("/**"))
-                .build();
-    }
 }
 
