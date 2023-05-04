@@ -27,7 +27,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Api(value = "test", description = "테스트 컨트롤러입니다.")
 public class TestController {
-
+    @Value("${external.record-year}")
     private Logger log = LoggerFactory.getLogger(TestController.class);
 
     private final TestService teatservice;
@@ -83,11 +83,14 @@ public class TestController {
             for (Bucket bucket : buckets) {
                 System.out.println("    name=" + bucket.getName() + ", creation_date=" + bucket.getCreationDate() + ", owner=" + bucket.getOwner().getId());
             }
+            return buckets;
+
         } catch (AmazonS3Exception e) {
             e.printStackTrace();
         } catch(SdkClientException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
 }
