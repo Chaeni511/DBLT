@@ -47,7 +47,8 @@ public class PlanController {
 
 
     @PostMapping("/create")
-    @ApiOperation(value = "약속 생성 api 입니다.", notes = "약속 정보를 입력하여 약속을 생성합니다. 약속이 생성되면 PlanId를 반환합니다. participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
+    @ApiOperation(value = "약속 생성 api 입니다.", notes = "약속 정보를 입력하여 약속을 생성합니다. 약속이 생성되면 PlanId를 반환합니다." +
+            "participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
     public ResponseEntity<Long> createPlan(
             HttpServletRequest request,
             @RequestParam("title") String title,
@@ -72,7 +73,8 @@ public class PlanController {
 
 
     @PutMapping("/update")
-    @ApiOperation(value = "약속 수정 api 입니다.", notes = "PlanId를 입력하여 약속 정보를 불러와 약속 정보을 수정합니다. 약속이 생성되면 PlanId를 반환합니다. participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
+    @ApiOperation(value = "약속 수정 api 입니다.", notes = "PlanId를 입력하여 약속 정보를 불러와 약속 정보을 수정합니다. 약속이 생성되면 PlanId를 반환합니다." +
+            "participantIds는 유저id를 문자열로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
     public ResponseEntity<Void> updatePlan(
             HttpServletRequest request,
             @RequestParam("planId") Long planId,
@@ -170,7 +172,8 @@ public class PlanController {
     }
 
     @GetMapping("/detail")
-    @ApiOperation(value = "진행 중인 약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
+    @ApiOperation(value = "진행 중인 약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다." +
+            "designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
     public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Long planId) {
 
         PlanDto planDto = planService.getPlanDetail(planId);
@@ -178,7 +181,8 @@ public class PlanController {
     }
 
     @GetMapping("/list")
-    @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다. diff시간이 음수이면 약속 시간이 지났고, 양수이면 약속 시간이 아직 남아 있음을 나타냅니다.")
+    @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다." +
+            "status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다. diff시간이 음수이면 약속 시간이 지났음을, 양수이면 약속 시간이 아직 남아 있음을 나타냅니다.")
     public ResponseEntity<List<PlanListDto>> planList(
             HttpServletRequest request,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate) {
@@ -189,7 +193,8 @@ public class PlanController {
     }
 
     @GetMapping("/endDetail")
-    @ApiOperation(value = "완료된 약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
+    @ApiOperation(value = "완료된 약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다." +
+            "designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
     public ResponseEntity<EndPlanDto> endPlanDetail(
             HttpServletRequest request,
             @RequestParam("planId") Long planId
