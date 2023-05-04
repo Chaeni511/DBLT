@@ -116,7 +116,7 @@ public class AccountServiceImpl implements AccountService {
             return result;
 
         }
-//        List<SearchResponseDto> result = accountRepository.findByNicknameContaining(keyword);
+
         return result;
     }
 }

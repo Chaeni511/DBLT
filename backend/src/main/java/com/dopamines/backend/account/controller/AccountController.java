@@ -47,8 +47,7 @@ public class AccountController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<SearchResponseDto>> searchNickname(HttpServletRequest request, @RequestParam String keyword){
-//        List<SearchResponseDto> result = new ArrayList<SearchResponseDto>();
+    public ResponseEntity<List<SearchResponseDto>> searchNickname(@RequestParam String keyword){
         return ResponseEntity.ok(accountService.searchNickname(keyword));
     }
 }
