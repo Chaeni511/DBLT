@@ -2,6 +2,7 @@ package com.dopamines.backend.plan.controller;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.UserService;
+import com.dopamines.backend.plan.dto.EndPlanDto;
 import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Plan;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -60,7 +62,8 @@ public class PlanController {
 
         if (planService.getTimeMinutesDifference(planDate, planTime) <= 0) {
 //            log.warn("생성 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
-            log.warn("생성 실패: 약속 시간은 현재 시간 최소 1분전에 생성할 수 있습니다.");
+            System.out.println(planService.getTimeMinutesDifference(planDate, planTime));
+            log.warn("생성 실패: 약속 시간은 현재 시간 이후 시간으로 생성할 수 있습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -84,11 +87,15 @@ public class PlanController {
     ) {
 
         try {
+
             Plan plan = planService.getPlanById(planId);
 
             String userEmail = request.getRemoteUser();
 
             Account account = userService.findByEmail(userEmail);
+
+            // 약속 상태 변경
+            planService.updatePlanStatus(plan);
 
             // 방장 여부 확인
             if (!participantService.findIsHostByPlanAndUser(plan, account)) {
@@ -101,9 +108,8 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
 
-            if (planService.getTimeMinutesDifference(plan.getPlanDate(), plan.getPlanTime()) <= 0) {
-//                log.warn("수정 실패: 약속 시간은 현재 시간으로부터 30분 이후여야 합니다.");
-                log.warn("수정 실패: 약속 시간은 현재 시간 최소 1분전에 수정할 수 있습니다.");
+            if (planService.getTimeMinutesDifference(planDate, planTime) <= 0) {
+                log.warn("수정 실패: 약속 시간은 현재 시간 이후 시간으로 변경할 수 있습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
             planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, find, participantIdsStr);
@@ -136,6 +142,9 @@ public class PlanController {
             String userEmail = request.getRemoteUser();
             Account account = userService.findByEmail(userEmail);
 
+            // 약속 상태 변경
+            planService.updatePlanStatus(plan);
+
             // 방장 여부 확인
             if (!participantService.findIsHostByPlanAndUser(plan, account)) {
                 log.warn("방장이 아닙니다.");
@@ -163,7 +172,7 @@ public class PlanController {
     }
 
     @GetMapping("/detail")
-    @ApiOperation(value = "약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다.")
+    @ApiOperation(value = "진행 중인 약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
     public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Long planId) {
 
         PlanDto planDto = planService.getPlanDetail(planId);
@@ -171,7 +180,7 @@ public class PlanController {
     }
 
     @GetMapping("/list")
-    @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다.")
+    @ApiOperation(value = "약속 리스트를 불러오는 api 입니다.", notes = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다. diff시간이 음수이면 약속 시간이 지났고, 양수이면 약속 시간이 아직 남아 있음을 나타냅니다.")
     public ResponseEntity<List<PlanListDto>> planList(
             HttpServletRequest request,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate) {
@@ -179,6 +188,17 @@ public class PlanController {
         String userEmail = request.getRemoteUser();
         List<PlanListDto> planListDto = planService.getPlanList(userEmail, planDate);
         return new ResponseEntity<>(planListDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/endDetail")
+    @ApiOperation(value = "완료된 약속 상세 정보를 불러오는 api 입니다.", notes = "PlanId를 입력하여 약속 상세 정보를 불러옵니다. designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
+    public ResponseEntity<EndPlanDto> endPlanDetail(
+            HttpServletRequest request,
+            @RequestParam("planId") Long planId
+    ) {
+        String userEmail = request.getRemoteUser();
+        EndPlanDto endPlanDto = planService.getEndPlanDetail(planId, userEmail);
+        return new ResponseEntity<>(endPlanDto, HttpStatus.OK);
     }
 
 }

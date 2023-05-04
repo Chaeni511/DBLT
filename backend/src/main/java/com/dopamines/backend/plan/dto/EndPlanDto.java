@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PlanEndDto {
+public class EndPlanDto {
 
     private Long planId;
     private String title;
@@ -19,9 +19,8 @@ public class PlanEndDto {
     private LocalTime planTime;
     private String location;
     private Integer find;
-    private Long diffDay;
-    private Integer participantCount;
     private Integer status;
-    private List<ParticipantDto> participantList;
+    private MyEndPlanDto myDetail;
+    private List<EndPlanParticipantDto> EndPlanParticipantDto;
 
 }

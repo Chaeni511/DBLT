@@ -46,4 +46,7 @@ public class Participant {
 
     @Column(name = "late_time")
     private Long lateTime;
+
+    @Column(name = "transaction_money")
+    private Integer transactionMoney;
 }

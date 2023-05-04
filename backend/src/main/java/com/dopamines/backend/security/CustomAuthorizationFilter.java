@@ -46,6 +46,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 || servletPath.startsWith("/swagger")
                 || servletPath.startsWith("/v3/api-docs")
                 || servletPath.startsWith("/pwabuilder-sw.js")
+
         ) {
             filterChain.doFilter(request, response);
 
