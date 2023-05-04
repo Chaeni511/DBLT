@@ -1,4 +1,4 @@
-package com.dopamines.backend.account.security;
+package com.dopamines.backend.security;
 
 //import com.auth0.jwt.JWT;
 //import com.auth0.jwt.algorithms.Algorithm;
@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.dopamines.backend.account.security.JwtConstants.*;
-import static com.dopamines.backend.account.security.JwtConstants.RT_HEADER;
+import static com.dopamines.backend.security.JwtConstants.*;
+import static com.dopamines.backend.security.JwtConstants.RT_HEADER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor

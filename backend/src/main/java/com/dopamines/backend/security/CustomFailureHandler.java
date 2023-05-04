@@ -1,4 +1,4 @@
-package com.dopamines.backend.account.security;
+package com.dopamines.backend.security;
 
 import com.dopamines.backend.account.exception.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;

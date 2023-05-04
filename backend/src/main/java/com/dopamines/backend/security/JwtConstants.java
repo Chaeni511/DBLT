@@ -1,4 +1,4 @@
-package com.dopamines.backend.account.security;
+package com.dopamines.backend.security;
 
 public class JwtConstants {
 

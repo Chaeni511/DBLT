@@ -1,4 +1,4 @@
-package com.dopamines.backend.account.security;
+package com.dopamines.backend.security;
 
 import com.dopamines.backend.account.exception.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.dopamines.backend.account.security.JwtConstants.JWT_SECRET;
-import static com.dopamines.backend.account.security.JwtConstants.TOKEN_HEADER_PREFIX;
+import static com.dopamines.backend.security.JwtConstants.JWT_SECRET;
+import static com.dopamines.backend.security.JwtConstants.TOKEN_HEADER_PREFIX;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
