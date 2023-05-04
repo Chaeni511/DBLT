@@ -15,10 +15,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * @author : Hunseong-Park
- * @date : 2022-07-04
- */
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
@@ -44,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
 
         http.csrf().disable();
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션 사용 X
         http.authorizeRequests().antMatchers("/account/signup/**", "/account/login/**", "/account/refresh/**", "/account/oauth/**", "/v3/api-docs/**", "/swagger*/**","/swagger-ui/**", "/swagger-resources/**").permitAll();
         http.authorizeRequests().antMatchers("/account/my/**").hasAnyAuthority("ROLE_USER");
@@ -54,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
     }
+
 
     @Bean
     @Override
