@@ -1,14 +1,18 @@
 package com.dopamines.backend.account.service;
 
-import com.dopamines.backend.account.dto.AccountRequestDto;
+import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -89,5 +93,30 @@ public class AccountServiceImpl implements AccountService {
 
             accountRepository.save(account);
         }
+    }
+
+    @Override
+    public ArrayList<SearchResponseDto> searchNickname (String keyword) {
+        ArrayList<SearchResponseDto> result = new ArrayList<SearchResponseDto>();
+
+        List<Account> accounts = accountRepository.findAll();
+        for (Account account : accounts){
+            log.info("AccountServiceImpl: " + account);
+            SearchResponseDto searchResponseDto = new SearchResponseDto();
+
+            String nickname = account.getNickname();
+
+            if(nickname.contains(keyword)) {
+                searchResponseDto.setNickname(nickname);
+                searchResponseDto.setProfile(account.getProfile());
+                searchResponseDto.setProfileMessage(account.getProfileMessage());
+                result.add(searchResponseDto);
+            }
+
+            return result;
+
+        }
+//        List<SearchResponseDto> result = accountRepository.findByNicknameContaining(keyword);
+        return result;
     }
 }
