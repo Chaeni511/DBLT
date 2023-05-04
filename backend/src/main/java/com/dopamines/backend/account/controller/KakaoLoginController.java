@@ -40,7 +40,7 @@ public class KakaoLoginController {
 
     @PostMapping("/oauth")
     @ResponseBody
-    public ResponseEntity<AccountRequestDto> kakaoOauth(@RequestBody String code) throws IOException {
+    public ResponseEntity<AccountRequestDto> kakaoOauth(@RequestParam("code") String code) throws IOException {
 
         System.out.println("code: " + code);
 
