@@ -70,7 +70,7 @@ public class TestController {
         Map<String, List<ObjectDto>> res = new HashMap<>();
         res.put("res", new ArrayList<ObjectDto>());
         for(long i = 0; i < 10L; i++) {
-            res.get("res").add(new ObjectDto(i, "name" + i));
+            res.get("res").add(new ObjectDto(i, name + i));
         }
         return res;
     }
