@@ -1,8 +1,8 @@
 package com.dopamines.backend.test.controller;
 
+import com.dopamines.backend.test.dto.ObjectDto;
 import com.dopamines.backend.test.dto.TestDto;
 import com.dopamines.backend.test.service.TestService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/test")
@@ -54,6 +57,22 @@ public class TestController {
     @ApiOperation(value = "jpa dto 동작 확인", notes = "이름에 '안녕'을 포함하는 칼럼 리스트 반환")
     public List<TestDto> getTest(){
         return teatservice.getCustom("안녕");
+    }
+
+    @GetMapping("/get")
+    public ObjectDto getObjectTest(){
+        ObjectDto objectDto = new ObjectDto(11L, "getObjectTest");
+
+        return objectDto;
+    }
+    @PostMapping("/post")
+    public Map<String, List<ObjectDto>> postObjectTest(String name){
+        Map<String, List<ObjectDto>> res = new HashMap<>();
+        res.put("res", new ArrayList<ObjectDto>());
+        for(long i = 0; i < 10L; i++) {
+            res.get("res").add(new ObjectDto(i, name + i));
+        }
+        return res;
     }
 
 }
