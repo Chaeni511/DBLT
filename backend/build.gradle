@@ -39,7 +39,7 @@ dependencies {
 	implementation "com.querydsl:querydsl-apt:5.0.0"
 
 	// swagger
-	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
 	// Websocket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
