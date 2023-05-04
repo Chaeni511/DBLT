@@ -5,6 +5,7 @@ import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Plan;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -24,7 +25,7 @@ public interface PlanService {
     PlanDto getPlanDetail(Long planId);
 
     // 진행 중인 약속 상세 정보
-    EndPlanDto getEndPlanDetail(Long planId);
+    EndPlanDto getEndPlanDetail(Long planId, String userEmail);
 
     // 해당 날짜의 약속 리스트
     List<PlanListDto> getPlanList(String userEmail, LocalDate planDate);
@@ -32,9 +33,13 @@ public interface PlanService {
     // 모든 참가자가 도착한 경우 true 반환환
     boolean isAllMemberArrived(Long planId);
 
-
+    // 시간 차이 맘대로 가져오기
+    Duration getTimeDifference(LocalDate planDate, LocalTime planTime);
 
     //////////////// 중복 ///////////////////
+
+    // 약속 상태 변경 함수
+    void updatePlanStatus(Plan plan);
 
     // 약속 유효성 검사
     Plan getPlanById(Long planId);
@@ -44,6 +49,5 @@ public interface PlanService {
     long getTimeHoursDifference(LocalDate planDate, LocalTime planTime);
     // 분
     long getTimeMinutesDifference(LocalDate planDate, LocalTime planTime);
-
 
 }

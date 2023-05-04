@@ -19,9 +19,8 @@ public class EndPlanDto {
     private LocalTime planTime;
     private String location;
     private Integer find;
-    private Integer participantCount;
     private Integer status;
-    private List<MyEndPlanDto> myDetail;
+    private MyEndPlanDto myDetail;
     private List<EndPlanParticipantDto> EndPlanParticipantDto;
 
 }
