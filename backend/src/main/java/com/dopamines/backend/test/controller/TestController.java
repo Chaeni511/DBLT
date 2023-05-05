@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.dopamines.backend.test.dto.ObjectDto;
 import com.dopamines.backend.test.dto.TestDto;
 import com.dopamines.backend.test.service.TestService;
 import io.swagger.annotations.Api;
@@ -23,7 +24,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/test")
@@ -145,4 +149,27 @@ public class TestController {
             e.printStackTrace();
         }
     }
+
+    @GetMapping("/get")
+    public ObjectDto getObjectTest(){
+        ObjectDto objectDto = new ObjectDto(11L, "getObjectTest");
+
+        return objectDto;
+    }
+    @PostMapping("/post")
+    public Map<String, List<ObjectDto>> postObjectTest(String name){
+        if(name == null){
+            log.info("name이 null임");
+        } else {
+            log.info("name: " + name);
+        }
+
+        Map<String, List<ObjectDto>> res = new HashMap<>();
+        res.put("res", new ArrayList<ObjectDto>());
+        for(long i = 0; i < 10L; i++) {
+            res.get("res").add(new ObjectDto(i, name + i));
+        }
+        return res;
+    }
+
 }

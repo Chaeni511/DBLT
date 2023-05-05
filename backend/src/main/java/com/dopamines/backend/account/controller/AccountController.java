@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -27,9 +28,16 @@ public class AccountController {
 
     @PutMapping("/profileMessage")
     public ResponseEntity<Account> editprofileMessage(HttpServletRequest request, @RequestParam String profileMessage) {
-        String user = request.getRemoteUser();
-        log.info("profileMessage 찍는 user: " + user);
-        return ResponseEntity.ok(accountService.editProfileMessage(user, profileMessage));
+        String email = request.getRemoteUser();
+        log.info("profileMessage 찍는 user: " + email);
+        return ResponseEntity.ok(accountService.editProfileMessage(email, profileMessage));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<Account> editprofileMessage(HttpServletRequest request, @RequestParam MultipartFile file) {
+        String email = request.getRemoteUser();
+        log.info("profileMessage 찍는 user: " + email);
+        return ResponseEntity.ok(accountService.editProfile(email, file));
     }
 
     @PutMapping("/delete")

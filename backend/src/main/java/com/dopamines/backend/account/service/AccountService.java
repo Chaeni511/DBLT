@@ -2,14 +2,9 @@ package com.dopamines.backend.account.service;
 
 import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public interface AccountService {
     Account editNickname(String email, String nickname);
@@ -17,7 +12,11 @@ public interface AccountService {
 
     Account editProfileMessage(String email, String profileMessage);
 
+    Account editProfile(String email, MultipartFile file);
+
     void deleteAccount(String email);
 
     List<SearchResponseDto> searchNickname(String keyword);
+
+
 }
