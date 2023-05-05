@@ -51,4 +51,5 @@ public class AccountController {
     public ResponseEntity<List<SearchResponseDto>> searchNickname(@RequestParam String keyword){
         return ResponseEntity.ok(accountService.searchNickname(keyword));
     }
+
 }

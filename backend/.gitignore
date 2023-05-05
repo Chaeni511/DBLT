@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### Spring Security ####
-application-oauth.properties
+application-ftp.properties

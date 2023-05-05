@@ -1,17 +1,24 @@
 package com.dopamines.backend.account.service;
 
+
+import com.amazonaws.SdkClientException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.*;
 import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +29,16 @@ import java.util.Optional;
 @Service
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
+
+    @Value("${cloud.aws.credentials.accessKey}")
+    private String accessKey;
+    @Value("${cloud.aws.credentials.secretKey}")
+    private String secretKey;
+    @Value("${cloud.aws.s3.endpoint}")
+    private String endPoint;
+    @Value("${cloud.aws.region.static}")
+    private String regionName;
+
     @Override
     public Account editNickname(String email, String nickname) {
         log.info("AccountServiceImpl의 editNickname에서 찍는 nickname: " + nickname);
@@ -139,7 +156,7 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
-    private String fileToUrl(MultipartFile file) {
+    private String fileToUrl(MultipartFile profile) {
 
         // S3 client
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
@@ -191,7 +208,7 @@ public class AccountServiceImpl implements AccountService {
         } catch(SdkClientException e) {
             e.printStackTrace();
         }
-
+        return "sfd";
     }
 
 //    @PutMapping(value = "/profile",
