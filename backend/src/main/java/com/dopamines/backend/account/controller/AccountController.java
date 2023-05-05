@@ -1,22 +1,16 @@
 package com.dopamines.backend.account.controller;
 
-import com.dopamines.backend.account.dto.AccountRequestDto;
 import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.AccountService;
-import com.dopamines.backend.account.service.KakaoLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequestMapping("/account")
@@ -34,9 +28,16 @@ public class AccountController {
 
     @PutMapping("/profileMessage")
     public ResponseEntity<Account> editprofileMessage(HttpServletRequest request, @RequestParam String profileMessage) {
-        String user = request.getRemoteUser();
-        log.info("profileMessage 찍는 user: " + user);
-        return ResponseEntity.ok(accountService.editProfileMessage(user, profileMessage));
+        String email = request.getRemoteUser();
+        log.info("profileMessage 찍는 user: " + email);
+        return ResponseEntity.ok(accountService.editProfileMessage(email, profileMessage));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<Account> editprofileMessage(HttpServletRequest request, @RequestParam MultipartFile file) {
+        String email = request.getRemoteUser();
+        log.info("profileMessage 찍는 user: " + email);
+        return ResponseEntity.ok(accountService.editProfile(email, file));
     }
 
     @PutMapping("/delete")
