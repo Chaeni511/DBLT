@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountRequestDto {
-    private Boolean singup;
+    private Boolean signup;
     private String email;
     private String kakaoId;
     private String nickname;

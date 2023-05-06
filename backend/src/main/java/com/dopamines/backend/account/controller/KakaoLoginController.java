@@ -7,6 +7,7 @@ import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.service.KakaoLoginService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import static com.dopamines.backend.security.JwtConstants.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-
+@Slf4j
 @RequestMapping("/account")
 @RequiredArgsConstructor
 @RestController
@@ -53,18 +54,21 @@ public class KakaoLoginController {
         System.out.println("KakaoLoginController에서 찍는 optional: " + optional);
 
         Boolean signup;
+
         // 회원이 아니면 회원가입
         if (optional.isEmpty()) {
            signup = false;
+            log.info("signup: " +signup);
 
             // default 프사 이미지 url 생기면 판별 후 profile에 url 추가 필수!!
 //            signup(accountRequestDto);
         } else {
             signup = true;
+            log.info("signup: " +signup);
         }
 
         AccountRequestDto accountRequestDto = new AccountRequestDto(signup, email, kakaoId.toString(), nickname);
-
+        log.info("accountRequestDto: " + accountRequestDto.getSingup());
         return ResponseEntity.ok(accountRequestDto);
 
     }
