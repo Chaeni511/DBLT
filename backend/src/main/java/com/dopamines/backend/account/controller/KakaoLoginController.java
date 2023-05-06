@@ -68,7 +68,7 @@ public class KakaoLoginController {
         }
 
         AccountRequestDto accountRequestDto = new AccountRequestDto(signup, email, kakaoId.toString(), nickname);
-        log.info("accountRequestDto: " + accountRequestDto.getSingup());
+        log.info("accountRequestDto: " + accountRequestDto.getSignup());
         return ResponseEntity.ok(accountRequestDto);
 
     }
