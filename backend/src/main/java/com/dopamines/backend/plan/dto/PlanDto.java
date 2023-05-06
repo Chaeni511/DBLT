@@ -17,7 +17,7 @@ public class PlanDto {
     private LocalDate planDate;
     private LocalTime planTime;
     private String location;
-    private Integer find;
+    private Integer cost;
     private Long diffDay;
     private Integer participantCount;
     private Integer status;

@@ -10,7 +10,6 @@ import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -56,7 +54,7 @@ public class PlanController {
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
             @RequestParam("location") String location,
-            @RequestParam("find") Integer find,
+            @RequestParam("cost") Integer cost,
             @RequestParam(value = "participantIds", required = false) String participantIdsStr // 입력값: 1,2,3,4
     ) {
         // 헤더에서 유저 이메일 가져옴
@@ -67,7 +65,7 @@ public class PlanController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Long planId = planService.createPlan(userEmail, title, planDate, planTime, location, find, participantIdsStr);
+        Long planId = planService.createPlan(userEmail, title, planDate, planTime, location, cost, participantIdsStr);
         log.info("약속이 생성되었습니다.");
         return ResponseEntity.ok(planId);
     }
@@ -83,7 +81,7 @@ public class PlanController {
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
             @RequestParam("location") String location,
-            @RequestParam("find") Integer find,
+            @RequestParam("cost") Integer cost,
             @RequestParam(value = "participantIds", required = false) String participantIdsStr // 입력값: 1,2,3,4
     ) {
 
@@ -113,7 +111,7 @@ public class PlanController {
                 log.warn("수정 실패: 약속 시간은 현재 시간 이후 시간으로 변경할 수 있습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-            planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, find, participantIdsStr);
+            planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, cost, participantIdsStr);
             log.info("planId {}이고 title '{}'인 약속이 방장 {}에 의해 수정되었습니다.", planId, title, account.getNickname());
 
             return ResponseEntity.ok().build();

@@ -31,8 +31,8 @@ public class Plan {
     @Column(name="location")
     private String location;
 
-    @Column(name = "find")
-    private Integer find;
+    @Column(name = "cost")
+    private Integer cost;
 
     @Column(name="status")
     private Integer status; // 0: 기본, 1: 위치공유(30분 전~약속시간), 2: 게임 활성화(약속시간~1시간 후), 3: 약속 종료(1시간 이후)

@@ -47,10 +47,10 @@ dependencies {
 	// GSON
 	implementation 'com.google.code.gson:gson:2.9.0'
 
-	//json 파싱관련
+	// json 파싱관련
 	implementation 'org.json:json:20201115'
 
-	//네이버 클라우드
+	// 네이버 클라우드
 	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')
 	implementation 'com.amazonaws:aws-java-sdk-s3'
 

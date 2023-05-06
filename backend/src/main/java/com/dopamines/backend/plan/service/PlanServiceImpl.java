@@ -39,7 +39,7 @@ public class PlanServiceImpl implements PlanService {
 
     // 약속 생성
     @Override
-    public Long createPlan(String userEmail, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr) {
+    public Long createPlan(String userEmail, String title, LocalDate planDate, LocalTime planTime, String location, Integer cost, String participantIdsStr) {
 
         Account account = userService.findByEmail(userEmail);
 
@@ -49,7 +49,7 @@ public class PlanServiceImpl implements PlanService {
                         .planDate(planDate)
                         .planTime(planTime)
                         .location(location)
-                        .find(find)
+                        .cost(cost)
                         .status(0)
                         .build()
         );
@@ -75,7 +75,7 @@ public class PlanServiceImpl implements PlanService {
 
     // 약속 수정
     @Override
-    public void updatePlanAndParticipant(Plan plan, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String newParticipantIdsStr) {
+    public void updatePlanAndParticipant(Plan plan, String title, LocalDate planDate, LocalTime planTime, String location, Integer cost, String newParticipantIdsStr) {
 
         // 참가자 수정
         participantService.updateParticipant(plan, newParticipantIdsStr);
@@ -85,7 +85,7 @@ public class PlanServiceImpl implements PlanService {
         plan.setPlanDate(planDate);
         plan.setPlanTime(planTime);
         plan.setLocation(location);
-        plan.setFind(find);
+        plan.setCost(cost);
 
         planRepository.save(plan);
     }
@@ -112,7 +112,7 @@ public class PlanServiceImpl implements PlanService {
         planDto.setTitle(plan.getTitle());
         planDto.setPlanDate(plan.getPlanDate());
         planDto.setPlanTime(plan.getPlanTime());
-        planDto.setFind(plan.getFind());
+        planDto.setCost(plan.getCost());
         planDto.setLocation(plan.getLocation());
         planDto.setStatus(plan.getStatus());
 
@@ -166,7 +166,7 @@ public class PlanServiceImpl implements PlanService {
         endPlanDto.setPlanDate(plan.getPlanDate());
         endPlanDto.setPlanTime(plan.getPlanTime());
         endPlanDto.setLocation(plan.getLocation());
-        endPlanDto.setFind(plan.getFind());
+        endPlanDto.setCost(plan.getCost());
         endPlanDto.setStatus(plan.getStatus());
 
         // 참가자 리스트 정보
