@@ -50,5 +50,4 @@ public interface PlanService {
 
     // 시간 차이 맘대로 가져오기 (자세한 시간 차이를 계산)
     Duration getTimeDifference(LocalDate planDate, LocalTime planTime);
-
 }

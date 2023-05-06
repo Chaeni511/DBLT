@@ -290,9 +290,6 @@ public class PlanServiceImpl implements PlanService {
         return true;
     }
 
-
-
-
     /////////////////////////////// 중복 사용 함수 ////////////////////////////////////////////
 
     // 약속 시간 유효성 검사
