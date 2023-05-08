@@ -33,13 +33,6 @@ public class AccountController {
         return ResponseEntity.ok(accountService.editProfileMessage(email, profileMessage));
     }
 
-    @PutMapping("/profile")
-    public ResponseEntity<Account> editprofileMessage(HttpServletRequest request, @RequestParam MultipartFile file) {
-        String email = request.getRemoteUser();
-        log.info("profileMessage 찍는 user: " + email);
-        return ResponseEntity.ok(accountService.editProfile(email, file));
-    }
-
     @PutMapping("/delete")
     public ResponseEntity deleteAccount(HttpServletRequest request){
         String email = request.getRemoteUser();
