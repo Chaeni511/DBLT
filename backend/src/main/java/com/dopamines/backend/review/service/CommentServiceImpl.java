@@ -7,7 +7,7 @@ import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.PlanService;
-import com.dopamines.backend.review.dto.Commentdto;
+import com.dopamines.backend.review.dto.CommentDto;
 import com.dopamines.backend.review.entity.Comment;
 import com.dopamines.backend.review.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,16 +54,16 @@ public class CommentServiceImpl implements CommentService {
 
     // 해당 날짜의 약속 리스트
     @Override
-    public Map<LocalDate, List<Commentdto>> getCommentList(Long planId) {
+    public Map<LocalDate, List<CommentDto>> getCommentList(Long planId) {
         Plan plan = planService.getPlanById(planId);
         List<Comment> comments = commentRepository.findByPlan(plan);
 
         // 순서가 보장되는 Map
-        Map<LocalDate, List<Commentdto>> commentMap = new LinkedHashMap<>();
+        Map<LocalDate, List<CommentDto>> commentMap = new LinkedHashMap<>();
 
         for (Comment comment : comments) {
             LocalDate date = comment.getUpdateTime().toLocalDate();
-            Commentdto commentdto = new Commentdto(
+            CommentDto commentDto = new CommentDto(
                     comment.getCommentId(),
                     comment.getParticipant().getAccount().getNickname(),
                     comment.getParticipant().getAccount().getProfile(),
@@ -72,10 +72,10 @@ public class CommentServiceImpl implements CommentService {
             );
 
             if (commentMap.containsKey(date)) {
-                commentMap.get(date).add(commentdto);
+                commentMap.get(date).add(commentDto);
             } else {
-                List<Commentdto> commentList = new ArrayList<>();
-                commentList.add(commentdto);
+                List<CommentDto> commentList = new ArrayList<>();
+                commentList.add(commentDto);
                 commentMap.put(date, commentList);
             }
         }

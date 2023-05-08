@@ -1,6 +1,6 @@
 package com.dopamines.backend.review.service;
 
-import com.dopamines.backend.review.dto.Commentdto;
+import com.dopamines.backend.review.dto.CommentDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +21,6 @@ public interface CommentService {
     void deleteComment(Long commentId);
 
     // 댓글 리스트
-    Map<LocalDate, List<Commentdto>> getCommentList(Long planId);
+    Map<LocalDate, List<CommentDto>> getCommentList(Long planId);
 
 }

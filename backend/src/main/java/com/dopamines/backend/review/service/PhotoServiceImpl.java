@@ -1,7 +1,9 @@
 package com.dopamines.backend.review.service;
 
+import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.service.PlanService;
+import com.dopamines.backend.review.dto.PhotoDto;
 import com.dopamines.backend.review.entity.Comment;
 import com.dopamines.backend.review.entity.Photo;
 import com.dopamines.backend.review.repository.PhotoRepository;
@@ -11,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -55,4 +60,11 @@ public class PhotoServiceImpl implements PhotoService {
         return photo.isPresent();
     }
 
+
+    // 월별 사진 리스트를 가져오는 함수
+    public List<PhotoDto> getPhotosByMonthAndUser(String userEmail, LocalDate month) {
+        List<PhotoDto> photoDtoList = new ArrayList<>();
+
+        return photoDtoList;
+    }
 }

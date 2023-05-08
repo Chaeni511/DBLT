@@ -1,7 +1,7 @@
 package com.dopamines.backend.review.controller;
 
 import com.dopamines.backend.plan.service.PlanService;
-import com.dopamines.backend.review.dto.Commentdto;
+import com.dopamines.backend.review.dto.CommentDto;
 import com.dopamines.backend.review.service.CommentService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -100,12 +100,12 @@ public class CommentController {
 
     @GetMapping("/list")
     @Operation(summary = "댓글 리스트 api 입니다.", description = "planId를 입력하여 해당 약속의 댓글을 모두 불러옵니다.")
-    public ResponseEntity<Map<LocalDate, List<Commentdto>>>  getCommentList(
+    public ResponseEntity<Map<LocalDate, List<CommentDto>>>  getCommentList(
             HttpServletRequest request,
             @RequestParam("planId") Long planId
     ){
 
-        Map<LocalDate, List<Commentdto>> commentMap = commentService.getCommentList(planId);
+        Map<LocalDate, List<CommentDto>> commentMap = commentService.getCommentList(planId);
         return ResponseEntity.ok(commentMap);
     }
 }
