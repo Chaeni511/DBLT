@@ -30,14 +30,14 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
 
-    @Value("${cloud.aws.credentials.accessKey}")
-    private String accessKey;
-    @Value("${cloud.aws.credentials.secretKey}")
-    private String secretKey;
-    @Value("${cloud.aws.s3.endpoint}")
-    private String endPoint;
-    @Value("${cloud.aws.region.static}")
-    private String regionName;
+//    @Value("${cloud.aws.credentials.accessKey}")
+//    private String accessKey;
+//    @Value("${cloud.aws.credentials.secretKey}")
+//    private String secretKey;
+//    @Value("${cloud.aws.s3.endpoint}")
+//    private String endPoint;
+//    @Value("${cloud.aws.region.static}")
+//    private String regionName;
 
     @Override
     public Account editNickname(String email, String nickname) {
@@ -68,7 +68,7 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    @Override
+//    @Override
     public Account editProfileMessage(String email, String profileMessage) {
         log.info("AccountServiceImpl의 에서 찍는 profileMessage: " + profileMessage);
 
@@ -133,83 +133,83 @@ public class AccountServiceImpl implements AccountService {
         return result;
     }
 
-    @Override
-    public Account editProfile(String email, MultipartFile file) {
-        log.info("AccountServiceImpl의 에서 찍는 file: " + file);
+//    @Override
+//    public Account editProfile(String email, MultipartFile file) {
+//        log.info("AccountServiceImpl의 에서 찍는 file: " + file);
+//
+//        Optional<Account> optional = accountRepository.findByEmail(email);
+//        Account account = null;
+//
+//        if(optional.isEmpty()) {
+//            account = new Account();
+//            log.info("AccountServiceImpl의 profileMessage에서");
+//
+//        }else {
+//            // 받아 온 파일을 naver cloud에 저장 후 url로 반환
+//
+//            String profile = fileToUrl(file);
+//            account = optional.get();
+//            account.setProfile(profile);
+//            accountRepository.save(account);
+//        }
+//
+//        return account;
+//    }
 
-        Optional<Account> optional = accountRepository.findByEmail(email);
-        Account account = null;
-
-        if(optional.isEmpty()) {
-            account = new Account();
-            log.info("AccountServiceImpl의 profileMessage에서");
-
-        }else {
-            // 받아 온 파일을 naver cloud에 저장 후 url로 반환
-
-            String profile = fileToUrl(file);
-            account = optional.get();
-            account.setProfile(profile);
-            accountRepository.save(account);
-        }
-
-        return account;
-    }
-
-    private String fileToUrl(MultipartFile profile) {
-
-        // S3 client
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .build();
-
-        String bucketName = "sample-bucket";
-        String objectName = "sample-large-object";
-
-        File file = new File("/tmp/sample.file");
-        long contentLength = file.length();
-        long partSize = 10 * 1024 * 1024;
-
-        try {
-            // initialize and get upload ID
-            InitiateMultipartUploadResult initiateMultipartUploadResult = s3.initiateMultipartUpload(new InitiateMultipartUploadRequest(bucketName, objectName));
-            String uploadId = initiateMultipartUploadResult.getUploadId();
-
-            // upload parts
-            List<PartETag> partETagList = new ArrayList<PartETag>();
-
-            long fileOffset = 0;
-            for (int i = 1; fileOffset < contentLength; i++) {
-                partSize = Math.min(partSize, (contentLength - fileOffset));
-
-                UploadPartRequest uploadPartRequest = new UploadPartRequest()
-                        .withBucketName(bucketName)
-                        .withKey(objectName)
-                        .withUploadId(uploadId)
-                        .withPartNumber(i)
-                        .withFile(file)
-                        .withFileOffset(fileOffset)
-                        .withPartSize(partSize);
-
-                UploadPartResult uploadPartResult = s3.uploadPart(uploadPartRequest);
-                partETagList.add(uploadPartResult.getPartETag());
-
-                fileOffset += partSize;
-            }
-
-            // abort
-            // s3.abortMultipartUpload(new AbortMultipartUploadRequest(bucketName, objectName, uploadId));
-
-            // complete
-            CompleteMultipartUploadResult completeMultipartUploadResult = s3.completeMultipartUpload(new CompleteMultipartUploadRequest(bucketName, objectName, uploadId, partETagList));
-        } catch (AmazonS3Exception e) {
-            e.printStackTrace();
-        } catch(SdkClientException e) {
-            e.printStackTrace();
-        }
-        return "sfd";
-    }
+//    private String fileToUrl(MultipartFile profile) {
+//
+//        // S3 client
+//        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+//                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+//                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+//                .build();
+//
+//        String bucketName = "sample-bucket";
+//        String objectName = "sample-large-object";
+//
+//        File file = new File("/tmp/sample.file");
+//        long contentLength = file.length();
+//        long partSize = 10 * 1024 * 1024;
+//
+//        try {
+//            // initialize and get upload ID
+//            InitiateMultipartUploadResult initiateMultipartUploadResult = s3.initiateMultipartUpload(new InitiateMultipartUploadRequest(bucketName, objectName));
+//            String uploadId = initiateMultipartUploadResult.getUploadId();
+//
+//            // upload parts
+//            List<PartETag> partETagList = new ArrayList<PartETag>();
+//
+//            long fileOffset = 0;
+//            for (int i = 1; fileOffset < contentLength; i++) {
+//                partSize = Math.min(partSize, (contentLength - fileOffset));
+//
+//                UploadPartRequest uploadPartRequest = new UploadPartRequest()
+//                        .withBucketName(bucketName)
+//                        .withKey(objectName)
+//                        .withUploadId(uploadId)
+//                        .withPartNumber(i)
+//                        .withFile(file)
+//                        .withFileOffset(fileOffset)
+//                        .withPartSize(partSize);
+//
+//                UploadPartResult uploadPartResult = s3.uploadPart(uploadPartRequest);
+//                partETagList.add(uploadPartResult.getPartETag());
+//
+//                fileOffset += partSize;
+//            }
+//
+//            // abort
+//            // s3.abortMultipartUpload(new AbortMultipartUploadRequest(bucketName, objectName, uploadId));
+//
+//            // complete
+//            CompleteMultipartUploadResult completeMultipartUploadResult = s3.completeMultipartUpload(new CompleteMultipartUploadRequest(bucketName, objectName, uploadId, partETagList));
+//        } catch (AmazonS3Exception e) {
+//            e.printStackTrace();
+//        } catch(SdkClientException e) {
+//            e.printStackTrace();
+//        }
+//        return "sfd";
+//    }
 
 //    @PutMapping(value = "/profile",
 //            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)

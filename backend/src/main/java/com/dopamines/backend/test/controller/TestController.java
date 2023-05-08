@@ -35,14 +35,14 @@ import java.util.Map;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Api(value = "test", description = "테스트 컨트롤러입니다.")
 public class TestController {
-    @Value("${cloud.aws.credentials.accessKey}")
-    private String accessKey;
-    @Value("${cloud.aws.credentials.secretKey}")
-    private String secretKey;
-    @Value("${cloud.aws.s3.endpoint}")
-    private String endPoint;
-    @Value("${cloud.aws.region.static}")
-    private String regionName;
+//    @Value("${cloud.aws.credentials.accessKey}")
+//    private String accessKey;
+//    @Value("${cloud.aws.credentials.secretKey}")
+//    private String secretKey;
+//    @Value("${cloud.aws.s3.endpoint}")
+//    private String endPoint;
+//    @Value("${cloud.aws.region.static}")
+//    private String regionName;
 
     private Logger log = LoggerFactory.getLogger(TestController.class);
 
@@ -79,97 +79,97 @@ public class TestController {
     public List<TestDto> getTest(){
         return teatservice.getCustom("안녕");
     }
-
-    @GetMapping("/ftp")
-    public List<Bucket> getBucketList(){
+//
+//    @GetMapping("/ftp")
+//    public List<Bucket> getBucketList(){
 
 // S3 client
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .build();
-        log.info("endPoint: "+ endPoint.toString() + ", accessKey: "+ accessKey + ", secretKey: "+ secretKey);
-        log.info("TestController의 getBucketList에서 찍는 s3: " + s3);
-
-        try {
-            List<Bucket> buckets = s3.listBuckets();
-            log.info("TestController의 getBucketList에서 찍는 buckets: " + buckets);
-
-            System.out.println("Bucket List: ");
-            for (Bucket bucket : buckets) {
-                System.out.println("    name=" + bucket.getName() + ", creation_date=" + bucket.getCreationDate() + ", owner=" + bucket.getOwner().getId());
-            }
-            return buckets;
-
-        } catch (AmazonS3Exception e) {
-            e.printStackTrace();
-        } catch(SdkClientException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @PostMapping("/upload")
-    public void uploadFile(){
-        // S3 client
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .build();
-
-        String bucketName = "dlt";
-
-// create folder
-        String folderName = "test/";
-
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(0L);
-        objectMetadata.setContentType("application/x-directory");
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName, new ByteArrayInputStream(new byte[0]), objectMetadata);
-
-        try {
-            s3.putObject(putObjectRequest);
-            System.out.format("Folder %s has been created.\n", folderName);
-        } catch (AmazonS3Exception e) {
-            e.printStackTrace();
-        } catch(SdkClientException e) {
-            e.printStackTrace();
-        }
-
-// upload local file
-        String objectName = "sample-object";
-        String filePath = "/Users/ichaeeun/Downloads/198722804_1_1663929902_w180.jpg";
-
-        try {
-            s3.putObject(bucketName, objectName, new File(filePath));
-            System.out.format("Object %s has been created.\n", objectName);
-        } catch (AmazonS3Exception e) {
-            e.printStackTrace();
-        } catch(SdkClientException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @GetMapping("/get")
-    public ObjectDto getObjectTest(){
-        ObjectDto objectDto = new ObjectDto(11L, "getObjectTest");
-
-        return objectDto;
-    }
-    @PostMapping("/post")
-    public Map<String, List<ObjectDto>> postObjectTest(String name){
-        if(name == null){
-            log.info("name이 null임");
-        } else {
-            log.info("name: " + name);
-        }
-
-        Map<String, List<ObjectDto>> res = new HashMap<>();
-        res.put("res", new ArrayList<ObjectDto>());
-        for(long i = 0; i < 10L; i++) {
-            res.get("res").add(new ObjectDto(i, name + i));
-        }
-        return res;
-    }
+//        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+//                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+//                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+//                .build();
+//        log.info("endPoint: "+ endPoint.toString() + ", accessKey: "+ accessKey + ", secretKey: "+ secretKey);
+//        log.info("TestController의 getBucketList에서 찍는 s3: " + s3);
+//
+//        try {
+//            List<Bucket> buckets = s3.listBuckets();
+//            log.info("TestController의 getBucketList에서 찍는 buckets: " + buckets);
+//
+//            System.out.println("Bucket List: ");
+//            for (Bucket bucket : buckets) {
+//                System.out.println("    name=" + bucket.getName() + ", creation_date=" + bucket.getCreationDate() + ", owner=" + bucket.getOwner().getId());
+//            }
+//            return buckets;
+//
+//        } catch (AmazonS3Exception e) {
+//            e.printStackTrace();
+//        } catch(SdkClientException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//
+//    @PostMapping("/upload")
+//    public void uploadFile(){
+//        // S3 client
+//        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+//                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+//                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+//                .build();
+//
+//        String bucketName = "dlt";
+//
+//// create folder
+//        String folderName = "test/";
+//
+//        ObjectMetadata objectMetadata = new ObjectMetadata();
+//        objectMetadata.setContentLength(0L);
+//        objectMetadata.setContentType("application/x-directory");
+//        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName, new ByteArrayInputStream(new byte[0]), objectMetadata);
+//
+//        try {
+//            s3.putObject(putObjectRequest);
+//            System.out.format("Folder %s has been created.\n", folderName);
+//        } catch (AmazonS3Exception e) {
+//            e.printStackTrace();
+//        } catch(SdkClientException e) {
+//            e.printStackTrace();
+//        }
+//
+//// upload local file
+//        String objectName = "sample-object";
+//        String filePath = "/Users/ichaeeun/Downloads/198722804_1_1663929902_w180.jpg";
+//
+//        try {
+//            s3.putObject(bucketName, objectName, new File(filePath));
+//            System.out.format("Object %s has been created.\n", objectName);
+//        } catch (AmazonS3Exception e) {
+//            e.printStackTrace();
+//        } catch(SdkClientException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    @GetMapping("/get")
+//    public ObjectDto getObjectTest(){
+//        ObjectDto objectDto = new ObjectDto(11L, "getObjectTest");
+//
+//        return objectDto;
+//    }
+//    @PostMapping("/post")
+//    public Map<String, List<ObjectDto>> postObjectTest(String name){
+//        if(name == null){
+//            log.info("name이 null임");
+//        } else {
+//            log.info("name: " + name);
+//        }
+//
+//        Map<String, List<ObjectDto>> res = new HashMap<>();
+//        res.put("res", new ArrayList<ObjectDto>());
+//        for(long i = 0; i < 10L; i++) {
+//            res.get("res").add(new ObjectDto(i, name + i));
+//        }
+//        return res;
+//    }
 
 }
