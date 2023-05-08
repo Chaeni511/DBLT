@@ -2,6 +2,7 @@ package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
+import com.dopamines.backend.account.service.UserService;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
@@ -11,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,7 +26,6 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Autowired
     private AccountRepository accountRepository;
-
 
     // 참가자 생성
     @Override
@@ -104,7 +101,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     // 방장 인지 확인
     @Override
-    public boolean findIsHostByPlanAndUser(Plan plan, Account account) {
+    public Boolean findIsHostByPlanAndUser(Plan plan, Account account) {
         Participant participant = participantRepository.findByPlanAndAccount(plan, account)
                 .orElseThrow(() -> new IllegalArgumentException("참가자가 아닙니다."));
 

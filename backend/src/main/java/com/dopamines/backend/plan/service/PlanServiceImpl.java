@@ -18,6 +18,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -329,7 +330,6 @@ public class PlanServiceImpl implements PlanService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
     }
 
-
     // 약속 상태 변경 함수
     @Override
     public void updatePlanStatus(Plan plan) {
@@ -364,6 +364,16 @@ public class PlanServiceImpl implements PlanService {
         }
 
         return designation;
+    }
+
+    // 내 약속이니?
+    @Override
+    public Boolean isMyPlan(String userEmail, Long planId) {
+        Account account = userService.findByEmail(userEmail);
+        Plan plan = getPlanById(planId);
+        Optional<Participant> participant = participantRepository.findByPlanAndAccount(plan, account);
+
+        return participant.isPresent();
     }
 
 

@@ -2,7 +2,6 @@ package com.dopamines.backend.review.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.UserService;
-import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
@@ -131,7 +130,7 @@ public class CommentServiceImpl implements CommentService {
 
     // 내 댓글이니? (권한 확인)
     @Override
-    public boolean isMyComment(String userEmail, Long commentId) {
+    public Boolean isMyComment(String userEmail, Long commentId) {
         Comment comment = getCommentById(commentId);
         return comment.getParticipant().getAccount().getEmail().equals(userEmail);
     }

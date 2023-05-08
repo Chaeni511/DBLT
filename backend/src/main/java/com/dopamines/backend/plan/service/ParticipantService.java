@@ -12,5 +12,6 @@ public interface ParticipantService {
     void updateParticipant(Plan plan, String newParticipantIdsStr);
 
     // 방장 인지 확인
-    boolean findIsHostByPlanAndUser(Plan plan, Account account);
+    Boolean findIsHostByPlanAndUser(Plan plan, Account account);
+
 }

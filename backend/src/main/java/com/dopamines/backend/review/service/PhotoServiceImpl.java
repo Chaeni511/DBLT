@@ -2,6 +2,7 @@ package com.dopamines.backend.review.service;
 
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.service.PlanService;
+import com.dopamines.backend.review.entity.Comment;
 import com.dopamines.backend.review.entity.Photo;
 import com.dopamines.backend.review.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 
 @Slf4j
@@ -42,6 +44,15 @@ public class PhotoServiceImpl implements PhotoService {
 
         return photo.getPhotoId();
 
+    }
+
+    // 사진 있는지 확인
+    @Override
+    public boolean isPhotoRegistered(Long planId) {
+        Plan plan = planService.getPlanById(planId);
+
+        Optional<Photo> photo = photoRepository.findByPlan(plan);
+        return photo.isPresent();
     }
 
 }

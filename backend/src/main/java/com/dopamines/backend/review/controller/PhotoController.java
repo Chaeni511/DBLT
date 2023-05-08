@@ -1,6 +1,9 @@
 package com.dopamines.backend.review.controller;
 
 import com.dopamines.backend.image.service.ImageService;
+import com.dopamines.backend.plan.service.ParticipantService;
+import com.dopamines.backend.plan.service.PlanService;
+import com.dopamines.backend.review.entity.Photo;
 import com.dopamines.backend.review.service.PhotoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +32,12 @@ public class PhotoController {
     @Autowired
     PhotoService photoService;
 
+    @Autowired
+    ParticipantService participantService;
+
+    @Autowired
+    PlanService planService;
+
 
     @PostMapping("/register")
     @ApiOperation(value = "인증 사진을 등록하는 api입니다.", notes = "planId와 pictureUrl 활용하여 결과 값으로 photoId를 반환합니다.")
@@ -38,15 +47,28 @@ public class PhotoController {
             @RequestParam("pictureUrl") MultipartFile file
     ) {
 
+        String userEmail = request.getRemoteUser();
+
+        // 참가자 인지 확인
+        if (!planService.isMyPlan(userEmail, planId)) {
+            log.info("참가자가 아닙니다. userEmail: {}, planId: {}", userEmail, planId);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        // 사진있는지 확인
+        if (photoService.isPhotoRegistered(planId)) {
+            log.info("이미 등록된 사진입니다. planId: {}", planId);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         // 사진 업로드
         String url = null;
         try {
             url = imageService.saveFile(file, "photo");
         } catch (IOException e) {
-            log.info("사진 업로드 실패");
+            log.error("사진 업로드 실패", e);
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
         }
-
 
         Long photoId = photoService.savePicture(planId, url);
 
