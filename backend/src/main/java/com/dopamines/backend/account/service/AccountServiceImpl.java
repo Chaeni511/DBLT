@@ -164,10 +164,10 @@ public class AccountServiceImpl implements AccountService {
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
                 .build();
 
-        String bucketName = "sample-bucket";
-        String objectName = "sample-large-object";
+        String bucketName = "dlt";
+        String objectName = profile.getOriginalFilename();
 
-        File file = new File("/tmp/sample.file");
+        File file = new File(bucketName+"/"+objectName);
         long contentLength = file.length();
         long partSize = 10 * 1024 * 1024;
 
@@ -203,26 +203,28 @@ public class AccountServiceImpl implements AccountService {
 
             // complete
             CompleteMultipartUploadResult completeMultipartUploadResult = s3.completeMultipartUpload(new CompleteMultipartUploadRequest(bucketName, objectName, uploadId, partETagList));
+            String userId = "test-user-02";
+            try {
+                // get the current ACL
+                AccessControlList accessControlList = s3.getObjectAcl(bucketName, objectName);
+
+                // add read permission to user by ID
+                accessControlList.grantPermission(new CanonicalGrantee(userId), Permission.Read);
+
+                s3.setObjectAcl(bucketName, objectName, accessControlList);
+
+                return endPoint+"/"+bucketName+"/"+objectName;
+            } catch (AmazonS3Exception e) {
+                e.printStackTrace();
+            } catch(SdkClientException e) {
+                e.printStackTrace();
+            }
+
         } catch (AmazonS3Exception e) {
             e.printStackTrace();
         } catch(SdkClientException e) {
             e.printStackTrace();
         }
-        return "sfd";
-    }
+        return null;
+    }}
 
-//    @PutMapping(value = "/profile",
-//            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Map<String, Object>> putMyProfileImg(
-//            @RequestPart(value = "file", required = false) MultipartFile file,
-//            @RequestPart(value = "nickname") String nickname,
-//            @RequestPart(value = "phone", required = false) String phone,
-//            @RequestHeader HttpHeaders requestHeader) {
-//        log.info("테스트 닉네임: " + nickname);
-//        Long userId = tokenUtils.getUserIdFromHeader(requestHeader);
-//        userService.putMyProfileImg(userId, file, nickname, phone);
-//        UserInventoryResponse result = userService.getProfile(userId);
-//        Map<String, Object> resMap = statusCodeGeneratorUtils.checkResultByObject(result);
-//        return ResponseEntity.ok().body(resMap);
-//    }
-}
