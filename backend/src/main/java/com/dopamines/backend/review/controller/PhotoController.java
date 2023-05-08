@@ -1,10 +1,7 @@
 package com.dopamines.backend.review.controller;
 
-import com.dopamines.backend.image.service.FileService;
-import com.dopamines.backend.image.service.FileServiceImpl;
-import com.dopamines.backend.review.entity.Photo;
+import com.dopamines.backend.image.service.ImageService;
 import com.dopamines.backend.review.service.PhotoService;
-import com.dopamines.backend.review.service.PhotoServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -27,37 +24,34 @@ import java.io.IOException;
 public class PhotoController {
 
     @Autowired
-    FileService fileService;
+    ImageService imageService;
 
     @Autowired
     PhotoService photoService;
 
 
-    @PostMapping("/registerPicture")
+    @PostMapping("/register")
     @ApiOperation(value = "인증 사진을 등록하는 api입니다.", notes = "planId와 pictureUrl 활용하여 결과 값으로 photoId를 반환합니다.")
     public ResponseEntity<Long> savePicture(
             HttpServletRequest request,
             @RequestParam("planId") Long planId,
             @RequestParam("pictureUrl") MultipartFile file
     ) {
+
         // 사진 업로드
         String url = null;
         try {
-            url = fileService.saveFile(file, "photo");
+            url = imageService.saveFile(file, "photo");
         } catch (IOException e) {
             log.info("사진 업로드 실패");
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
         }
 
 
-        Long photoId = photoService.savePicture(
-                Photo.builder()
-                        .photo(url)
-                        .build()
-        );
+        Long photoId = photoService.savePicture(planId, url);
+
         return ResponseEntity.ok(photoId);
     }
-
 
 
 }

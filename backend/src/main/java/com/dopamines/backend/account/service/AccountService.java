@@ -10,9 +10,13 @@ public interface AccountService {
     Account editNickname(String email, String nickname);
 //    Optional<Account> editNickname(String nickname);
 
+<<<<<<< HEAD
 //    Account editProfileMessage(String email, String profileMessage);
 //
 //    Account editProfile(String email, MultipartFile file);
+=======
+    Account editProfileMessage(String email, String profileMessage);
+>>>>>>> a2b468080d280e3172f54b15974c27c75a71c400
 
     void deleteAccount(String email);
 

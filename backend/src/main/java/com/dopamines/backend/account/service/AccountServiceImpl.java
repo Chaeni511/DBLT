@@ -1,24 +1,14 @@
 package com.dopamines.backend.account.service;
 
 
-import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.*;
 import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +20,7 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
 
+<<<<<<< HEAD
 //    @Value("${cloud.aws.credentials.accessKey}")
 //    private String accessKey;
 //    @Value("${cloud.aws.credentials.secretKey}")
@@ -38,6 +29,8 @@ public class AccountServiceImpl implements AccountService {
 //    private String endPoint;
 //    @Value("${cloud.aws.region.static}")
 //    private String regionName;
+=======
+>>>>>>> a2b468080d280e3172f54b15974c27c75a71c400
 
     @Override
     public Account editNickname(String email, String nickname) {
@@ -133,6 +126,7 @@ public class AccountServiceImpl implements AccountService {
         return result;
     }
 
+<<<<<<< HEAD
 //    @Override
 //    public Account editProfile(String email, MultipartFile file) {
 //        log.info("AccountServiceImpl의 에서 찍는 file: " + file);
@@ -225,4 +219,7 @@ public class AccountServiceImpl implements AccountService {
 //        Map<String, Object> resMap = statusCodeGeneratorUtils.checkResultByObject(result);
 //        return ResponseEntity.ok().body(resMap);
 //    }
+=======
+>>>>>>> a2b468080d280e3172f54b15974c27c75a71c400
 }
+

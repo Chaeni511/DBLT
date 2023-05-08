@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -26,6 +27,9 @@ public class Photo {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Plan plan;
 
-    @Column(name = "photo", length = 2500)
-    String photo;
+    @Column(name = "photo_url", length = 2500)
+    private String photoUrl;
+
+    @Column(name = "register_dt")
+    private LocalDateTime registerTime;
 }

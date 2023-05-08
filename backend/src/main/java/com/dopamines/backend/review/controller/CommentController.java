@@ -32,7 +32,7 @@ public class CommentController {
     PlanService planService;
 
 
-    @PostMapping("/create")
+    @PostMapping("/register")
     @Operation(summary = "댓글 등록 api 입니다.", description = "planId와 content를 입력하여 댓글을 등록합니다. 댓글이 생성되면 commentId를 Long 형태로 반환합니다.")
     public ResponseEntity<Long> createComment(
             HttpServletRequest request,

@@ -7,6 +7,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.repository.AccountRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +23,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 
+@Slf4j
 @Service
-public class FileServiceImpl implements FileService {
+public class ImageServiceImpl implements ImageService {
 
     @Value("${naver.cloud.endpoint}")
     private String endPoint;
@@ -34,6 +39,10 @@ public class FileServiceImpl implements FileService {
     private String secretKey;
     private AmazonS3 s3;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+
     @PostConstruct
     public void initialize(){
         s3 = AmazonS3ClientBuilder.standard()
@@ -42,7 +51,7 @@ public class FileServiceImpl implements FileService {
                 .build();
     }
 
-    @Override
+
     public String saveFile(MultipartFile file,String folderName) throws IOException {
         // 원래 파일 이름 추출
         String origin_name = file.getOriginalFilename();
@@ -79,4 +88,23 @@ public class FileServiceImpl implements FileService {
         return Optional.empty();
     }
 
+    @Override
+    public Optional<Account> editProfile(String email, MultipartFile multipartFile) throws IOException {
+
+        String url=saveFile(multipartFile, "profile");
+
+        Optional<Account> optional = accountRepository.findByEmail(email);
+        Account account = null;
+        if(optional.isEmpty()) {
+            account = new Account();
+            log.info("ImageController의 editProfile에서 optional.isEmpty");
+            return null;
+        }else {
+            account = optional.get();
+            account.setProfile(url);
+
+            accountRepository.save(account);
+            return Optional.of(account);
+        }
+    }
 }

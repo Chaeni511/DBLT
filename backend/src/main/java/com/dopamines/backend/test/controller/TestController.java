@@ -1,15 +1,6 @@
 package com.dopamines.backend.test.controller;
 
-import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+
 import com.dopamines.backend.test.dto.ObjectDto;
 import com.dopamines.backend.test.dto.TestDto;
 import com.dopamines.backend.test.service.TestService;
@@ -18,12 +9,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +24,7 @@ import java.util.Map;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Api(value = "test", description = "테스트 컨트롤러입니다.")
 public class TestController {
+<<<<<<< HEAD
 //    @Value("${cloud.aws.credentials.accessKey}")
 //    private String accessKey;
 //    @Value("${cloud.aws.credentials.secretKey}")
@@ -43,6 +33,9 @@ public class TestController {
 //    private String endPoint;
 //    @Value("${cloud.aws.region.static}")
 //    private String regionName;
+=======
+
+>>>>>>> a2b468080d280e3172f54b15974c27c75a71c400
 
     private Logger log = LoggerFactory.getLogger(TestController.class);
 
@@ -79,6 +72,7 @@ public class TestController {
     public List<TestDto> getTest(){
         return teatservice.getCustom("안녕");
     }
+<<<<<<< HEAD
 //
 //    @GetMapping("/ftp")
 //    public List<Bucket> getBucketList(){
@@ -171,5 +165,29 @@ public class TestController {
 //        }
 //        return res;
 //    }
+=======
+
+    @GetMapping("/get")
+    public ObjectDto getObjectTest(){
+        ObjectDto objectDto = new ObjectDto(11L, "getObjectTest");
+
+        return objectDto;
+    }
+    @PostMapping("/post")
+    public Map<String, List<ObjectDto>> postObjectTest(String name){
+        if(name == null){
+            log.info("name이 null임");
+        } else {
+            log.info("name: " + name);
+        }
+
+        Map<String, List<ObjectDto>> res = new HashMap<>();
+        res.put("res", new ArrayList<ObjectDto>());
+        for(long i = 0; i < 10L; i++) {
+            res.get("res").add(new ObjectDto(i, name + i));
+        }
+        return res;
+    }
+>>>>>>> a2b468080d280e3172f54b15974c27c75a71c400
 
 }
