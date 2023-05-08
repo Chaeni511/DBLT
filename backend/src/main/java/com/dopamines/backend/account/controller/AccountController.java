@@ -26,28 +26,13 @@ public class AccountController {
         return ResponseEntity.ok(accountService.editNickname(user, nickname));
     }
 
-<<<<<<< HEAD
-//    @PutMapping("/profileMessage")
-//    public ResponseEntity<Account> editprofileMessage(HttpServletRequest request, @RequestParam String profileMessage) {
-//        String email = request.getRemoteUser();
-//        log.info("profileMessage 찍는 user: " + email);
-//        return ResponseEntity.ok(accountService.editProfileMessage(email, profileMessage));
-//    }
-//
-//    @PutMapping("/profile")
-//    public ResponseEntity<Account> editprofileMessage(HttpServletRequest request, @RequestParam MultipartFile file) {
-//        String email = request.getRemoteUser();
-//        log.info("profileMessage 찍는 user: " + email);
-//        return ResponseEntity.ok(accountService.editProfile(email, file));
-//    }
-=======
+
     @PutMapping("/profileMessage")
     public ResponseEntity<Account> editprofileMessage(HttpServletRequest request, @RequestParam String profileMessage) {
         String email = request.getRemoteUser();
         log.info("profileMessage 찍는 user: " + email);
         return ResponseEntity.ok(accountService.editProfileMessage(email, profileMessage));
     }
->>>>>>> a2b468080d280e3172f54b15974c27c75a71c400
 
     @PutMapping("/delete")
     public ResponseEntity deleteAccount(HttpServletRequest request){
