@@ -12,8 +12,6 @@ public interface AccountService {
 
     Account editProfileMessage(String email, String profileMessage);
 
-    Account editProfile(String email, MultipartFile file);
-
     void deleteAccount(String email);
 
     List<SearchResponseDto> searchNickname(String keyword);

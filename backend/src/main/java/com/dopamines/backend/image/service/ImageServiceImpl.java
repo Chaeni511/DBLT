@@ -4,11 +4,9 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
-
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,18 +18,19 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.hibernate.hql.internal.ast.QuerySyntaxException.convert;
-@Slf4j
+
 @Service
 public class ImageServiceImpl implements ImageService {
-    @Value("${cloud.aws.s3.endpoint}")
+
+    @Value("${naver.cloud.endpoint}")
     private String endPoint;
-    @Value("${cloud.aws.region.static}")
+    @Value("${naver.cloud.region.name}")
     private String regionName;
-    private String bucketName = "dlt";
-    @Value("${cloud.aws.credentials.accessKey}")
+    @Value("${naver.cloud.bucket.name}")
+    private String bucketName;
+    @Value("${naver.cloud.access.key}")
     private String accessKey;
-    @Value("${cloud.aws.credentials.secretKey}")
+    @Value("${naver.cloud.secret.key}")
     private String secretKey;
     private AmazonS3 s3;
 
@@ -44,16 +43,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public String saveImage(MultipartFile file, String folderName) throws IOException {
+    public String saveFile(MultipartFile file,String folderName) throws IOException {
         // 원래 파일 이름 추출
         String origin_name = file.getOriginalFilename();
         // 파일 이름으로 쓸 uuid 생성
         String uuid = UUID.randomUUID().toString();
         // uuid와 확장자 결합
         String saved_name = uuid + origin_name;
-
-        log.info("file: " + file + "folderName: " + folderName);
-        log.info("saved_name: " + saved_name);
 
         String bucketPath=bucketName+"/"+folderName;
         File uploadFile = convert(file)        // 파일 생성
@@ -67,30 +63,20 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private void upload(String bucketName, String fileName, File uploadFile) {
-        log.info("upload에서 찍는 정보들: " +bucketName+fileName+uploadFile);
         s3.putObject(new PutObjectRequest(bucketName, fileName, uploadFile)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         uploadFile.delete();
     }
-
     private Optional<File> convert(MultipartFile file) throws IOException {
         File convertFile = new File(file.getOriginalFilename());
-        try {
-            file.transferTo(convertFile);
+        if (convertFile.createNewFile()) {
+            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                fos.write(file.getBytes());
+            }
             return Optional.of(convertFile);
-        } catch (Exception e) {
-            log.info("convert exception: " + e);
-            return null;
         }
-//        File convertFile = new File(file.getOriginalFilename());
-//        if (convertFile.createNewFile()) {
-//            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-//                fos.write(file.getBytes());
-//            }
-//            return Optional.of(convertFile);
-//        }
-//
-//        return Optional.empty();
-    }
-}
 
+        return Optional.empty();
+    }
+
+}

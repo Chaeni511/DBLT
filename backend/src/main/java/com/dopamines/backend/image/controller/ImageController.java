@@ -1,43 +1,32 @@
 package com.dopamines.backend.image.controller;
 
-import com.dopamines.backend.account.entity.Account;
-import com.dopamines.backend.account.repository.AccountRepository;
-import com.dopamines.backend.account.service.AccountService;
+
 import com.dopamines.backend.image.service.ImageService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.Optional;
-
-@Slf4j
+@RestController
 @RequestMapping("/image")
 @RequiredArgsConstructor
-@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@Api(value = "test", description = "파일을 업로드 합니다.")
 public class ImageController {
-    private final ImageService imageService;
-    private final AccountService accountService;
-    private final AccountRepository accountRepository;
 
-    @PutMapping("/profile")
-    public ResponseEntity<Account> editProfile(HttpServletRequest request, @RequestParam MultipartFile file) throws IOException {
-        String email = request.getRemoteUser();
-        log.info("image/profile에서 찍는 user: " + email);
+    @Autowired
+    private final ImageService service;
 
-        String profile = imageService.saveImage(file, "profile");
-        Optional<Account> optional = accountRepository.findByEmail(email);
-        Account account = null;
-        if(optional.isEmpty()) {
-            account = new Account();
-            log.info("AccountServiceImpl의 editNickname에서");
-        }else {
-            account = optional.get();
-            account.setProfile(profile);
-        }
-        return ResponseEntity.ok(account);
+
+    @PutMapping("/upload")
+    @ApiOperation(value = "파일 업로드", notes = "파일을 업로드하고 img url을 가져옵니다. 폴더명은 상황에 맞게..")
+    public ResponseEntity<Object> uploadAndGetLink(MultipartFile multipartFile, String folderName) throws Exception  {
+        String url=service.saveFile(multipartFile,folderName);
+        return new ResponseEntity<Object>(HttpStatus.OK);
     }
+
 }
