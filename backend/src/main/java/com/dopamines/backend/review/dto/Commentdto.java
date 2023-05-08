@@ -1,16 +1,18 @@
 package com.dopamines.backend.review.dto;
 
-import com.dopamines.backend.plan.repository.PlanRepository;
-import org.springframework.security.core.parameters.P;
+import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Commentdto {
-
     private Long commentId;
     private String nickName;
+    private String profile;
     private String content;
     private LocalDateTime updateTime;
 }

@@ -1,7 +1,7 @@
 package com.dopamines.backend.review.controller;
 
-import com.dopamines.backend.plan.entity.Plan;
-import com.dopamines.backend.review.entity.Comment;
+import com.dopamines.backend.plan.service.PlanService;
+import com.dopamines.backend.review.dto.Commentdto;
 import com.dopamines.backend.review.service.CommentService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,6 +27,10 @@ public class CommentController {
 
     @Autowired
     CommentService commentService;
+
+    @Autowired
+    PlanService planService;
+
 
     @PostMapping("/create")
     @Operation(summary = "댓글 등록 api 입니다.", description = "planId와 content를 입력하여 댓글을 등록합니다. 댓글이 생성되면 commentId를 Long 형태로 반환합니다.")
@@ -89,5 +96,16 @@ public class CommentController {
             log.error("삭제 실패: commentId {}는 존재하지 않는 commentId 입니다.", commentId, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "댓글 리스트 api 입니다.", description = "planId를 입력하여 해당 약속의 댓글을 모두 불러옵니다.")
+    public ResponseEntity<Map<LocalDate, List<Commentdto>>>  getCommentList(
+            HttpServletRequest request,
+            @RequestParam("planId") Long planId
+    ){
+
+        Map<LocalDate, List<Commentdto>> commentMap = commentService.getCommentList(planId);
+        return ResponseEntity.ok(commentMap);
     }
 }

@@ -1,6 +1,11 @@
 package com.dopamines.backend.review.service;
 
+import com.dopamines.backend.review.dto.Commentdto;
 import com.dopamines.backend.review.entity.Comment;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 public interface CommentService {
 
@@ -12,5 +17,7 @@ public interface CommentService {
     boolean isMyComment(String userEmail, Long commentId);
 
     void deleteComment(Long commentId);
+
+    Map<LocalDate, List<Commentdto>> getCommentList(Long planId);
 
 }

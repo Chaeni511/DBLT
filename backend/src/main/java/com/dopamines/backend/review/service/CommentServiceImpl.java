@@ -2,11 +2,13 @@ package com.dopamines.backend.review.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.UserService;
+import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.PlanService;
+import com.dopamines.backend.review.dto.Commentdto;
 import com.dopamines.backend.review.entity.Comment;
 import com.dopamines.backend.review.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -34,12 +41,47 @@ public class CommentServiceImpl implements CommentService {
     PlanRepository planRepository;
 
     @Autowired
+    PlanService planService;
+
+    @Autowired
     UserService userService;
 
 
     private Comment getCommentById(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글 정보가 없습니다."));
+    }
+
+
+    // 해당 날짜의 약속 리스트
+    @Override
+    public Map<LocalDate, List<Commentdto>> getCommentList(Long planId) {
+        Plan plan = planService.getPlanById(planId);
+        List<Comment> comments = commentRepository.findByPlan(plan);
+
+        // 순서가 보장되는 Map
+        Map<LocalDate, List<Commentdto>> commentMap = new LinkedHashMap<>();
+
+        for (Comment comment : comments) {
+            LocalDate date = comment.getUpdateTime().toLocalDate();
+            Commentdto commentdto = new Commentdto(
+                    comment.getCommentId(),
+                    comment.getParticipant().getAccount().getNickname(),
+                    comment.getParticipant().getAccount().getProfile(),
+                    comment.getContent(),
+                    comment.getUpdateTime()
+            );
+
+            if (commentMap.containsKey(date)) {
+                commentMap.get(date).add(commentdto);
+            } else {
+                List<Commentdto> commentList = new ArrayList<>();
+                commentList.add(commentdto);
+                commentMap.put(date, commentList);
+            }
+        }
+
+        return commentMap;
     }
 
     @Override
@@ -86,7 +128,6 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = getCommentById(commentId);
         commentRepository.delete(comment);
     }
-
 
     // 내 댓글이니? (권한 확인)
     @Override
