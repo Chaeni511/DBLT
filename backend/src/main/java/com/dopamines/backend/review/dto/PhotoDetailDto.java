@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Builder
 public class PhotoDetailDto {
+    private Long planId;
     private Long photoId;
     private String photoUrl;
     private LocalDateTime registerTime;
