@@ -13,4 +13,6 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
     Optional<Photo> findByPlan(Plan plan);
 
+    Optional<List<Photo>> findAllByPlan(Plan plan);
+
 }

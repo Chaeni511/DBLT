@@ -75,22 +75,46 @@ public class PhotoServiceImpl implements PhotoService {
 
 
     // 월별 사진 리스트를 가져오는 함수
-    public List<Participant> getPhotosByMonthAndUser(String userEmail, LocalDate selectedMonth) {
+    public List<PhotoDto> getPhotosByMonthAndUser(String userEmail, LocalDate selectedDate) {
 
         Account account = userService.findByEmail(userEmail);
         // 현재 사용자가 참여한 모든 약속 리스트를 가져옵니다.
 
-        List<Participant> myParticipants = participantRepository.findByAccount(account);
-
         // 선택한 달의 시작일과 종료일을 계산합니다.
-        LocalDate startOfMonth = selectedMonth.withDayOfMonth(1);
-        LocalDate endOfMonth = selectedMonth.withDayOfMonth(selectedMonth.lengthOfMonth());
-        List<Participant> participantList = participantRepository.findByAccountAndPlanPlanDateBetween(account, startOfMonth, endOfMonth);
+        LocalDate startDate = selectedDate.withDayOfMonth(1);
+        LocalDate endDate = selectedDate.withDayOfMonth(selectedDate.lengthOfMonth());
 
+        List<Participant> myParticipants = participantRepository.findByAccountAndPlanPlanDateBetween(account, startDate, endDate);
 
-        return participantList;
+        List<PhotoDto> photoDtos = new ArrayList<>();
+        for (Participant participant : myParticipants) {
+            // 참여한 약속의 사진 리스트 가져오기
+            Optional<List<Photo>> photosOpt = photoRepository.findAllByPlan(participant.getPlan());
 
+            if (photosOpt.isPresent()) { // Optional에 값이 있는 경우
+                List<Photo> photos = photosOpt.get();
 
-//        return photoDtoList;
+                // 각 사진을 PhotoDto로 변환하여 리스트에 추가
+                for (Photo photo : photos) {
+                    PhotoDto photoDto = new PhotoDto();
+
+                    photoDto.setPhotoId(photo.getPhotoId());
+                    photoDto.setPlanId(participant.getPlan().getPlanId());
+                    photoDto.setPhotoUrl(photo.getPhotoUrl());
+                    photoDto.setPlanDate(participant.getPlan().getPlanDate());
+                    photoDtos.add(photoDto);
+                }
+            } else { // Optional이 빈 객체인 경우
+                // Photo가 없는 경우, PhotoDto에 NULL값을 넣어줌
+                PhotoDto photoDto = new PhotoDto();
+                photoDto.setPhotoId(null); // 사진이 없으므로 null로 설정
+                photoDto.setPlanId(participant.getPlan().getPlanId());
+                photoDto.setPhotoUrl(null); // 사진이 없으므로 null로 설정
+                photoDto.setPlanDate(participant.getPlan().getPlanDate());
+                photoDtos.add(photoDto);
+            }
+        }
+
+        return photoDtos;
     }
 }

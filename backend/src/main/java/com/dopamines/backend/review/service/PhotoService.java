@@ -11,6 +11,6 @@ public interface PhotoService {
 
     boolean isPhotoRegistered(Long planId);
 
-    List<Participant>  getPhotosByMonthAndUser(String userEmail, LocalDate month);
+    List<PhotoDto> getPhotosByMonthAndUser(String userEmail, LocalDate selectedDate);
 
 }

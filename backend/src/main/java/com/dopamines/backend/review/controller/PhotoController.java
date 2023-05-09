@@ -80,15 +80,16 @@ public class PhotoController {
     }
 
     @GetMapping("/list")
-    @ApiOperation(value = "갤러리에 사진 내역을 가져오는 api입니다.", notes = "month를 활용하여 해당 월의 사진 정보를 가져옵니다.<br/> 'yyyy-MM'의 형태로 month를 입력합니다.")
-    public ResponseEntity<List<Participant> > getPhotoList(
+    @ApiOperation(value = "갤러리에 사진 내역을 가져오는 api입니다.", notes = "date 활용하여 해당 월의 사진 정보를 가져옵니다.<br/> 'yyyy-MM-dd'의 형태로 date를 입력합니다. dd는 관계없으므로 01로 통일합니다. ( 2023-05-01 )")
+    public ResponseEntity<List<PhotoDto>> getPhotoList(
             HttpServletRequest request,
-            @RequestParam("month") @DateTimeFormat(pattern = "yyyy-MM") LocalDate selectedMonth
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate
     ) {
 
+        System.out.println(selectedDate);
         String userEmail = request.getRemoteUser();
         // 선택한 달의 시작일과 종료일 구하기
-        List<Participant> photoList = photoService.getPhotosByMonthAndUser(userEmail, selectedMonth);
+        List<PhotoDto> photoList = photoService.getPhotosByMonthAndUser(userEmail, selectedDate);
 
         return ResponseEntity.ok(photoList);
     }
