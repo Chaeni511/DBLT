@@ -7,7 +7,6 @@ import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
-import com.dopamines.backend.review.entity.Comment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

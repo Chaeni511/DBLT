@@ -88,7 +88,6 @@ public class PhotoController {
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate
     ) {
 
-        System.out.println(selectedDate);
         String userEmail = request.getRemoteUser();
         // 선택한 달의 시작일과 종료일 구하기
         List<PhotoMonthDto> photoList = photoService.getPhotosByMonthAndUser(userEmail, selectedDate);
@@ -111,13 +110,21 @@ public class PhotoController {
         return ResponseEntity.ok(photoList);
     }
 
-    
+
     @GetMapping("/detail")
     @ApiOperation(value = "약속 사진을 가져오는 api입니다.", notes = "planId를 활용하여 해당 약속의 사진 정보를 가져옵니다.")
     public ResponseEntity<PhotoDetailDto> getPhoto(
             HttpServletRequest request,
             @RequestParam("planId") Long planId
     ) {
+
+        String userEmail = request.getRemoteUser();
+
+        // 참가자 인지 확인
+        if (!planService.isMyPlan(userEmail, planId)) {
+            log.info("해당 약속의 참가자가 아닙니다. userEmail: {}, planId: {}", userEmail, planId);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
         PhotoDetailDto photoDto  = photoService.getPhoto(planId);
         return ResponseEntity.ok(photoDto);
