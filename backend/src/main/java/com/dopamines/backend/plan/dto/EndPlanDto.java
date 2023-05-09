@@ -2,6 +2,7 @@ package com.dopamines.backend.plan.dto;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -18,6 +19,8 @@ public class EndPlanDto {
     private LocalDate planDate;
     private LocalTime planTime;
     private String location;
+    private Double latitude; // 위도
+    private Double longitude; // 경도
     private Integer cost;
     private Integer status;
     private MyEndPlanDto myDetail;

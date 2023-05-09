@@ -13,10 +13,10 @@ import java.util.List;
 public interface PlanService {
 
     // 약속 생성
-    Long createPlan(String userEmail, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String participantIdsStr);
+    Long createPlan(String userEmail, String title, LocalDate planDate, LocalTime planTime, String location, Double latitude, Double longitude, Integer find, String participantIdsStr);
 
     // 약속 수정
-    void updatePlanAndParticipant(Plan plan, String title, LocalDate planDate, LocalTime planTime, String location, Integer find, String newParticipantIdsStr);
+    void updatePlanAndParticipant(Plan plan, String title, LocalDate planDate, LocalTime planTime, String location, Double latitude, Double longitude, Integer find, String newParticipantIdsStr);
 
     // 약속 삭제
     void deletePlan(Plan plan);

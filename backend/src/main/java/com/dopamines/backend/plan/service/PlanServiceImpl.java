@@ -40,7 +40,7 @@ public class PlanServiceImpl implements PlanService {
 
     // 약속 생성
     @Override
-    public Long createPlan(String userEmail, String title, LocalDate planDate, LocalTime planTime, String location, Integer cost, String participantIdsStr) {
+    public Long createPlan(String userEmail, String title, LocalDate planDate, LocalTime planTime, String location, Double latitude, Double longitude, Integer cost, String participantIdsStr) {
 
         Account account = userService.findByEmail(userEmail);
 
@@ -50,6 +50,8 @@ public class PlanServiceImpl implements PlanService {
                         .planDate(planDate)
                         .planTime(planTime)
                         .location(location)
+                        .latitude(latitude)
+                        .longitude(longitude)
                         .cost(cost)
                         .status(0)
                         .build()
@@ -76,7 +78,7 @@ public class PlanServiceImpl implements PlanService {
 
     // 약속 수정
     @Override
-    public void updatePlanAndParticipant(Plan plan, String title, LocalDate planDate, LocalTime planTime, String location, Integer cost, String newParticipantIdsStr) {
+    public void updatePlanAndParticipant(Plan plan, String title, LocalDate planDate, LocalTime planTime, String location, Double latitude, Double longitude, Integer cost, String newParticipantIdsStr) {
 
         // 참가자 수정
         participantService.updateParticipant(plan, newParticipantIdsStr);
@@ -86,6 +88,8 @@ public class PlanServiceImpl implements PlanService {
         plan.setPlanDate(planDate);
         plan.setPlanTime(planTime);
         plan.setLocation(location);
+        plan.setLatitude(latitude); // 위도
+        plan.setLongitude(longitude); // 경도
         plan.setCost(cost);
 
         planRepository.save(plan);
@@ -115,6 +119,8 @@ public class PlanServiceImpl implements PlanService {
         planDto.setPlanTime(plan.getPlanTime());
         planDto.setCost(plan.getCost());
         planDto.setLocation(plan.getLocation());
+        planDto.setLatitude(plan.getLatitude());
+        planDto.setLongitude(plan.getLongitude());
         planDto.setStatus(plan.getStatus());
 
         // D-day 계산
@@ -167,6 +173,8 @@ public class PlanServiceImpl implements PlanService {
         endPlanDto.setPlanDate(plan.getPlanDate());
         endPlanDto.setPlanTime(plan.getPlanTime());
         endPlanDto.setLocation(plan.getLocation());
+        endPlanDto.setLatitude(plan.getLatitude());
+        endPlanDto.setLongitude(plan.getLongitude());
         endPlanDto.setCost(plan.getCost());
         endPlanDto.setStatus(plan.getStatus());
 
@@ -242,6 +250,8 @@ public class PlanServiceImpl implements PlanService {
                 planListDto.setPlanDate(planDate);
                 planListDto.setPlanTime(plan.getPlanTime());
                 planListDto.setLocation(plan.getLocation());
+                planListDto.setLatitude(plan.getLatitude());
+                planListDto.setLongitude(plan.getLongitude());
                 planListDto.setStatus(plan.getStatus());
                 // 남은 시간 (1이면 약속 시간 1시간 전)
                 planListDto.setDiffHours(getTimeHoursDifference(plan.getPlanDate(),plan.getPlanTime()));

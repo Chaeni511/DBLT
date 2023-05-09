@@ -17,6 +17,8 @@ public class PlanListDto {
     private LocalDate planDate;
     private LocalTime planTime;
     private String location;
+    private Double latitude; // 위도
+    private Double longitude; // 경도
     private Long diffHours;
     private Long diffMinutes;
     private Integer participantCount;

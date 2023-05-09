@@ -43,13 +43,16 @@ public class PlanController {
 
     @PostMapping("/create")
     @Operation(summary = "약속 생성 api 입니다.", description = "약속 정보를 입력하여 약속을 생성합니다. 약속이 생성되면 PlanId을 Long 타입으로 반환합니다.<br>"  +
-            "participantIds는 유저id를 문자열(예시 : 1,2,3,4,5)로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
+            "participantIds는 유저id를 문자열(예시 : 1,2,3,4,5)로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.<br>" +
+            "location은 주소를 입력합니다. latitude는 위도, longitude는 경도를 나타냅니다. 실수로 입력해주세요.")
     public ResponseEntity<Long> createPlan(
             HttpServletRequest request,
             @RequestParam("title") String title,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
             @RequestParam("location") String location,
+            @RequestParam("latitude") Double latitude, // 위도
+            @RequestParam("longitude") Double longitude, // 경도
             @RequestParam("cost") Integer cost,
             @RequestParam(value = "participantIds", required = false) String participantIdsStr // 입력값: 1,2,3,4
     ) {
@@ -61,7 +64,7 @@ public class PlanController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Long planId = planService.createPlan(userEmail, title, planDate, planTime, location, cost, participantIdsStr);
+        Long planId = planService.createPlan(userEmail, title, planDate, planTime, location, latitude, longitude, cost, participantIdsStr);
         log.info("약속이 생성되었습니다.");
         return ResponseEntity.ok(planId);
     }
@@ -69,7 +72,8 @@ public class PlanController {
 
     @PutMapping("/update")
     @Operation(summary = "약속 수정 api 입니다.", description = "PlanId를 입력하여 약속 정보를 불러와 약속 정보을 수정합니다. 약속이 생성되면 PlanId를 반환합니다.<br>" +
-            "participantIds는 유저id를 문자열(예시 : 1,2,3,4,5)로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.")
+            "participantIds는 유저id를 문자열(예시 : 1,2,3,4,5)로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.<br>" +
+            "location은 주소를 입력합니다. latitude는 위도, longitude는 경도를 나타냅니다. 실수로 입력해주세요.")
     public ResponseEntity<Void> updatePlan(
             HttpServletRequest request,
             @RequestParam("planId") Long planId,
@@ -77,6 +81,8 @@ public class PlanController {
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
             @RequestParam("location") String location,
+            @RequestParam("latitude") Double latitude, // 위도
+            @RequestParam("longitude") Double longitude, // 경도
             @RequestParam("cost") Integer cost,
             @RequestParam(value = "participantIds", required = false) String participantIdsStr // 입력값: 1,2,3,4
     ) {
@@ -107,7 +113,7 @@ public class PlanController {
                 log.warn("수정 실패: 약속 시간은 현재 시간 이후 시간으로 변경할 수 있습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-            planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, cost, participantIdsStr);
+            planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, latitude, longitude, cost, participantIdsStr);
             log.info("planId {}이고 title '{}'인 약속이 방장 {}에 의해 수정되었습니다.", planId, title, account.getNickname());
 
             return ResponseEntity.ok().build();
