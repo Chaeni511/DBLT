@@ -111,14 +111,14 @@ public class PhotoController {
         return ResponseEntity.ok(photoList);
     }
 
-    @GetMapping("/detail")
-    @ApiOperation(value = "갤러리에 사진 내역을 날짜별로 매핑하여 가져오는 api입니다.", notes = "date 활용하여 해당 월의 사진 정보를 가져옵니다.<br/> 'yyyy-MM-dd'의 형태로 date를 입력합니다. dd는 관계없으므로 01로 통일합니다. ( 2023-05-01 )")
-    public ResponseEntity<PhotoDetailDto> getPhoto(
-            HttpServletRequest request,
-            @RequestParam("planId") Long planId
-    ) {
-
-
-    }
+//    @GetMapping("/detail")
+//    @ApiOperation(value = "갤러리에 사진 내역을 날짜별로 매핑하여 가져오는 api입니다.", notes = "date 활용하여 해당 월의 사진 정보를 가져옵니다.<br/> 'yyyy-MM-dd'의 형태로 date를 입력합니다. dd는 관계없으므로 01로 통일합니다. ( 2023-05-01 )")
+//    public ResponseEntity<PhotoDetailDto> getPhoto(
+//            HttpServletRequest request,
+//            @RequestParam("planId") Long planId
+//    ) {
+//
+//
+//    }
 
 }
