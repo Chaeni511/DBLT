@@ -10,12 +10,11 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PhotoDto {
+public class PhotoDateDto {
 
     private Long photoId;
     private Long planId;
     private String photoUrl;
-    private LocalDate planDate;
     private LocalTime planTime;
 }
 
