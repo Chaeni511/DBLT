@@ -6,7 +6,6 @@ import com.dopamines.backend.plan.dto.EndPlanDto;
 import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Plan;
-import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
 import io.swagger.annotations.Api;
@@ -40,9 +39,6 @@ public class PlanController {
 
     @Autowired
     ParticipantService participantService;
-
-    @Autowired
-    PlanRepository planRepository;
 
 
     @PostMapping("/create")

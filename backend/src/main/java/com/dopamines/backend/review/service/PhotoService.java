@@ -1,5 +1,6 @@
 package com.dopamines.backend.review.service;
 
+import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.review.dto.PhotoDto;
 
 import java.time.LocalDate;
@@ -10,6 +11,6 @@ public interface PhotoService {
 
     boolean isPhotoRegistered(Long planId);
 
-    List<PhotoDto> getPhotosByMonthAndUser(String userEmail, LocalDate month);
+    List<Participant>  getPhotosByMonthAndUser(String userEmail, LocalDate month);
 
 }

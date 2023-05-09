@@ -1,10 +1,10 @@
 package com.dopamines.backend.review.controller;
 
 import com.dopamines.backend.image.service.ImageService;
+import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.review.dto.PhotoDto;
-import com.dopamines.backend.review.entity.Photo;
 import com.dopamines.backend.review.service.PhotoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,7 +61,7 @@ public class PhotoController {
 
         // 사진있는지 확인
         if (photoService.isPhotoRegistered(planId)) {
-            log.info("이미 등록된 사진입니다. planId: {}", planId);
+            log.info("이미 등록된 사진입니다. planId:{}", planId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -79,15 +79,16 @@ public class PhotoController {
         return ResponseEntity.ok(photoId);
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     @ApiOperation(value = "갤러리에 사진 내역을 가져오는 api입니다.", notes = "month를 활용하여 해당 월의 사진 정보를 가져옵니다.<br/> 'yyyy-MM'의 형태로 month를 입력합니다.")
-    public ResponseEntity<List<PhotoDto>> getPhotoList(
+    public ResponseEntity<List<Participant> > getPhotoList(
             HttpServletRequest request,
-            @RequestParam("month") @DateTimeFormat(pattern = "yyyy-MM") LocalDate month
+            @RequestParam("month") @DateTimeFormat(pattern = "yyyy-MM") LocalDate selectedMonth
     ) {
 
         String userEmail = request.getRemoteUser();
-        List<PhotoDto> photoList = photoService.getPhotosByMonthAndUser(userEmail, month);
+        // 선택한 달의 시작일과 종료일 구하기
+        List<Participant> photoList = photoService.getPhotosByMonthAndUser(userEmail, selectedMonth);
 
         return ResponseEntity.ok(photoList);
     }

@@ -5,6 +5,7 @@ import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +15,5 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     List<Participant> findByPlan(Plan plan);
     List<Participant> findByAccount(Account account);
     Optional<Participant> findByPlanAndAccount(Plan plan, Account account);
+    List<Participant> findByAccountAndPlanPlanDateBetween(Account account, LocalDate startDate, LocalDate endDate);
 }
