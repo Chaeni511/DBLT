@@ -84,7 +84,7 @@ public class PhotoController {
 
     @GetMapping("/list")
     @Operation(summary = "기록 탭에 월별 사진 내역을 가져오는 api입니다.", description = "date 활용하여 해당 월의 사진 정보를 가져옵니다.<br/>" +
-            "date는 'yyyy-MM-dd' 형태의 문지열로 입력합니다. 일자 dd는 영향을 주지않으므로 01로 통일합니다. (예시: 2023-05-01 )")
+            "date는 'yyyy-MM-dd' 형태의 문지열로 입력합니다. 일자 dd는 영향을 주지않으므로 01로 통일합니다. (예시: 2023-05-01)")
     public ResponseEntity<List<PhotoMonthDto>> getPhotoList(
             HttpServletRequest request,
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate
@@ -100,7 +100,7 @@ public class PhotoController {
 
     @GetMapping("/listMap")
     @Operation(summary = "기록 탭에 월별 사진 내역을 가져오는 api입니다.", description = "date 활용하여 해당 월의 사진 정보를 날짜별로 매핑하여 가져옵니다.<br/> " +
-            "date는 'yyyy-MM-dd' 형태의 문지열로 입력합니다. 일자 dd는 영향을 주지않으므로 01로 통일합니다. (예시: 2023-05-01 )")
+            "date는 'yyyy-MM-dd' 형태의 문지열로 입력합니다. 일자 dd는 영향을 주지않으므로 01로 통일합니다. (예시: 2023-05-01)")
     public ResponseEntity<Map<LocalDate, List<PhotoDateDto>>> getPhotoListMap(
             HttpServletRequest request,
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate
