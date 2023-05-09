@@ -43,7 +43,7 @@ public class PlanController {
 
     @PostMapping("/create")
     @Operation(summary = "약속 생성 api 입니다.", description = "약속 정보를 입력하여 약속을 생성합니다. 약속이 생성되면 PlanId을 Long 타입으로 반환합니다.<br>"  +
-            "participantIds는 유저id를 문자열(예시 : 1,2,3,4,5)로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.<br>" +
+            "participantIds는 유저id를 문자열(예시 : 1,2,3,4,5)로 입력합니다. planDate는 'yyyy-MM-dd', planTime는 'HH:mm:ss' 형태의 문자열로 입력합니다.<br>" +
             "location은 주소를 입력합니다. latitude는 위도, longitude는 경도를 나타냅니다. 실수로 입력해주세요.")
     public ResponseEntity<Long> createPlan(
             HttpServletRequest request,
@@ -71,8 +71,8 @@ public class PlanController {
 
 
     @PutMapping("/update")
-    @Operation(summary = "약속 수정 api 입니다.", description = "PlanId를 입력하여 약속 정보를 불러와 약속 정보을 수정합니다. 약속이 생성되면 PlanId를 반환합니다.<br>" +
-            "participantIds는 유저id를 문자열(예시 : 1,2,3,4,5)로 입력합니다. planDate는 yyyy-MM-dd, planTime는 HH:mm:ss 의 형태로 입력합니다.<br>" +
+    @Operation(summary = "약속 수정 api 입니다.", description = "PlanId를 입력하여 약속 정보를 불러와 약속 정보을 수정합니다. 방장만 수정 가능합니다.<br>" +
+            "participantIds는 유저id를 문자열(예시 : 1,2,3,4,5)로 입력합니다. planDate는 'yyyy-MM-dd', planTime는 'HH:mm:ss' 형태의 문자열로 입력합니다.<br>" +
             "location은 주소를 입력합니다. latitude는 위도, longitude는 경도를 나타냅니다. 실수로 입력해주세요.")
     public ResponseEntity<Void> updatePlan(
             HttpServletRequest request,
@@ -130,7 +130,7 @@ public class PlanController {
 
 
     @DeleteMapping("/delete")
-    @Operation(summary = "약속 삭제 api 입니다.", description = "PlanId를 입력하여 약속 정보를 삭제합니다. 방장만 가능합니다.")
+    @Operation(summary = "약속 삭제 api 입니다.", description = "PlanId를 입력하여 약속 정보를 삭제합니다. 방장만 삭제 가능합니다.")
     public ResponseEntity<Void> deletePlan(
             HttpServletRequest request,
             @RequestParam("planId") Long planId

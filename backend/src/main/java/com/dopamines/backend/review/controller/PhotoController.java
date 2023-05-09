@@ -8,7 +8,7 @@ import com.dopamines.backend.review.dto.PhotoDetailDto;
 import com.dopamines.backend.review.dto.PhotoMonthDto;
 import com.dopamines.backend.review.service.PhotoService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,8 @@ public class PhotoController {
 
 
     @PostMapping("/register")
-    @ApiOperation(value = "인증 사진을 등록하는 api입니다.", notes = "planId와 photoFile 활용하여 결과 값으로 photoId를 반환합니다. photoFile은 MultipartFile로 받아옵니다.")
+    @Operation(summary = "인증 사진을 등록하는 api입니다.", description = "planId와 photoFile 활용하여 사진을 업로드 합니다. 사진 업로드에 성공하면 photoId를 반환합니다.<br/>" +
+            "사진은 photoFile에 MultipartFile의 형태로 받아옵니다.")
     public ResponseEntity<Long> savePhoto(
             HttpServletRequest request,
             @RequestParam("planId") Long planId,
@@ -82,7 +83,8 @@ public class PhotoController {
     }
 
     @GetMapping("/list")
-    @ApiOperation(value = "갤러리에 사진 내역을 가져오는 api입니다.", notes = "date 활용하여 해당 월의 사진 정보를 가져옵니다.<br/> 'yyyy-MM-dd'의 형태로 date를 입력합니다. dd는 관계없으므로 01로 통일합니다. ( 2023-05-01 )")
+    @Operation(summary = "기록 탭에 월별 사진 내역을 가져오는 api입니다.", description = "date 활용하여 해당 월의 사진 정보를 가져옵니다.<br/>" +
+            "date는 'yyyy-MM-dd' 형태의 문지열로 입력합니다. 일자 dd는 영향을 주지않으므로 01로 통일합니다. (예시: 2023-05-01 )")
     public ResponseEntity<List<PhotoMonthDto>> getPhotoList(
             HttpServletRequest request,
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate
@@ -97,7 +99,8 @@ public class PhotoController {
 
 
     @GetMapping("/listMap")
-    @ApiOperation(value = "갤러리에 사진 내역을 날짜별로 매핑하여 가져오는 api입니다.", notes = "date 활용하여 해당 월의 사진 정보를 가져옵니다.<br/> 'yyyy-MM-dd'의 형태로 date를 입력합니다. dd는 관계없으므로 01로 통일합니다. ( 2023-05-01 )")
+    @Operation(summary = "기록 탭에 월별 사진 내역을 가져오는 api입니다.", description = "date 활용하여 해당 월의 사진 정보를 날짜별로 매핑하여 가져옵니다.<br/> " +
+            "date는 'yyyy-MM-dd' 형태의 문지열로 입력합니다. 일자 dd는 영향을 주지않으므로 01로 통일합니다. (예시: 2023-05-01 )")
     public ResponseEntity<Map<LocalDate, List<PhotoDateDto>>> getPhotoListMap(
             HttpServletRequest request,
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate
@@ -112,7 +115,7 @@ public class PhotoController {
 
 
     @GetMapping("/detail")
-    @ApiOperation(value = "약속 사진을 가져오는 api입니다.", notes = "planId를 활용하여 해당 약속의 사진 정보를 가져옵니다.")
+    @Operation(summary = "약속 사진을 가져오는 api입니다.", description = "planId를 활용하여 해당 약속의 사진 정보를 가져옵니다.")
     public ResponseEntity<PhotoDetailDto> getPhoto(
             HttpServletRequest request,
             @RequestParam("planId") Long planId
