@@ -8,6 +8,7 @@ import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.review.dto.PhotoDateDto;
+import com.dopamines.backend.review.dto.PhotoDetailDto;
 import com.dopamines.backend.review.dto.PhotoMonthDto;
 import com.dopamines.backend.review.entity.Photo;
 import com.dopamines.backend.review.repository.PhotoRepository;
@@ -62,6 +63,23 @@ public class PhotoServiceImpl implements PhotoService {
 
     }
 
+    @Override
+    public PhotoDetailDto getPhoto(Long planId){
+        Plan plan = planService.getPlanById(planId);
+        Optional<Photo> photo = photoRepository.findByPlan(plan);
+        PhotoDetailDto photoDto = new PhotoDetailDto();
+        photoDto.setPlanId(planId);
+        if (photo.isPresent()){
+            photoDto.setPhotoId(photo.get().getPhotoId());
+            photoDto.setPhotoUrl(photo.get().getPhotoUrl());
+            photoDto.setRegisterTime(photo.get().getRegisterTime());
+        } else {
+            log.info("해당 planId {}의 사진 정보가 없습니다.",planId);
+        }
+
+        return photoDto;
+    }
+
     // 사진 있는지 확인
     @Override
     public boolean isPhotoRegistered(Long planId) {
@@ -84,13 +102,13 @@ public class PhotoServiceImpl implements PhotoService {
         // 현재 사용자가 참여한 해당 월의 모든 약속 리스트를 가져온다.
         List<Participant> myParticipants = participantRepository.findByAccountAndPlanPlanDateBetween(account, startDate, endDate);
 
-        List<PhotoMonthDto> photoDtos = new ArrayList<>();
+        List<PhotoMonthDto> photoDtoList = new ArrayList<>();
         for (Participant participant : myParticipants) {
-            // 참여한 약속의 사진 리스트 가져오기
-            Optional<List<Photo>> photosOpt = photoRepository.findAllByPlan(participant.getPlan());
 
-            if (photosOpt.isPresent()) { // Optional에 값이 있는 경우
-                List<Photo> photos = photosOpt.get();
+            // 참여한 약속의 사진 리스트 가져오기
+            List<Photo> photos = photoRepository.findAllByPlan(participant.getPlan());
+
+            if (!photos.isEmpty()) { // 값이 있는 경우
 
                 // 각 사진을 PhotoDto로 변환하여 리스트에 추가
                 for (Photo photo : photos) {
@@ -101,21 +119,23 @@ public class PhotoServiceImpl implements PhotoService {
                     photoDto.setPhotoUrl(photo.getPhotoUrl());
                     photoDto.setPlanDate(participant.getPlan().getPlanDate());
                     photoDto.setPlanTime(participant.getPlan().getPlanTime());
-                    photoDtos.add(photoDto);
+                    photoDtoList.add(photoDto);
                 }
-            } else { // Optional이 빈 객체인 경우
+            } else { // 빈 객체인 경우
                 // Photo가 없는 경우, PhotoDto에 NULL값을 넣어줌
+                log.info("해당 planId {}의 사진 정보가 없습니다.",participant.getPlan().getPlanId());
+
                 PhotoMonthDto photoDto = new PhotoMonthDto();
-                photoDto.setPhotoId(null); // 사진이 없으므로 null로 설정
+                photoDto.setPhotoId(null);
                 photoDto.setPlanId(participant.getPlan().getPlanId());
-                photoDto.setPhotoUrl(null); // 사진이 없으므로 null로 설정
+                photoDto.setPhotoUrl(null);
                 photoDto.setPlanDate(participant.getPlan().getPlanDate());
-                photoDto.setPlanTime(null);
-                photoDtos.add(photoDto);
+                photoDto.setPlanTime(participant.getPlan().getPlanTime());
+                photoDtoList.add(photoDto);
             }
         }
 
-        return photoDtos;
+        return photoDtoList;
     }
 
 
@@ -134,10 +154,10 @@ public class PhotoServiceImpl implements PhotoService {
             List<PhotoDateDto> photoDtos = new ArrayList<>();
 
             // 참여한 약속의 사진 리스트 가져오기
-            Optional<List<Photo>> optionalPhotos = photoRepository.findAllByPlan(participant.getPlan());
+            List<Photo> photos = photoRepository.findAllByPlan(participant.getPlan());
 
-            if (optionalPhotos.isPresent()) {
-                for (Photo photo : optionalPhotos.get()) {
+            if (!photos.isEmpty()) {
+                for (Photo photo : photos) {
                     PhotoDateDto photoDto = new PhotoDateDto();
                     photoDto.setPhotoId(photo.getPhotoId());
                     photoDto.setPlanId(participant.getPlan().getPlanId());
@@ -146,6 +166,7 @@ public class PhotoServiceImpl implements PhotoService {
                     photoDtos.add(photoDto);
                 }
             } else {
+                log.info("해당 planId {}의 사진 정보가 없습니다.",participant.getPlan().getPlanId());
                 PhotoDateDto photoDto = new PhotoDateDto();
                 photoDto.setPhotoId(null);
                 photoDto.setPlanId(participant.getPlan().getPlanId());
