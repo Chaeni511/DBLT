@@ -1,7 +1,7 @@
 package com.dopamines.backend.review.service;
 
 import com.dopamines.backend.review.dto.PhotoDateDto;
-import com.dopamines.backend.review.dto.PhotoDto;
+import com.dopamines.backend.review.dto.PhotoMonthDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,7 +12,7 @@ public interface PhotoService {
 
     boolean isPhotoRegistered(Long planId);
 
-    List<PhotoDto> getPhotosByMonthAndUser(String userEmail, LocalDate selectedDate);
+    List<PhotoMonthDto> getPhotosByMonthAndUser(String userEmail, LocalDate selectedDate);
 
     Map<LocalDate, List<PhotoDateDto>> getPhotosByDateMap(String userEmail, LocalDate selectedDate);
 

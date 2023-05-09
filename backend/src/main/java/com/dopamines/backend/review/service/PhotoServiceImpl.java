@@ -6,10 +6,9 @@ import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
-import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.review.dto.PhotoDateDto;
-import com.dopamines.backend.review.dto.PhotoDto;
+import com.dopamines.backend.review.dto.PhotoMonthDto;
 import com.dopamines.backend.review.entity.Photo;
 import com.dopamines.backend.review.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +73,7 @@ public class PhotoServiceImpl implements PhotoService {
 
 
     // 월별 사진 리스트를 가져오는 함수
-    public List<PhotoDto> getPhotosByMonthAndUser(String userEmail, LocalDate selectedDate) {
+    public List<PhotoMonthDto> getPhotosByMonthAndUser(String userEmail, LocalDate selectedDate) {
 
         Account account = userService.findByEmail(userEmail);
 
@@ -85,7 +84,7 @@ public class PhotoServiceImpl implements PhotoService {
         // 현재 사용자가 참여한 해당 월의 모든 약속 리스트를 가져온다.
         List<Participant> myParticipants = participantRepository.findByAccountAndPlanPlanDateBetween(account, startDate, endDate);
 
-        List<PhotoDto> photoDtos = new ArrayList<>();
+        List<PhotoMonthDto> photoDtos = new ArrayList<>();
         for (Participant participant : myParticipants) {
             // 참여한 약속의 사진 리스트 가져오기
             Optional<List<Photo>> photosOpt = photoRepository.findAllByPlan(participant.getPlan());
@@ -95,7 +94,7 @@ public class PhotoServiceImpl implements PhotoService {
 
                 // 각 사진을 PhotoDto로 변환하여 리스트에 추가
                 for (Photo photo : photos) {
-                    PhotoDto photoDto = new PhotoDto();
+                    PhotoMonthDto photoDto = new PhotoMonthDto();
 
                     photoDto.setPhotoId(photo.getPhotoId());
                     photoDto.setPlanId(participant.getPlan().getPlanId());
@@ -106,7 +105,7 @@ public class PhotoServiceImpl implements PhotoService {
                 }
             } else { // Optional이 빈 객체인 경우
                 // Photo가 없는 경우, PhotoDto에 NULL값을 넣어줌
-                PhotoDto photoDto = new PhotoDto();
+                PhotoMonthDto photoDto = new PhotoMonthDto();
                 photoDto.setPhotoId(null); // 사진이 없으므로 null로 설정
                 photoDto.setPlanId(participant.getPlan().getPlanId());
                 photoDto.setPhotoUrl(null); // 사진이 없으므로 null로 설정

@@ -2,7 +2,7 @@ package com.dopamines.backend.review.dto;
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -10,12 +10,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PhotoDto {
-
+public class PhotoDetailDto {
     private Long photoId;
-    private Long planId;
     private String photoUrl;
-    private LocalDate planDate;
-    private LocalTime planTime;
+    private LocalDateTime registerTime;
 }
-

@@ -1,11 +1,11 @@
 package com.dopamines.backend.review.controller;
 
 import com.dopamines.backend.image.service.ImageService;
-import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.review.dto.PhotoDateDto;
-import com.dopamines.backend.review.dto.PhotoDto;
+import com.dopamines.backend.review.dto.PhotoDetailDto;
+import com.dopamines.backend.review.dto.PhotoMonthDto;
 import com.dopamines.backend.review.service.PhotoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -83,7 +83,7 @@ public class PhotoController {
 
     @GetMapping("/list")
     @ApiOperation(value = "갤러리에 사진 내역을 가져오는 api입니다.", notes = "date 활용하여 해당 월의 사진 정보를 가져옵니다.<br/> 'yyyy-MM-dd'의 형태로 date를 입력합니다. dd는 관계없으므로 01로 통일합니다. ( 2023-05-01 )")
-    public ResponseEntity<List<PhotoDto>> getPhotoList(
+    public ResponseEntity<List<PhotoMonthDto>> getPhotoList(
             HttpServletRequest request,
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate
     ) {
@@ -91,7 +91,7 @@ public class PhotoController {
         System.out.println(selectedDate);
         String userEmail = request.getRemoteUser();
         // 선택한 달의 시작일과 종료일 구하기
-        List<PhotoDto> photoList = photoService.getPhotosByMonthAndUser(userEmail, selectedDate);
+        List<PhotoMonthDto> photoList = photoService.getPhotosByMonthAndUser(userEmail, selectedDate);
 
         return ResponseEntity.ok(photoList);
     }
@@ -104,12 +104,21 @@ public class PhotoController {
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate
     ) {
 
-        System.out.println(selectedDate);
         String userEmail = request.getRemoteUser();
         // 선택한 달의 시작일과 종료일 구하기
         Map<LocalDate, List<PhotoDateDto>> photoList = photoService.getPhotosByDateMap(userEmail, selectedDate);
 
         return ResponseEntity.ok(photoList);
+    }
+
+    @GetMapping("/detail")
+    @ApiOperation(value = "갤러리에 사진 내역을 날짜별로 매핑하여 가져오는 api입니다.", notes = "date 활용하여 해당 월의 사진 정보를 가져옵니다.<br/> 'yyyy-MM-dd'의 형태로 date를 입력합니다. dd는 관계없으므로 01로 통일합니다. ( 2023-05-01 )")
+    public ResponseEntity<PhotoDetailDto> getPhoto(
+            HttpServletRequest request,
+            @RequestParam("planId") Long planId
+    ) {
+
+
     }
 
 }
