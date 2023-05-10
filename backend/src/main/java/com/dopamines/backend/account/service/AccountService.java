@@ -1,8 +1,8 @@
 package com.dopamines.backend.account.service;
 
+import com.dopamines.backend.account.dto.NicknameProfileDto;
 import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ public interface AccountService {
 
     List<SearchResponseDto> searchNickname(String keyword);
 
-
+    NicknameProfileDto getNicknameProfile(Long accountId);
 }

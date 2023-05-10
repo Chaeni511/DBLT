@@ -1,6 +1,7 @@
 package com.dopamines.backend.account.service;
 
 
+import com.dopamines.backend.account.dto.NicknameProfileDto;
 import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
@@ -114,6 +115,22 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return result;
+    }
+
+    @Override
+    public NicknameProfileDto getNicknameProfile(Long accountId) {
+        NicknameProfileDto nicknameProfileDto = new NicknameProfileDto();
+        Optional<Account> optional = accountRepository.findById(accountId);
+        Account account = null;
+        if(optional.isEmpty()){
+            log.info("optional.isEmpty()");
+            return null;
+        } else {
+            account = optional.get();
+            nicknameProfileDto.setNickname(account.getNickname());
+            nicknameProfileDto.setProfile(account.getProfile());
+            return nicknameProfileDto;
+        }
     }
 
 }

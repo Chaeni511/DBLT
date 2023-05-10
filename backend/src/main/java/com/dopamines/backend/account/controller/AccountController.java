@@ -1,5 +1,6 @@
 package com.dopamines.backend.account.controller;
 
+import com.dopamines.backend.account.dto.NicknameProfileDto;
 import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.AccountService;
@@ -7,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -44,6 +44,11 @@ public class AccountController {
     @GetMapping("/search")
     public ResponseEntity<List<SearchResponseDto>> searchNickname(@RequestParam String keyword){
         return ResponseEntity.ok(accountService.searchNickname(keyword));
+    }
+
+    @GetMapping("/participant")
+    public ResponseEntity<NicknameProfileDto> getNicknameProfile(HttpServletRequest request, Long accountId){
+        return ResponseEntity.ok(accountService.getNicknameProfile(accountId));
     }
 
 }
