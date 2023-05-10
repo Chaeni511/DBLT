@@ -59,7 +59,7 @@ public class PlanController {
         // 헤더에서 유저 이메일 가져옴
         String userEmail = request.getRemoteUser();
 
-        if (planService.getTimeMinutesDifference(planDate, planTime) <= 0) {
+        if (planService.getTimeMinutesDifference(planDate, planTime) >= 0) {
             log.warn("생성 실패: 약속 시간은 현재 시간 이후 시간으로 생성할 수 있습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -109,7 +109,7 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
 
-            if (planService.getTimeMinutesDifference(planDate, planTime) <= 0) {
+            if (planService.getTimeMinutesDifference(planDate, planTime) >= 0) {
                 log.warn("수정 실패: 약속 시간은 현재 시간 이후 시간으로 변경할 수 있습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
@@ -174,7 +174,8 @@ public class PlanController {
 
     @GetMapping("/detail")
     @Operation(summary = "진행 중인 약속 상세 정보를 불러오는 api 입니다.", description = "PlanId를 입력하여 약속 상세 정보를 불러옵니다.<br>" +
-            "designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
+            "designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.<br/>" +
+            "diffDay가 음수이면 아직 시작하지 않은 약속, 양수이면 지난 약속 입니다.")
     public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Long planId) {
 
         PlanDto planDto = planService.getPlanDetail(planId);
@@ -183,7 +184,8 @@ public class PlanController {
 
     @GetMapping("/list")
     @Operation(summary = "약속 리스트를 불러오는 api 입니다.", description = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다.<br>" +
-            "status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다. diff시간이 음수이면 약속 시간이 지났음을, 양수이면 약속 시간이 아직 남아 있음을 나타냅니다.")
+            "status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.<br>" +
+            "diff시간이 음수이면 아직 시작하지 않은 약속, 양수이면 지난 약속 입니다.")
     public ResponseEntity<List<PlanListDto>> planList(
             HttpServletRequest request,
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate) {

@@ -107,7 +107,7 @@ public class PositionService {
             ////////////// 도착 시간 저장 /////////////
             participant.setArrivalTime(arrivalTime);
             // 지각 시간 계산
-            Duration duration = Duration.between(arrivalTime, plan.getPlanTime());
+            Duration duration = Duration.between(plan.getPlanTime(),arrivalTime);
             long minutesBetween = duration.toMinutes();
             ///////////// 지각 시간 저장 ///////////////////////////
             participant.setLateTime(minutesBetween);

@@ -125,7 +125,7 @@ public class PlanServiceImpl implements PlanService {
 
         // D-day 계산
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        long diffDay = ChronoUnit.DAYS.between(today, plan.getPlanDate());
+        long diffDay = ChronoUnit.DAYS.between(plan.getPlanDate(), today);
 
         // D-day
         planDto.setDiffDay(diffDay);
@@ -253,9 +253,9 @@ public class PlanServiceImpl implements PlanService {
                 planListDto.setLatitude(plan.getLatitude());
                 planListDto.setLongitude(plan.getLongitude());
                 planListDto.setStatus(plan.getStatus());
-                // 남은 시간 (1이면 약속 시간 1시간 전)
+                // 남은 시간 (-1이면 약속 시간 1시간 전)
                 planListDto.setDiffHours(getTimeHoursDifference(plan.getPlanDate(),plan.getPlanTime()));
-                // 남은 분 (40이면 약속 시간 40분 전)
+                // 남은 분 (-40이면 약속 시간 40분 전)
                 planListDto.setDiffMinutes(getTimeMinutesDifference(plan.getPlanDate(),plan.getPlanTime()));
 
                 // 해당 약속의 참가자 리스트 정보
@@ -288,14 +288,14 @@ public class PlanServiceImpl implements PlanService {
 
     // 약속 시간 유효성 검사
     // 약속 시간 차이
-    // 현재시간 이전 이면 음수, 현재시간 이후면 양수
+    // 약속 시간 이전 이면 음수, 약속 시간 이후면 양수
     // 시간
     @Override
     public long getTimeHoursDifference(LocalDate planDate, LocalTime planTime) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         LocalDateTime planDateTime = LocalDateTime.of(planDate, planTime);
 
-        return ChronoUnit.HOURS.between(now, planDateTime);
+        return ChronoUnit.HOURS.between(planDateTime, now);
     }
     // 분
     @Override
@@ -303,7 +303,7 @@ public class PlanServiceImpl implements PlanService {
         LocalDateTime planDateTime = LocalDateTime.of(planDate, planTime);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        return ChronoUnit.MINUTES.between(now, planDateTime);
+        return ChronoUnit.MINUTES.between(planDateTime, now);
     }
 
     @Override
@@ -312,7 +312,7 @@ public class PlanServiceImpl implements PlanService {
         LocalDateTime planDateTime = LocalDateTime.of(planDate, planTime);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
-        return Duration.between(now, planDateTime);
+        return Duration.between(planDateTime, now);
     }
 
     // 약속 유효성 검사
