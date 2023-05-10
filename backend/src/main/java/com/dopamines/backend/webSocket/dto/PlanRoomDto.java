@@ -32,7 +32,7 @@ public class PlanRoomDto {
             sessions.add(session);
             // message 에는 입장하였다는 메시지를 전송
             message.setMessage("accountId: " + message.getSender() + " 님이 입장했습니다.");
-            ////////////////// 도착 여부 false
+            ////////////////// 도착 여부 false ////////////////////////////////
             positionService.updateIsArrived(message.getRoomId(), message.getSender(), false);
         }
 
@@ -40,7 +40,7 @@ public class PlanRoomDto {
             // message 에서 getType 으로 가져온 내용이 ARRIVE 과 동일한 값이면
             // message 에는 도착하였다는 메시지를 전송
             message.setMessage("accountId: " + message.getSender() + " 님이 도착했습니다.");
-            //////////////// 도착여부 true : 도착시간, 약속시간과 차이, 도착여부 저장
+            //////////////// 도착여부 true : 도착시간, 약속시간과 차이, 도착여부 저장 //////////////////////////
             positionService.updateIsArrived(message.getRoomId(), message.getSender(), true);
             // 모든 참가자가 도착하면 세션 종료
             positionService.arrivedAllParticipant(this, message.getRoomId());
