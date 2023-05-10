@@ -33,7 +33,7 @@ public class PlanRoomDto {
             // message 에는 입장하였다는 메시지를 전송
             message.setMessage("accountId: " + message.getSender() + " 님이 입장했습니다.");
             ////////////////// 도착 여부 false ////////////////////////////////
-            positionService.updateIsArrived(message.getRoomId(), message.getSender(), false);
+            positionService.updateIsArrived(Long.parseLong(message.getRoomId()), Long.parseLong(message.getSender()), false);
         }
 
         else if (message.getType().equals(MessageDto.MessageType.ARRIVE)) {
@@ -41,9 +41,10 @@ public class PlanRoomDto {
             // message 에는 도착하였다는 메시지를 전송
             message.setMessage("accountId: " + message.getSender() + " 님이 도착했습니다.");
             //////////////// 도착여부 true : 도착시간, 약속시간과 차이, 도착여부 저장 //////////////////////////
-            positionService.updateIsArrived(message.getRoomId(), message.getSender(), true);
+            positionService.updateIsArrived(Long.parseLong(message.getRoomId()), Long.parseLong(message.getSender()), true);
             // 모든 참가자가 도착하면 세션 종료
-            positionService.arrivedAllParticipant(this, message.getRoomId());
+//            positionService.arrivedAllParticipant(this, message.getRoomId());
+            positionService.arrivedAllParticipant(this, message);
         }
         else {
             message.setMessage("accountId: " + message.getSender() + " 님이 이동 중 입니다.");

@@ -7,6 +7,7 @@ import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.PlanService;
+import com.dopamines.backend.webSocket.dto.MessageDto;
 import com.dopamines.backend.webSocket.dto.PlanRoomDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,6 @@ import org.springframework.web.socket.WebSocketSession;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -76,23 +76,39 @@ public class PositionService {
 
 
     // 메시지 보내기
-    public <T> void sendMessage(WebSocketSession session, T message) {
-        try {
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
+    public <T> void sendMessage(WebSocketSession session, T payload) {
+        if (session.isOpen()) {
+            try {
+                String jsonPayload = objectMapper.writeValueAsString(payload);
+                session.sendMessage(new TextMessage(jsonPayload));
+            } catch (IOException e) {
+                log.error("Error sending message: {}", e.getMessage(), e);
+            } catch (Exception e) {
+                log.error("Unexpected error while sending message: {}", e.getMessage(), e);
+            }
+        } else {
+            log.warn("Cannot send message to a closed WebSocket session");
         }
     }
+//    public <T> void sendMessage(WebSocketSession session, T message) {
+//        try {
+//            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+//        } catch (IOException e) {
+//            log.error("Error sending message: {}", e.getMessage(), e);
+//        } catch (Exception e) {
+//            log.error("Unexpected error while sending message: {}", e.getMessage(), e);
+//        }
+//    }
 
 
     // 도착하면 도착상태, 도착시간, 지각시간 업데이트
     // 입장하면 도착상태 false로 변환
     @Transactional
-    public void updateIsArrived(String planId, String accountId, Boolean isArrived) {
-        Plan plan = planRepository.findById(Long.parseLong(planId))
+    public void updateIsArrived(Long planId, Long accountId, Boolean isArrived) {
+        Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 약속 입니다. : Invalid Plan ID"));
 
-        Account account = accountRepository.findById(Long.parseLong(accountId))
+        Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. : User not found"));
 
         Participant participant = participantRepository.findByPlanAndAccount(plan, account)
@@ -120,13 +136,20 @@ public class PositionService {
     }
 
     // 모든 참가자가 도착했는지 확인하고 모두 도착했으면 세션을 종료하고 방을 제거
-    public void arrivedAllParticipant(PlanRoomDto room, String planId) {
+    public void arrivedAllParticipant(PlanRoomDto room, MessageDto message) {
+//    public void arrivedAllParticipant(PlanRoomDto room, String planId) {
 
-        if (planService.isAllMemberArrived(Long.parseLong(planId))) {
+        if (planService.isAllMemberArrived(Long.parseLong(message.getRoomId()))) {
             // 모든 참가자가 도착한 경우
-            log.info("All members arrived for planId : {}", planId);
+            log.info("All members arrived for planId : {}", message.getRoomId());
             /////////////////////////// 도착했으면 ///////////////////////////////////
 
+            // 모든 참가자에게 도착 완료 메시지를 전송합니다.
+            message.setType(MessageDto.MessageType.ARRIVE_COMPLETE);
+
+            message.setMessage("모든 참가자가 도착했습니다.");
+            message.setSender("system");
+            sendMessageToAll(room, message);
             // 모든 세션을 종료합니다.
             for (WebSocketSession session : room.getSessions()) {
                 try {
@@ -136,7 +159,26 @@ public class PositionService {
                 }
             }
             // 방을 제거합니다.
-            planRooms.remove(planId);
+            planRooms.remove(message.getRoomId());
+//            planRooms.remove(planId);
         }
     }
+
+
+//    private void sendMessageToAll(PlanRoomDto room, MessageDto message) {
+//        room.getSessions().parallelStream().forEach(session -> sendMessage(session, message));
+//    }
+    private void sendMessageToAll(PlanRoomDto room, MessageDto message) {
+        room.getSessions().stream().forEach(session -> sendMessage(session, message));
+    }
+
+//    private void sendMessageToAll(PlanRoomDto room, MessageDto message) {
+//        for (WebSocketSession session : room.getSessions()) {
+//            try {
+//                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+//            } catch (IOException e) {
+//                log.error("Error while sending message to session", e);
+//            }
+//        }
+//    }
 }
