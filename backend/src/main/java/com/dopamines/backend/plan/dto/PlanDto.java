@@ -17,6 +17,7 @@ public class PlanDto {
     private LocalDate planDate;
     private LocalTime planTime;
     private String location;
+    private String address;
     private Double latitude; // 위도
     private Double longitude; // 경도
     private Integer cost;

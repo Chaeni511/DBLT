@@ -28,9 +28,13 @@ public class Plan {
     @Column(name = "plan_time")
     private LocalTime planTime;
 
-    // 주소
+    // 주소 이름
     @Column(name="location")
     private String location;
+
+    // 주소
+    @Column(name="address")
+    private String address;
 
     // 위도
     @Column(name = "latitude")

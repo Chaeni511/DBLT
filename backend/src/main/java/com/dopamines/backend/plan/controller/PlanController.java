@@ -51,6 +51,7 @@ public class PlanController {
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
             @RequestParam("location") String location,
+            @RequestParam("address") String address,
             @RequestParam("latitude") Double latitude, // 위도
             @RequestParam("longitude") Double longitude, // 경도
             @RequestParam("cost") Integer cost,
@@ -64,7 +65,7 @@ public class PlanController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Long planId = planService.createPlan(userEmail, title, planDate, planTime, location, latitude, longitude, cost, participantIdsStr);
+        Long planId = planService.createPlan(userEmail, title, planDate, planTime, location, address, latitude, longitude, cost, participantIdsStr);
         log.info("약속이 생성되었습니다.");
         return ResponseEntity.ok(planId);
     }
@@ -81,6 +82,7 @@ public class PlanController {
             @RequestParam("planDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate planDate,
             @RequestParam("planTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime planTime,
             @RequestParam("location") String location,
+            @RequestParam("address") String address,
             @RequestParam("latitude") Double latitude, // 위도
             @RequestParam("longitude") Double longitude, // 경도
             @RequestParam("cost") Integer cost,
@@ -113,7 +115,7 @@ public class PlanController {
                 log.warn("수정 실패: 약속 시간은 현재 시간 이후 시간으로 변경할 수 있습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-            planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, latitude, longitude, cost, participantIdsStr);
+            planService.updatePlanAndParticipant(plan, title, planDate, planTime, location, address, latitude, longitude, cost, participantIdsStr);
             log.info("planId {}이고 title '{}'인 약속이 방장 {}에 의해 수정되었습니다.", planId, title, account.getNickname());
 
             return ResponseEntity.ok().build();
