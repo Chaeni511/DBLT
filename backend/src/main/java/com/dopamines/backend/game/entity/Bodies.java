@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Setter
-@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,4 +13,5 @@ import javax.persistence.Id;
 public class Bodies {
     @Id
     private int bodyId;
+    private int bodyPrice;
 }

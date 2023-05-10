@@ -14,4 +14,5 @@ import javax.persistence.Id;
 public class Eyes {
     @Id
     private int eyeId;
+    private int eyePrice;
 }

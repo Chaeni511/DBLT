@@ -14,4 +14,5 @@ import javax.persistence.Id;
 public class Tails {
     @Id
     private int tailId;
+    private int tailPrice;
 }

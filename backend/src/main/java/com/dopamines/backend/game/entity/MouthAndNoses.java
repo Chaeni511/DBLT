@@ -13,5 +13,6 @@ import javax.persistence.Id;
 @Entity
 public class MouthAndNoses {
     @Id
-    private int mouseAndNoseId;
+    private int mouthAndNoseId;
+    private int mouthAndNosePrice;
 }

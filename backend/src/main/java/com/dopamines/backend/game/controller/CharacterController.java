@@ -19,10 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CharacterController {
-    CharacterService characterService;
+    private final CharacterService characterService;
     @GetMapping("/myCharcter")
     public ResponseEntity<Character> getMyCharacter(HttpServletRequest request){
         String email = request.getRemoteUser();
+        log.info("CharacterController의 getMyCharacter에서 찍는 email: " + email);
         return ResponseEntity.ok(characterService.getMyCharacter(email));
 
     }

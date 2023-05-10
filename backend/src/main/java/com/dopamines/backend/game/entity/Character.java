@@ -15,48 +15,42 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class Character {
-    @Id
-    private Long characterId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+//    private Long characterId;
+
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="account_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account account;
 
 //    @Column(nullable = false)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="body_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="skin_id")
     @ColumnDefault("1")
+    private Skins skin;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="body_id")
+    @ColumnDefault("0")
     private Bodies body;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="body_part_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @ColumnDefault("0")
-    private BodyParts bodyPart;
-
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="eye_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @ColumnDefault("1")
     private Eyes eye;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="glove_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @ColumnDefault("0")
     private Gloves glove;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="mouth_and_nose_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @ColumnDefault("1")
     private MouthAndNoses mouthAndNose;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="tail_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @ColumnDefault("0")
     private Tails tail;
 }

@@ -14,4 +14,5 @@ import javax.persistence.Id;
 public class Gloves {
     @Id
     private int gloveId;
+    private int glovePrice;
 }
