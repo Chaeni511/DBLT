@@ -1,8 +1,8 @@
 package com.dopamines.backend.game.service;
 
-import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.game.entity.MyCharacter;
 
 public interface MyCharacterService {
-//    Character getMyCharacter(String email);
+    MyCharacter getMyCharacter(String email);
 
 }

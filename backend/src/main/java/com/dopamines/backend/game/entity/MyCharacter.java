@@ -1,10 +1,8 @@
 package com.dopamines.backend.game.entity;
 
 
-
 import com.dopamines.backend.account.entity.Account;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.*;
