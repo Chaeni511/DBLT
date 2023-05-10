@@ -105,6 +105,7 @@ public class AccountServiceImpl implements AccountService {
             log.info("AccountServiceImpl: " + account);
             SearchResponseDto searchResponseDto = new SearchResponseDto();
 
+            searchResponseDto.setAccountId(account.getAccountId());
             searchResponseDto.setNickname(account.getNickname());
             searchResponseDto.setProfile(account.getProfile());
             searchResponseDto.setProfileMessage(account.getProfileMessage());
