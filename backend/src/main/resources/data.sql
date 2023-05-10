@@ -110,3 +110,8 @@ VALUES
 ON DUPLICATE KEY
 UPDATE
     tail_price = new_item.tail_price;
+
+-- INSERT INTO character
+-- (character_id, account, skin, body, gloves, eye, mouth_and_nose, tail)
+-- VALUES
+--     (1, 1, 1, 1, 1, 1, 1, 1)
