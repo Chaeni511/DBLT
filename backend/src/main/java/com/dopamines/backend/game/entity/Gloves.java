@@ -16,6 +16,6 @@ import javax.persistence.Id;
 public class Gloves {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int gloveId;
-    private int glovePrice;
+    private int glovesId;
+    private int glovesPrice;
 }

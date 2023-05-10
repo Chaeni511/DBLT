@@ -13,9 +13,9 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Eyes {
+public class MouthAndNose {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int eyeId;
-    private int eyePrice;
+    private int mouthAndNoseId;
+    private int mouthAndNosePrice;
 }

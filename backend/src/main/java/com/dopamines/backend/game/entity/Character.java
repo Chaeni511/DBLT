@@ -3,8 +3,6 @@ package com.dopamines.backend.game.entity;
 import com.dopamines.backend.account.entity.Account;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -15,10 +13,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class Character {
-
-//    private Long characterId;
-
     @Id
+    private Long characterId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="account_id")
     private Account account;
@@ -27,17 +24,17 @@ public class Character {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="skin_id")
     @ColumnDefault("1")
-    private Skins skin;
+    private Skin skin;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="body_id")
     @ColumnDefault("0")
-    private Bodies body;
+    private Body body;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="eye_id")
     @ColumnDefault("1")
-    private Eyes eye;
+    private Eye eye;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="glove_id")
@@ -47,10 +44,10 @@ public class Character {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="mouth_and_nose_id")
     @ColumnDefault("1")
-    private MouthAndNoses mouthAndNose;
+    private MouthAndNose mouthAndNose;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="tail_id")
     @ColumnDefault("0")
-    private Tails tail;
+    private Tail tail;
 }

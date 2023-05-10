@@ -12,15 +12,15 @@ public class Inventory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="skin_id")
-    private List<Skins> skins;
+    private List<Skin> skins;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="body_id")
-    private List<Bodies> bodies;
+    private List<Body> bodies;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="eye_id")
-    private List<Eyes> eyes;
+    private List<Eye> eyes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="glove_id")
@@ -28,17 +28,10 @@ public class Inventory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="mouth_and_nose_id")
-    private List<MouthAndNoses> mouthAndNoses;
+    private List<MouthAndNose> mouthAndNoses;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="tail_id")
-    private List<Tails> tails;
-
-
-
-
-
-
-
+    private List<Tail> tails;
 
 }

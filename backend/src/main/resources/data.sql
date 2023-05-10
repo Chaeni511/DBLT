@@ -1,5 +1,5 @@
-INSERT INTO skins
-(skin_id, price)
+INSERT INTO skin
+(skin_id, skin_price)
 VALUES
     (1, 50),
     (2, 50),
@@ -7,14 +7,14 @@ VALUES
     (4, 50),
     (5, 50),
     (6, 50)
-    AS new_skin
+    AS new_item
 ON DUPLICATE KEY
 UPDATE
-    price = new_item.price;
+    skin_price = new_item.skin_price;
 
 
-INSERT INTO bodies
-(body_id, price)
+INSERT INTO body
+(body_id, body_price)
 VALUES
     (1, 50),
     (2, 50),
@@ -29,11 +29,11 @@ VALUES
     AS new_item
 ON DUPLICATE KEY
 UPDATE
-    price = new_item.price;
+    body_price = new_item.body_price;
 
 
-INSERT INTO eyes
-(eye_id, price)
+INSERT INTO eye
+(eye_id, eye_price)
 VALUES
     (1, 50),
     (2, 50),
@@ -49,11 +49,11 @@ VALUES
     AS new_item
 ON DUPLICATE KEY
 UPDATE
-    price = new_item.price;
+    eye_price = new_item.eye_price;
 
 
 INSERT INTO gloves
-(glove_id, price)
+(gloves_id, gloves_price)
 VALUES
     (1, 50),
     (2, 50),
@@ -68,11 +68,11 @@ VALUES
     AS new_item
 ON DUPLICATE KEY
 UPDATE
-    price = new_item.price;
+    gloves_price = new_item.gloves_price;
 
 
-INSERT INTO mouth_and_noses
-(mouth_and_nose_id, price)
+INSERT INTO mouth_and_nose
+(mouth_and_nose_id, mouth_and_nose_price)
 VALUES
     (1, 50),
     (2, 50),
@@ -92,11 +92,11 @@ VALUES
     AS new_item
 ON DUPLICATE KEY
 UPDATE
-    price = new_item.price;
+    mouth_and_nose_price = new_item.mouth_and_nose_price;
 
 
-INSERT INTO tails
-(glove_id, price)
+INSERT INTO tail
+(tail_id, tail_price)
 VALUES
     (1, 50),
     (2, 50),
@@ -109,4 +109,4 @@ VALUES
     AS new_item
 ON DUPLICATE KEY
 UPDATE
-    price = new_item.price;
+    tail_price = new_item.tail_price;

@@ -13,9 +13,11 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Tails {
+public class Skin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tailId;
-    private int tailPrice;
+    private int skinId;
+
+    private int skinPrice;
+
 }
