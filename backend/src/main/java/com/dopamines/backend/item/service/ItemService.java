@@ -4,4 +4,5 @@ import com.dopamines.backend.item.dto.ItemDto;
 
 public interface ItemService {
     ItemDto getItems();
+
 }
