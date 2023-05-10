@@ -3,8 +3,6 @@ package com.dopamines.backend.game.entity;
 import lombok.*;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Setter
@@ -13,7 +11,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Body {
+public class Tails {
     @Id
-    private int bodyId;
+    private int tailId;
 }

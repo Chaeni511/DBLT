@@ -6,11 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class BodyPart {
+public class Eyes {
     @Id
-    private int bodyPartId;
+    private int eyeId;
 }

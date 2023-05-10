@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class MouthAndNose {
+public class MouthAndNoses {
     @Id
     private int mouseAndNoseId;
 }

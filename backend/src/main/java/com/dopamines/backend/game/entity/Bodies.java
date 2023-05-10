@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Glove {
+public class Bodies {
     @Id
-    private int gloveId;
+    private int bodyId;
 }

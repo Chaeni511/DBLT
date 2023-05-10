@@ -6,12 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Setter
-@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Tail {
+public class BodyParts {
     @Id
-    private int tailId;
+    private int bodyPartId;
 }
