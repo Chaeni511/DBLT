@@ -1,7 +1,7 @@
 package com.dopamines.backend.game.controller;
 
-import com.dopamines.backend.game.entity.Character;
-import com.dopamines.backend.game.service.CharacterService;
+import com.dopamines.backend.game.entity.MyCharacter;
+import com.dopamines.backend.game.service.MyCharacterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/game")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class CharacterController {
-    private final CharacterService characterService;
+public class MyCharacterController {
+    private final MyCharacterService myCharacterService;
     @GetMapping("/myCharcter")
-    public ResponseEntity<Character> getMyCharacter(HttpServletRequest request){
+    public ResponseEntity<MyCharacter> getMyCharacter(HttpServletRequest request){
         String email = request.getRemoteUser();
         log.info("CharacterController의 getMyCharacter에서 찍는 email: " + email);
-        return ResponseEntity.ok(characterService.getMyCharacter(email));
+        return ResponseEntity.ok(myCharacterService.getMyCharacter(email));
 
     }
 }

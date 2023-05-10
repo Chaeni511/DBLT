@@ -2,12 +2,14 @@ package com.dopamines.backend.account.entity;
 
 import com.dopamines.backend.common.BaseTimeEntity;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Setter
 @Getter
 @Builder
@@ -63,4 +65,14 @@ public class Account extends BaseTimeEntity {
     public void updateRefreshToken(String newToken) {
         this.refreshToken = newToken;
     }
+
+//    @OneToOne(mappedBy = "my_character_id", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private MyCharacter myCharacter;
+//
+
+//    @PostConstruct
+//    public void setMyCharacter(MyCharacter myCharacter) {
+//        this.myCharacter = myCharacter;
+////        myCharacter.setAccount(this);
+//    }
 }

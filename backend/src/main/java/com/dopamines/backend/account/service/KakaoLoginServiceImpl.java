@@ -6,6 +6,8 @@ import com.dopamines.backend.account.dto.AccountRequestDto;
 import com.dopamines.backend.account.dto.RoleToUserRequestDto;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.repository.RoleRepository;
+import com.dopamines.backend.game.entity.MyCharacter;
+import com.dopamines.backend.game.repository.MyCharacterRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -21,10 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.dopamines.backend.security.JwtConstants.*;
@@ -37,6 +36,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
 
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
+    private final MyCharacterRepository myCharacterRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -55,9 +55,29 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
         System.out.println("saveAccount에서 찍는 email " + dto.getEmail());
         System.out.println("saveAccount에서 찍는 kakaoId " + dto.getKakaoId());
         System.out.println("saveAccount에서 찍는 nickname " + dto.getNickname());
+//        validateDuplicateUsername(dto);
+//        dto.encodePassword(passwordEncoder.encode(dto.getKakaoId()));
+//
+//        return accountRepository.save(dto.toEntity()).getAccountId();
         validateDuplicateUsername(dto);
         dto.encodePassword(passwordEncoder.encode(dto.getKakaoId()));
-        return accountRepository.save(dto.toEntity()).getAccountId();
+
+        Account account = dto.toEntity();
+        Long accountId = accountRepository.save(account).getAccountId();
+
+        MyCharacter myCharacter = MyCharacter.builder()
+//                .name(dto.getNickname() + "의 캐릭터")
+//                .level(1)
+//                .experience(0)
+                .skin(1)
+                .eye(1)
+                .mouthAndNose(1)
+                .account(account)
+                .build();
+
+        myCharacterRepository.save(myCharacter);
+
+        return accountId;
     }
 
     private void validateDuplicateUsername(AccountRequestDto dto) {
