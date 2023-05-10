@@ -122,6 +122,7 @@ public class PlanServiceImpl implements PlanService {
         planDto.setPlanTime(plan.getPlanTime());
         planDto.setCost(plan.getCost());
         planDto.setLocation(plan.getLocation());
+        planDto.setAddress(plan.getAddress());
         planDto.setLatitude(plan.getLatitude());
         planDto.setLongitude(plan.getLongitude());
         planDto.setStatus(plan.getStatus());
@@ -176,6 +177,7 @@ public class PlanServiceImpl implements PlanService {
         endPlanDto.setPlanDate(plan.getPlanDate());
         endPlanDto.setPlanTime(plan.getPlanTime());
         endPlanDto.setLocation(plan.getLocation());
+        endPlanDto.setAddress(plan.getAddress());
         endPlanDto.setLatitude(plan.getLatitude());
         endPlanDto.setLongitude(plan.getLongitude());
         endPlanDto.setCost(plan.getCost());
@@ -253,6 +255,7 @@ public class PlanServiceImpl implements PlanService {
                 planListDto.setPlanDate(planDate);
                 planListDto.setPlanTime(plan.getPlanTime());
                 planListDto.setLocation(plan.getLocation());
+                planListDto.setAddress(plan.getAddress());
                 planListDto.setLatitude(plan.getLatitude());
                 planListDto.setLongitude(plan.getLongitude());
                 planListDto.setStatus(plan.getStatus());
