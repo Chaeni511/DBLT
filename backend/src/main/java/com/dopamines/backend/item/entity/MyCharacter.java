@@ -1,4 +1,4 @@
-package com.dopamines.backend.game.entity;
+package com.dopamines.backend.item.entity;
 
 
 import com.dopamines.backend.account.entity.Account;

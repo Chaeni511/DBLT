@@ -1,9 +1,7 @@
-package com.dopamines.backend.game.repository;
+package com.dopamines.backend.item.repository;
 
-import com.dopamines.backend.game.entity.Body;
+import com.dopamines.backend.item.entity.Body;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface BodyRepository extends JpaRepository<Body, Integer> {
 

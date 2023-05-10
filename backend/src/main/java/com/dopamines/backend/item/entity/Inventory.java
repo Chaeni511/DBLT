@@ -1,4 +1,4 @@
-package com.dopamines.backend.game.entity;
+package com.dopamines.backend.item.entity;
 
 import javax.persistence.FetchType;
 import javax.persistence.Id;
