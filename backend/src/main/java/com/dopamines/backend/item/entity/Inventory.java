@@ -11,27 +11,8 @@ public class Inventory {
     private int inventoryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="skin_id")
-    private List<Skin> skins;
+    @JoinColumn(name="item_id")
+    private List<Item> skins;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="body_id")
-    private List<Body> bodies;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="eye_id")
-    private List<Eye> eyes;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="glove_id")
-    private List<Gloves> gloves;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="mouth_and_nose_id")
-    private List<MouthAndNose> mouthAndNoses;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="tail_id")
-    private List<Tail> tails;
 
 }
