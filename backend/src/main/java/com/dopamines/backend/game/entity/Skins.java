@@ -3,6 +3,8 @@ package com.dopamines.backend.game.entity;
 import lombok.*;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Setter
@@ -13,6 +15,7 @@ import javax.persistence.Id;
 @Entity
 public class Skins {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int skinId;
 
     private int skinPrice;
