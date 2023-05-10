@@ -6,6 +6,7 @@ import com.dopamines.backend.test.dto.TestDto;
 import com.dopamines.backend.test.service.TestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class TestController {
 
     //db와 상호작용 필요없는 일반 api
     @GetMapping("/hello")
-    @ApiOperation(value = "hello world 출력", notes = "hello world 반환") //notes는 안적어도 상관없음!
+    @Operation(summary = "hello world 출력", description = "hello world 반환") //notes는 안적어도 상관없음!
     public String Hello(){
         return "hello world!";
     }
@@ -39,7 +40,7 @@ public class TestController {
     
     //jpa가 기본적으로 제공하는 함수를 이용해 db와 상호작용 (post)
     @PostMapping("/testPost")
-    @ApiOperation(value = "Jpa 기본 동작 확인", notes = "데이터베이스에 데이터 삽입")
+    @Operation(summary = "Jpa 기본 동작 확인", description = "데이터베이스에 데이터 삽입")
     public ResponseEntity<Void> postData(@RequestParam("name") String name) {
         teatservice.saveData(name);
         return ResponseEntity.ok().build();
@@ -48,7 +49,7 @@ public class TestController {
 
     //jpa가 기본적으로 제공하는 함수를 이용해 db와 상호작용 (get)
     @GetMapping("/testDefault")
-    @ApiOperation(value = "jpa 기본 동작 확인", notes = "테스트 테이블의 칼럼 수 반환")
+    @Operation(summary = "jpa 기본 동작 확인", description = "테스트 테이블의 칼럼 수 반환")
     public long getCount(){
         return teatservice.getCount();
     }
@@ -56,7 +57,7 @@ public class TestController {
 
     //jpa가 기본적으로 제공하지 않지만, dto 이용
     @GetMapping("/testCustom")
-    @ApiOperation(value = "jpa dto 동작 확인", notes = "이름에 '안녕'을 포함하는 칼럼 리스트 반환")
+    @Operation(summary = "jpa dto 동작 확인", description = "이름에 '안녕'을 포함하는 칼럼 리스트 반환")
     public List<TestDto> getTest(){
         return teatservice.getCustom("안녕");
     }

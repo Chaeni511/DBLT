@@ -50,6 +50,7 @@ public class PositionHandler extends TextWebSocketHandler {
 
             log.info("planRoom : {}", planRoom.toString());
 
+            // 핸들러 액션 실행
             planRoom.handleAction(session, positionMessage, positionService);
 
         } catch (Exception e) {

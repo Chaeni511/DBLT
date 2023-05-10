@@ -44,7 +44,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 || servletPath.equals("/account/oauth")
                 || servletPath.startsWith("/test")
                 || servletPath.startsWith("/swagger")
-                || servletPath.startsWith("/test")
+                || servletPath.startsWith("/ws")
                 || servletPath.startsWith("/v3/api-docs")
                 || servletPath.startsWith("/pwabuilder-sw.js")
 

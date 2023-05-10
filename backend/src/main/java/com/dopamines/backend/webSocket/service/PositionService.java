@@ -74,6 +74,7 @@ public class PositionService {
         return planRoom;
     }
 
+
     // 메시지 보내기
     public <T> void sendMessage(WebSocketSession session, T message) {
         try {
@@ -83,12 +84,47 @@ public class PositionService {
         }
     }
 
+
+    // 도착하면 도착상태, 도착시간, 지각시간 업데이트
+    // 입장하면 도착상태 false로 변환
+    @Transactional
+    public void updateIsArrived(String planId, String accountId, Boolean isArrived) {
+        Plan plan = planRepository.findById(Long.parseLong(planId))
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 약속 입니다. : Invalid Plan ID"));
+
+        Account account = accountRepository.findById(Long.parseLong(accountId))
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. : User not found"));
+
+        Participant participant = participantRepository.findByPlanAndAccount(plan, account)
+                .orElseThrow(() -> new IllegalArgumentException("약속 참가자가 아닙니다. : Participant not found"));
+
+        ////////////// 도착상태 변화 ////////////////
+        participant.setIsArrived(isArrived);
+
+        // 도착했으면 시간저장
+        if (isArrived) {
+            LocalTime arrivalTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
+            ////////////// 도착 시간 저장 /////////////
+            participant.setArrivalTime(arrivalTime);
+            // 지각 시간 계산
+            Duration duration = Duration.between(arrivalTime, plan.getPlanTime());
+            long minutesBetween = duration.toMinutes();
+            ///////////// 지각 시간 저장 ///////////////////////////
+            participant.setLateTime(minutesBetween);
+            //////////// 누적 지각 시간 저장 ////////////////////////
+            account.setAccumulatedTime(account.getAccumulatedTime() + (int) minutesBetween);
+        }
+        // 변경사항 저장
+        participantRepository.save(participant);
+    }
+
     // 모든 참가자가 도착했는지 확인하고 모두 도착했으면 세션을 종료하고 방을 제거
     public void arrivedAllParticipant(PlanRoomDto room, String planId) {
 
         if (planService.isAllMemberArrived(Long.parseLong(planId))) {
             // 모든 참가자가 도착한 경우
             log.info("All members arrived for planId : {}", planId);
+            /////////////////////////// 도착했으면 ///////////////////////////////////
 
             // 모든 세션을 종료합니다.
             for (WebSocketSession session : room.getSessions()) {
@@ -101,34 +137,5 @@ public class PositionService {
             // 방을 제거합니다.
             planRooms.remove(planId);
         }
-    }
-
-
-    // 도착하면 도착상태, 도착시간, 지각시간 업데이트
-    // 입장하면 도착상태 false로 변환
-    @Transactional
-    public void updateIsArrived(String planId, String nickname, boolean isArrived) {
-        Plan plan = planRepository.findById(Long.parseLong(planId))
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Plan ID"));
-        Account account = accountRepository.findByNickname(nickname)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        Participant participant = participantRepository.findByPlanAndAccount(plan, account)
-                .orElseThrow(() -> new IllegalArgumentException("Participant not found"));
-
-        // 도착상태 변화
-        participant.setIsArrived(isArrived);
-
-        // 도착했으면 시간저장
-        if (isArrived) {
-            LocalTime arrivalTime = LocalTime.now(ZoneId.of("Asia/Seoul"));
-            participant.setArrivalTime(arrivalTime);
-            // 지각 시간 계산
-            Duration duration = Duration.between(arrivalTime, plan.getPlanTime());
-            long minutesBetween = duration.toMinutes();
-            participant.setLateTime(minutesBetween);
-        }
-        // 변경사항 저장
-        participantRepository.save(participant);
     }
 }

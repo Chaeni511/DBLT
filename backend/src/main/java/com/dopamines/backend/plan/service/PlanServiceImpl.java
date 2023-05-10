@@ -284,23 +284,6 @@ public class PlanServiceImpl implements PlanService {
     }
 
 
-    // 모든 참가자가 도착한 경우 true 반환환
-    @Override
-    public boolean isAllMemberArrived(Long planId) {
-        Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
-
-        List<Participant> participants = participantRepository.findByPlan(plan);
-        // 현재 참여중인 멤버들의 도착 여부를 확인합니다.
-        // 모두 도착했으면 true, 한사람이라도 도착하지 않았다면 false를 반환합니다.
-        for (Participant participant : participants) {
-            if (!participant.getIsArrived()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     /////////////////////////////// 중복 사용 함수 ////////////////////////////////////////////
 
     // 약속 시간 유효성 검사
@@ -383,6 +366,25 @@ public class PlanServiceImpl implements PlanService {
         Optional<Participant> participant = participantRepository.findByPlanAndAccount(plan, account);
 
         return participant.isPresent();
+    }
+
+    /////////////////////////////// 소켓 ////////////////////////////////////////
+
+    // 모든 참가자가 도착한 경우 true 반환환
+    @Override
+    public boolean isAllMemberArrived(Long planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 약속 정보가 없습니다."));
+
+        List<Participant> participants = participantRepository.findByPlan(plan);
+        // 현재 참여중인 멤버들의 도착 여부를 확인합니다.
+        // 모두 도착했으면 true, 한사람이라도 도착하지 않았다면 false를 반환합니다.
+        for (Participant participant : participants) {
+            if (!participant.getIsArrived()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
