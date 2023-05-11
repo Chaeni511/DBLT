@@ -105,8 +105,7 @@ public class PhotoController {
             HttpServletRequest request,
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate selectedDate
     ) {
-        log.info("PhotoController의 getPhotoListMap에서 찍는 selectedDate: " + selectedDate);
-        String userEmail = request.getRemoteUser();
+        log.info("PhotoController의 getPhotoListMap에서 찍는 selectedDate: " + selectedDate);String userEmail = request.getRemoteUser();
         // 선택한 달의 시작일과 종료일 구하기
         Map<LocalDate, List<PhotoDateDto>> photoList = photoService.getPhotosByDateMap(userEmail, selectedDate);
 
