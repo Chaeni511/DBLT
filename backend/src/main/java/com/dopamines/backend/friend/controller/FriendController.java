@@ -1,5 +1,6 @@
 package com.dopamines.backend.friend.controller;
 
+import com.dopamines.backend.friend.dto.FriendResponseDto;
 import com.dopamines.backend.friend.service.FriendService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,16 @@ import javax.servlet.http.HttpServletRequest;
 public class FriendController {
     private final FriendService friendService;
     @PostMapping("/add")
-    public void addFriend(HttpServletRequest request, Long friendId) {
+    public ResponseEntity<FriendResponseDto> addFriend(HttpServletRequest request, Long friendId) {
         String email = request.getRemoteUser();
-        friendService.addFriend(email, friendId);
-//        return ResponseEntity.ok(imageService.editProfile(email, multipartFile));
 
+        return ResponseEntity.ok(friendService.addFriend(email, friendId));
+
+    }
+    @PostMapping("/accept")
+    public ResponseEntity<FriendResponseDto> acceptFriend(HttpServletRequest request, Long friendId) {
+        String email = request.getRemoteUser();
+
+        return ResponseEntity.ok(friendService.acceptFriend(email, friendId));
     }
 }

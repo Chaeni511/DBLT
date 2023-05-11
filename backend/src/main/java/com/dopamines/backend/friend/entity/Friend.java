@@ -24,8 +24,6 @@ public class Friend {
     private Long friendId;
     @Column
     private String friendEmail;
-    @Column
-    private Long myId;
 
     @ManyToOne
     @JoinColumn(name="account_id")
