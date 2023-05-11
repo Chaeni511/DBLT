@@ -35,6 +35,13 @@ public class FriendController {
         return ResponseEntity.ok(friendService.acceptFriend(email, friendId));
     }
 
+    @DeleteMapping("/deny")
+    public ResponseEntity<FriendResponseDto> denyFriend(HttpServletRequest request, Long friendId) {
+        String email = request.getRemoteUser();
+
+        return ResponseEntity.ok(friendService.denyFriend(email, friendId));
+    }
+
     @DeleteMapping("/delete") //친구삭제
     public FriendResponseDto deleteFriend (HttpServletRequest request,  Long friendId) {
         String email = request.getRemoteUser();

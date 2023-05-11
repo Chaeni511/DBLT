@@ -71,26 +71,53 @@ public class FriendServiceImpl implements FriendService{
             throw new RuntimeException(("나는 세상에서 제일 소중한 친구입니다:) "));
         }
 
-        // friend entity 생성
+        // 양쪽에 friend entity 생성
         Friend friend = Friend.toBuild(myAccount.get(), friendAccount.get());
+        Friend.toBuild(friendAccount.get(), myAccount.get());
+
         // 저장 후 id 가져오기
         Long id = friendRepository.save(friend).getId();
 
         // waiting에서 삭제
-        List<WaitingFriend> waitingFriendList = waitingFriendRepository.findAllByFriendIdAndAccount_AccountId(friendAccount.get().getAccountId(), myAccount.get().getAccountId());
+        List<WaitingFriend> waitingFriendList = waitingFriendRepository.findAllByFriendIdAndAccount_AccountId(myAccount.get().getAccountId(), friendAccount.get().getAccountId());
         log.info("waitingFriendList: " + waitingFriendList.toString());
-        waitingFriendRepository.deleteAll(waitingFriendList);
+        FriendResponseDto friendResponseDto = new FriendResponseDto();
+
+        if(waitingFriendList.isEmpty()){
+            log.info("waitingFriendList.isEmpty()");
+            return friendResponseDto;
+
+        } else {
+
+            waitingFriendRepository.deleteAll(waitingFriendList);
+            friendResponseDto.setStatus(3);
+            friendResponseDto.setNickname(friendAccount.get().getNickname());
+            friendResponseDto.setFriendId(friendAccount.get().getAccountId());
+            return friendResponseDto;
+
+        }
 
     //        for(WaitingFriend wf: waitingFriendList){
 //            waitingFriendRepository.deleteAllInBatch(waitingFriendList);
 //        }
 
+
+    }
+    @Override
+    public FriendResponseDto denyFriend(String email, Long friendId){
+        Optional<Account> myAccount = accountRepository.findByEmail(email);
+        Optional<Account> friendAccount = accountRepository.findById(friendId);
+
+        List<WaitingFriend> waitingFriendList = waitingFriendRepository.findAllByFriendIdAndAccount_AccountId(friendAccount.get().getAccountId(), myAccount.get().getAccountId());
+        log.info("waitingFriendList: " + waitingFriendList.toString());
+
+        waitingFriendRepository.deleteAll(waitingFriendList);
         FriendResponseDto friendResponseDto = new FriendResponseDto();
-        friendResponseDto.setStatus(3);
+        friendResponseDto.setStatus(4);
         friendResponseDto.setNickname(friendAccount.get().getNickname());
         friendResponseDto.setFriendId(friendAccount.get().getAccountId());
         return friendResponseDto;
-    }
+    };
 
     @Override
     public FriendResponseDto deleteFriend(String email, Long friendId){
