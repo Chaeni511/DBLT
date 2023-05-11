@@ -1,6 +1,7 @@
 package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.plan.dto.EndPlanDto;
+import com.dopamines.backend.plan.dto.GameMoneyDto;
 import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Plan;
@@ -29,6 +30,8 @@ public interface PlanService {
 
     // 해당 날짜의 약속 리스트
     List<PlanListDto> getPlanList(String userEmail, LocalDate planDate);
+
+    GameMoneyDto getGameMoney(Long planId);
 
     // 모든 참가자가 도착한 경우 true 반환환
     boolean isAllMemberArrived(Long planId);
