@@ -31,6 +31,7 @@ public interface PlanService {
     // 해당 날짜의 약속 리스트
     List<PlanListDto> getPlanList(String userEmail, LocalDate planDate);
 
+    // 게임으로 보낼 총 지각비를 계산합니다.
     GameMoneyDto getGameMoney(Long planId);
 
     // 모든 참가자가 도착한 경우 true 반환환

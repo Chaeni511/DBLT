@@ -1,6 +1,7 @@
 package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.plan.dto.GameResultMoneyDto;
 import com.dopamines.backend.plan.entity.Plan;
 
 public interface ParticipantService {
@@ -13,5 +14,8 @@ public interface ParticipantService {
 
     // 방장 인지 확인
     Boolean findIsHostByPlanAndUser(Plan plan, Account account);
+
+    // 게임 결과에 따른 거래 금액을 저장합니다.
+    GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney, Integer balance);
 
 }
