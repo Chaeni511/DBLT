@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -19,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ItemController {
     private final ItemService itemService;
-    @GetMapping("/items")
-    public ResponseEntity<ItemDto> getItems(HttpServletRequest request) {
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, HashMap<String, List<ItemDto>>>> getItems(HttpServletRequest request) {
         return ResponseEntity.ok(itemService.getItems());
     }
 
