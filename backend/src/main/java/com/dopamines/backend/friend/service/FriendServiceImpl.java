@@ -38,6 +38,7 @@ public class FriendServiceImpl implements FriendService{
             throw new RuntimeException(("나는 세상에서 제일 소중한 친구입니다:) "));
         }
 
+
         // 이미 친구인지 확인
 //        for(Friend myFriend : myFriends)
 //        {
