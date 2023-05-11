@@ -1,22 +1,20 @@
-package com.dopamines.backend.game.service;
+package com.dopamines.backend.item.service;
 
-import com.dopamines.backend.game.dto.ItemDto;
-import com.dopamines.backend.game.entity.Body;
-import com.dopamines.backend.game.repository.*;
+import com.dopamines.backend.account.repository.AccountRepository;
+import com.dopamines.backend.item.dto.ItemDto;
+import com.dopamines.backend.item.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
 @Service
 public class ItemServiceImpl implements ItemService{
+    private final AccountRepository accountRepository;
     @Autowired
     BodyRepository bodyRepository;
     @Autowired
@@ -39,7 +37,9 @@ public class ItemServiceImpl implements ItemService{
         itemDto.setSkins(skinRepository.findAll());
         itemDto.setTails(tailRepository.findAll());
         itemDto.setMouthAndNoses(mouthAndNoseRepository.findAll());
-        log.info("ItemService의 getItems에서 찍는 itemDto: " + itemDto.toString());
+        log.info("ItemService의 getItems에서 찍는 itemDto: " + itemDto);
         return itemDto;
     }
+
+
 }

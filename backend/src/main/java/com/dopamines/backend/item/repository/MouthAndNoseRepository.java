@@ -1,6 +1,6 @@
-package com.dopamines.backend.game.repository;
+package com.dopamines.backend.item.repository;
 
-import com.dopamines.backend.game.entity.MouthAndNose;
+import com.dopamines.backend.item.entity.MouthAndNose;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

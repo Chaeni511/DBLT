@@ -1,6 +1,6 @@
-package com.dopamines.backend.game.repository;
+package com.dopamines.backend.item.repository;
 
-import com.dopamines.backend.game.entity.Tail;
+import com.dopamines.backend.item.entity.Tail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

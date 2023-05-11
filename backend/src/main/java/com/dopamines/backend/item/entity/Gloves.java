@@ -1,4 +1,4 @@
-package com.dopamines.backend.game.entity;
+package com.dopamines.backend.item.entity;
 
 import lombok.*;
 
@@ -13,9 +13,9 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Body {
+public class Gloves {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bodyId;
-    private int bodyPrice;
+    private int glovesId;
+    private int glovesPrice;
 }

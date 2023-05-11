@@ -1,6 +1,6 @@
-package com.dopamines.backend.game.dto;
+package com.dopamines.backend.item.dto;
 
-import com.dopamines.backend.game.entity.*;
+import com.dopamines.backend.item.entity.*;
 import lombok.Getter;
 import lombok.Setter;
 
