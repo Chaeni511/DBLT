@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,4 +34,12 @@ public class FriendController {
 
         return ResponseEntity.ok(friendService.acceptFriend(email, friendId));
     }
+
+    @DeleteMapping("/delete") //친구삭제
+    public FriendResponseDto deleteFriend (HttpServletRequest request,  Long friendId) {
+        String email = request.getRemoteUser();
+
+        return friendService.deleteFriend(email, friendId);
+    }
+
 }

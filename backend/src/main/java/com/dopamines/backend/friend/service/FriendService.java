@@ -6,6 +6,6 @@ public interface FriendService {
 
     FriendResponseDto addFriend(String email, Long friendId);
     FriendResponseDto acceptFriend(String email, Long friendId);
-    Boolean deleteFriend(Long friendId);
+    FriendResponseDto deleteFriend(String email, Long friendId);
 }
 
