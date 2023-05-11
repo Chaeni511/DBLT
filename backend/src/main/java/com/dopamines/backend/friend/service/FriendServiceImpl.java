@@ -24,6 +24,14 @@ public class FriendServiceImpl implements FriendService{
     private final FriendRepository friendRepository;
     private final WaitingFriendRepository waitingFriendRepository;
     private FriendService friendService;
+
+    @Override
+    public List<Friend> getFriendList(String email){
+        Optional<Account> account = accountRepository.findByEmail(email);
+
+        return friendRepository.findAllByAccount_AccountId(account.get().getAccountId());
+
+    }
     @Override
     public FriendResponseDto addFriend(String email, Long friendId){
         Optional<Account> myAccount = accountRepository.findByEmail(email);

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+//@Builder
 public class FriendResponseDto {
      private Long friendId;
      private String nickname;
