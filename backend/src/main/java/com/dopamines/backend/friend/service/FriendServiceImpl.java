@@ -168,7 +168,9 @@ public class FriendServiceImpl implements FriendService{
         FriendResponseDto friendResponseDto = new FriendResponseDto();
 
         friendResponseDto.setStatus(status);
+        friendResponseDto.setProfile(friendAccount.getProfile());
         friendResponseDto.setNickname(friendAccount.getNickname());
+        friendResponseDto.setProfileMessage(friendAccount.getProfileMessage());
         friendResponseDto.setFriendId(friendAccount.getAccountId());
 
         return friendResponseDto;
