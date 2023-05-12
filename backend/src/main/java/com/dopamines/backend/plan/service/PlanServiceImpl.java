@@ -289,6 +289,34 @@ public class PlanServiceImpl implements PlanService {
 
     }
 
+    // 해당 약속의 지각비 총 금액 계산
+    public GameMoneyDto getGameMoney(Long planId){
+
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 약속의 약속 정보가 없습니다."));
+
+        LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        LocalDateTime appointmentTime = LocalDateTime.of(plan.getPlanDate(), plan.getPlanTime());
+
+        if (currentTime.isBefore(appointmentTime)) {
+            throw new IllegalArgumentException("약속 시간 이후에 API를 요청해주세요.");
+        }
+
+        // 해당 약속의 participant 목록 가져오기
+        List<Participant> participants = participantRepository.findByPlan(plan);
+        int laterCount = 0;
+        for (Participant user : participants) {
+            // 지각시간이 null 이거나 0보다 크면 지각으로 간주
+            if (user.getLateTime() == null || user.getLateTime() > 0) {
+                laterCount += 1;
+            }
+        }
+        GameMoneyDto gameMoneyDto = new GameMoneyDto();
+        gameMoneyDto.setPlanId(planId);
+        gameMoneyDto.setTotalPayment(laterCount*plan.getCost());
+        return gameMoneyDto;
+    }
+
 
     /////////////////////////////// 중복 사용 함수 ////////////////////////////////////////////
 

@@ -16,4 +16,5 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     List<Participant> findByAccount(Account account);
     Optional<Participant> findByPlanAndAccount(Plan plan, Account account);
     List<Participant> findByAccountAndPlanPlanDateBetween(Account account, LocalDate startDate, LocalDate endDate);
+    Integer countByPlan(Plan plan);
 }

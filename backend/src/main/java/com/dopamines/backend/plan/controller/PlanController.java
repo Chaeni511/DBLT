@@ -5,6 +5,7 @@ import com.dopamines.backend.account.service.UserService;
 import com.dopamines.backend.plan.dto.EndPlanDto;
 import com.dopamines.backend.plan.dto.PlanDto;
 import com.dopamines.backend.plan.dto.PlanListDto;
+import com.dopamines.backend.plan.dto.GameMoneyDto;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
@@ -209,4 +210,24 @@ public class PlanController {
         return new ResponseEntity<>(endPlanDto, HttpStatus.OK);
     }
 
+    @GetMapping("/gameMoney")
+    @Operation(summary = "약속 지각자들의 총 지각비 정보를 불러오는 api 입니다.", description = "PlanId를 입력하여 약속 지각비 총 금액을 불러옵니다.<br>" +
+            "도착한 약속시간을 기준으로 지각여부를 판단합니다. 약속 시간 이후에 요청해주세요.")
+    public ResponseEntity<GameMoneyDto> getGameMoney(
+            HttpServletRequest request,
+            @RequestParam("planId") Long planId
+    ) {
+
+        try {
+            GameMoneyDto gameMoneyDto = planService.getGameMoney(planId);
+            return ResponseEntity.ok(gameMoneyDto);
+        } catch (IllegalArgumentException e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            log.error("API 호출 중 예외 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
 }
