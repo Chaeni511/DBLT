@@ -3,9 +3,12 @@ package com.dopamines.backend.plan.service;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.service.UserService;
+import com.dopamines.backend.plan.dto.GameMoneyDto;
+import com.dopamines.backend.plan.dto.GameResultMoneyDto;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
+import com.dopamines.backend.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private PlanRepository planRepository;
 
     // 참가자 생성
     @Override
@@ -94,6 +100,78 @@ public class ParticipantServiceImpl implements ParticipantService {
         // 제거 대상 삭제, 추가 대상 추가
         participantRepository.deleteAll(participantsToRemove);
         participantRepository.saveAll(participantsToAdd);
+    }
+
+    // 게임으로 획득한 돈을 참가자의 거래금액에 등록하고 회원계정의 누적금액으로 업데이트합니다.
+    public GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney, Integer balance) {
+        // 약속 정보 가져오기
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 약속의 약속 정보가 없습니다."));
+
+        // 회원 정보 가져오기
+        Account account = accountRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원의 정보가 없습니다."));
+
+        // 약속에 대한 참가자 정보 가져오기
+        Participant participant = participantRepository.findByPlanAndAccount(plan,account)
+                .orElseThrow(() -> new IllegalArgumentException("해당 약속에 참가자의 정보가 없습니다."));
+
+        // 참가자 수
+        int countParticipant = participantRepository.countByPlan(plan);
+
+        // 잔액과 참가자 수가 존재할 때 n빵 계산
+        int quotient = 0; // 몫
+        int remainder = 0; // 나머지
+
+        if (balance > 0 && countParticipant > 0) {
+            quotient = balance / countParticipant; // n빵한 금액
+            remainder = balance % countParticipant; // 나머지는 방장에게 줌
+        }
+
+        // 최종 거래 금액 계산
+        // 일찍 온 사람이면 획득한 금액과 n빵한 금액을 모두 얻는다.
+        int finalAmount = getGameMoney + quotient;
+        // 나머지가 있으면 방장에게 준다.
+        if (participant.getIsHost()){
+            finalAmount += remainder;
+        }
+
+        // 지각자면 최종 획득한 금액에서 지각비 뺀다. (음수가 된다.)
+        if (participant.getLateTime() > 0 || participant.getLateTime() == null) {
+            finalAmount -=  plan.getCost();
+        }
+
+        ///////////////////////////////////////////////
+        // 최종 거래 금액 저장
+        participant.setTransactionMoney(finalAmount);
+        participantRepository.save(participant);
+
+        /////////////////////////////////////////////////////////
+        // 최종 거래 금액이 음수이면 account에 totalOut에 저장
+        // 최종 거래 금액이 양수이면 account에 totalIn에 저장
+        if (finalAmount < 0) {
+            account.setTotalOut(account.getTotalOut() + finalAmount);
+        } else {
+            account.setTotalIn(account.getTotalIn() + finalAmount);
+        }
+        accountRepository.save(account);
+
+        // 결과 dto 생성
+        GameResultMoneyDto gameResultMoneyDto = new GameResultMoneyDto();
+        gameResultMoneyDto.setPlanId(planId);
+        gameResultMoneyDto.setAccountId(account.getAccountId());
+        gameResultMoneyDto.setPlanCost(plan.getCost());
+        gameResultMoneyDto.setIsLate(participant.getLateTime() == null || participant.getLateTime()>0);
+        gameResultMoneyDto.setGetGameMoney(getGameMoney);
+        gameResultMoneyDto.setFinalAmount(finalAmount);
+
+        if (participant.getIsHost()){
+            gameResultMoneyDto.setGetBalance(quotient+remainder);
+        } else {
+            gameResultMoneyDto.setGetBalance(quotient);
+        }
+
+        return gameResultMoneyDto;
     }
 
 

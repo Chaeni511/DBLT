@@ -1,7 +1,7 @@
 package com.dopamines.backend.friend.entity;
 
 import com.dopamines.backend.account.entity.Account;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,6 +26,8 @@ public class Friend {
     private String friendEmail;
 
     @ManyToOne
+    @JsonBackReference
+//    @JsonIgnoreProperties
     @JoinColumn(name="account_id")
 //    @JsonIgnoreProperties({"friends", "friendWaitEntities"})
 //    @NonNull
