@@ -177,7 +177,6 @@ public class FriendServiceImpl implements FriendService{
     }
 
     private void validateNotSelf(Account myAccount, Account friendAccount) {
-
         if (myAccount.getAccountId().equals(friendAccount.getAccountId())) {
             throw new RuntimeException("나는 세상에서 제일 소중한 친구입니다:)");
         }

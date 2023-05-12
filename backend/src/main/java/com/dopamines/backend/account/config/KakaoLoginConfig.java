@@ -33,38 +33,6 @@ public class KakaoLoginConfig {
 
             return response;
         }
-//    public Mono<TokenResponseDto> login(String email, Long kakaoId) {
-//        String uri = USER_INFO_URI;
-//
-//        Map<String, String> bodyMap = new HashMap<>();
-//        bodyMap.put("email", email);
-//        bodyMap.put("kakaoId", kakaoId.toString());
-//        System.out.println("bodyMap: "+ bodyMap);
-//        return webClient.post()
-//                .uri(uri)
-//                .contentType(MediaType.APPLICATION_JSON)
-////                .header("Authorization", "Bearer " + accessToken)
-//                .body(BodyInserters.fromValue(bodyMap))
-//                .retrieve()
-//                .bodyToMono(TokenResponseDto.class);
-//    }
-//    public Json login(String email, Long kakaoId) {
-//        String uri = USER_INFO_URI;
-//
-//        Map<String, String> bodyMap = new HashMap<>();
-//        bodyMap.put("email", email);
-//        bodyMap.put("kakaoId", kakaoId.toString());
-//
-//        Flux<Json> response = webClient.post()
-//                .uri(uri)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(BodyInserters.fromValue(bodyMap))
-//                .retrieve()
-//                .bodyToFlux(Json.class);
-////                .header("Authorization", "Bearer " + token)
-//
-//        return response.blockFirst();
 
-//        return response.blockFirst();
 
 }

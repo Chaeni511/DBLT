@@ -27,7 +27,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         System.out.println("kakao_id: "+ password);
 
         System.out.println("CustomAuthenticationFilter에서 attemptAuthentication");
-//        String code = request.getParameter("code");
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
         return authenticationManager.authenticate(token);
     }
