@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -280,9 +278,13 @@ public class PlanServiceImpl implements PlanService {
             }
 
         }
+        // 약속 시간을 기준으로 정렬
+        planHomeListDto.sort(Comparator.comparing(PlanListDto::getPlanTime));
+        
         return planHomeListDto;
 
     }
+
 
     // 해당 약속의 지각비 총 금액 계산
     public GameMoneyDto getGameMoney(Long planId){
