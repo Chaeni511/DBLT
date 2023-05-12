@@ -9,9 +9,12 @@ import com.dopamines.backend.friend.repository.FriendRepository;
 import com.dopamines.backend.friend.repository.WaitingFriendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,124 +28,174 @@ public class FriendServiceImpl implements FriendService{
     private final WaitingFriendRepository waitingFriendRepository;
     private FriendService friendService;
 
+
     @Override
     public List<Friend> getFriendList(String email){
-        Optional<Account> account = accountRepository.findByEmail(email);
+        Account account = getAccountByEmail(email);
 
-        return friendRepository.findAllByAccount_AccountId(account.get().getAccountId());
-
+        return friendRepository.findAllByAccount_AccountId(account.getAccountId());
     }
-    @Override
-    public FriendResponseDto addFriend(String email, Long friendId){
-        Optional<Account> myAccount = accountRepository.findByEmail(email);
-        Optional<Account> friendAccount = accountRepository.findById(friendId);
 
-        // 나한테 친신 했을 때
-        if(myAccount.get().getAccountId()==friendAccount.get().getAccountId()){
-            throw new RuntimeException(("나는 세상에서 제일 소중한 친구입니다:) "));
+
+    @Override
+    public FriendResponseDto addFriend(String email, Long friendId) {
+        Account myAccount = getAccountByEmail(email);
+        Account friendAccount = getAccountById(friendId);
+
+        if(myAccount == null || friendAccount == null){
+            throw new IllegalArgumentException("해당 email이나 firendId가 없습니다. ;(");
         }
 
-        // 이미 친구인지 확인
-//        for(Friend myFriend : myFriends)
-//        {
-//            if(myFriend.getFriendId()==friendId)
-//                throw new RuntimeException("이미 친구입니다.");
-//        }
-        log.info("addFriend에서 찍는 myAccount: " + myAccount.get().getEmail());
-        log.info("addFriend에서 찍는 friendAccount: " + friendAccount.get().getEmail());
 
-        WaitingFriend waitingFriend = WaitingFriend.toBuild(myAccount.get(), friendAccount.get());
-        log.info("addFriend에서 찍는 waitingFriend: " + waitingFriend.getFriendEmail());
-        log.info("addFriend에서 찍는 waitingFriend: " + waitingFriend.getAccount().getEmail());
+        validateNotSelf(myAccount, friendAccount);
+        validateNotAlreadyFriends(myAccount, friendAccount);
+
+
+        log.info("addFriend에서 찍는 myAccount: " + myAccount.getEmail());
+        log.info("addFriend에서 찍는 friendAccount: " + friendAccount.getEmail());
+
+        // 이미 친구 신청한 상태인지 확인
+        Optional<WaitingFriend> waitingFriendOpt= waitingFriendRepository.findByFriendIdAndAccount_AccountId(friendId, myAccount.getAccountId());
+        if(!waitingFriendOpt.isEmpty()){
+            // 했으면 에러
+            throw new RuntimeException("이미 신청했습니다.");
+        }
+
+        try {
+
+        // 하지 않았으면 친구 신청
+        WaitingFriend waitingFriend = WaitingFriend.toBuild(myAccount, friendAccount);
+
         waitingFriendRepository.save(waitingFriend);
 
-        FriendResponseDto friendResponseDto = new FriendResponseDto();
-        List<WaitingFriend> waitingFriendList= waitingFriendRepository.findAllByAccount_AccountId(myAccount.get().getAccountId());
+        // FriendResponseDto 반환
+            return toFriendResponseDto(1, friendAccount);
 
-        for(WaitingFriend wf: waitingFriendList) {
-            log.info("wf: " + wf.getAccount().getAccountId());
-            if(wf.getAccount().getAccountId() == myAccount.get().getAccountId()){
-                friendResponseDto.setStatus(1);
-                friendResponseDto.setFriendId(friendAccount.get().getAccountId());
-                friendResponseDto.setNickname(friendAccount.get().getNickname());
-                return friendResponseDto;
-            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
-        return friendResponseDto;
+
+        throw new RuntimeException("FriendResponseDto를 생성할 수 없습니다.");
     }
 
     @Override
     public FriendResponseDto acceptFriend(String email, Long friendId){
-        Optional<Account> myAccount = accountRepository.findByEmail(email);
-        Optional<Account> friendAccount = accountRepository.findById(friendId);
-        if(myAccount.get().getAccountId() == friendId){
-            throw new RuntimeException(("나는 세상에서 제일 소중한 친구입니다:) "));
+        Account myAccount = getAccountByEmail(email);
+        Account friendAccount = getAccountById(friendId);
+
+        if(myAccount == null || friendAccount == null){
+            throw new IllegalArgumentException("해당 email이나 firendId가 없습니다. ;(");
         }
 
-        // 양쪽에 friend entity 생성
-        Friend friend = Friend.toBuild(myAccount.get(), friendAccount.get());
-        Friend.toBuild(friendAccount.get(), myAccount.get());
+        validateNotSelf(myAccount, friendAccount);
+        validateNotAlreadyFriends(myAccount, friendAccount);
 
-        // 저장 후 id 가져오기
-        Long id = friendRepository.save(friend).getId();
+        // 친구 신청이 왔는지 확인
+        validateFriendRequest(myAccount, friendAccount);
+
+        // 왔으면
+        // 양쪽에 friend entity 생성
+        Friend friend1 = Friend.toBuild(myAccount, friendAccount);
+        friendRepository.save(friend1);
+        Friend friend2 = Friend.toBuild(friendAccount, myAccount);
+        friendRepository.save(friend2);
 
         // waiting에서 삭제
-        List<WaitingFriend> waitingFriendList = waitingFriendRepository.findAllByFriendIdAndAccount_AccountId(myAccount.get().getAccountId(), friendAccount.get().getAccountId());
-        log.info("waitingFriendList: " + waitingFriendList.toString());
-        FriendResponseDto friendResponseDto = new FriendResponseDto();
+        Optional<WaitingFriend> waitingFriend = waitingFriendRepository.findByFriendIdAndAccount_AccountId(myAccount.getAccountId(), friendId);
+        waitingFriendRepository.delete(waitingFriend.get());
 
-        if(waitingFriendList.isEmpty()){
-            log.info("waitingFriendList.isEmpty()");
-            return friendResponseDto;
-
-        } else {
-
-            waitingFriendRepository.deleteAll(waitingFriendList);
-            friendResponseDto.setStatus(3);
-            friendResponseDto.setNickname(friendAccount.get().getNickname());
-            friendResponseDto.setFriendId(friendAccount.get().getAccountId());
-            return friendResponseDto;
-
-        }
-
-    //        for(WaitingFriend wf: waitingFriendList){
-//            waitingFriendRepository.deleteAllInBatch(waitingFriendList);
-//        }
-
-
+        // dto 반환
+        return toFriendResponseDto(3, friendAccount);
     }
+
+
     @Override
     public FriendResponseDto denyFriend(String email, Long friendId){
-        Optional<Account> myAccount = accountRepository.findByEmail(email);
-        Optional<Account> friendAccount = accountRepository.findById(friendId);
+        Account myAccount = getAccountByEmail(email);
+        Account friendAccount = getAccountById(friendId);
 
-        List<WaitingFriend> waitingFriendList = waitingFriendRepository.findAllByFriendIdAndAccount_AccountId(friendAccount.get().getAccountId(), myAccount.get().getAccountId());
-        log.info("waitingFriendList: " + waitingFriendList.toString());
+        if(myAccount == null || friendAccount == null){
+            throw new IllegalArgumentException("해당 email이나 firendId가 없습니다. ;(");
+        }
 
-        waitingFriendRepository.deleteAll(waitingFriendList);
-        FriendResponseDto friendResponseDto = new FriendResponseDto();
-        friendResponseDto.setStatus(4);
-        friendResponseDto.setNickname(friendAccount.get().getNickname());
-        friendResponseDto.setFriendId(friendAccount.get().getAccountId());
+        validateNotSelf(myAccount, friendAccount);
 
-        return friendResponseDto;
+        // 요청이 있으면 삭제
+        waitingFriendRepository.delete(validateFriendRequest(myAccount, friendAccount));
+
+
+        // dto 반환
+        return toFriendResponseDto(4, friendAccount);
     };
 
     @Override
     public FriendResponseDto deleteFriend(String email, Long friendId){
-        Optional<Account> myAccount = accountRepository.findByEmail(email);
-        Optional<Account> friendAccount = accountRepository.findById(friendId);
+        Account myAccount = getAccountByEmail(email);
+        Account friendAccount = getAccountById(friendId);
 
-        List<Friend> friendList = friendRepository.findAllByFriendIdAndAccount_AccountId(friendAccount.get().getAccountId(), myAccount.get().getAccountId());
-        log.info("waitingFriendList: " + friendList.toString());
-        friendRepository.deleteAll(friendList);
+        if(myAccount == null || friendAccount == null){
+            throw new IllegalArgumentException("해당 email이나 firendId가 없습니다. ;(");
+        }
 
-        FriendResponseDto friendResponseDto = new FriendResponseDto();
-        friendResponseDto.setStatus(4);
-        friendResponseDto.setNickname(friendAccount.get().getNickname());
-        friendResponseDto.setFriendId(friendAccount.get().getAccountId());
+        validateNotSelf(myAccount, friendAccount);
 
-        return friendResponseDto;
+        // 서로 친구인지 확인
+        Optional<Friend> friendOpt1 = friendRepository.findByFriendIdAndAccount_AccountId(friendId, myAccount.getAccountId());
+        Optional<Friend> friendOpt2 = friendRepository.findByFriendIdAndAccount_AccountId(myAccount.getAccountId(), friendId);
+        // 친구가 아니면
+        if(friendOpt1.isEmpty() || friendOpt2.isEmpty()) {
+            throw new RuntimeException("친구가 아닙니다.");
+        }
+        // 친구면 삭제
+        friendRepository.delete(friendOpt1.get());
+        friendRepository.delete(friendOpt2.get());
+
+
+        // dto 반환
+        return toFriendResponseDto(4, friendAccount);
     };
 
+    private Account getAccountByEmail(String email) {
+        return accountRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 email이 없습니다. ;("));
+    }
+
+    private Account getAccountById(Long id) {
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 id가 없습니다. ;("));
+    }
+    private FriendResponseDto toFriendResponseDto (int status, Account friendAccount){
+        FriendResponseDto friendResponseDto = new FriendResponseDto();
+
+        friendResponseDto.setStatus(status);
+        friendResponseDto.setNickname(friendAccount.getNickname());
+        friendResponseDto.setFriendId(friendAccount.getAccountId());
+
+        return friendResponseDto;
+    }
+
+    private void validateNotSelf(Account myAccount, Account friendAccount) {
+        if (myAccount.getAccountId().equals(friendAccount.getAccountId())) {
+            throw new RuntimeException("나는 세상에서 제일 소중한 친구입니다:)");
+        }
+    }
+
+    private void validateNotAlreadyFriends(Account myAccount, Account friendAccount) {
+        List<Friend> myFriends = getFriendList(myAccount.getEmail());
+        for(Friend myFriend : myFriends) {
+            if(myFriend.getFriendId().equals(friendAccount.getAccountId()))
+                throw new RuntimeException("이미 친구입니다.");
+        }
+    }
+
+    private WaitingFriend validateFriendRequest(Account myAccount, Account friendAccount){
+        // 요청이 있는지 확인
+        Optional<WaitingFriend> waitingFriendOpt = waitingFriendRepository.findByFriendIdAndAccount_AccountId(friendAccount.getAccountId(), myAccount.getAccountId());
+        // 요청이 없으면
+        if(waitingFriendOpt.isEmpty()) {
+            throw new RuntimeException("해당 친구 요청이 없습니다.");
+        } else {
+            return waitingFriendOpt.get();
+        }
+    }
 }

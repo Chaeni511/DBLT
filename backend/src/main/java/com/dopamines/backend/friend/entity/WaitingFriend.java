@@ -25,7 +25,6 @@ public class WaitingFriend {
 
     @ManyToOne
     @JoinColumn(name="account_id")
-//    @JsonIgnoreProperties({"friendWaitEntities", "friends"})
     @NonNull
     private Account account;
 

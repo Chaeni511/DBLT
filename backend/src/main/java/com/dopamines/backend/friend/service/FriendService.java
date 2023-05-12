@@ -3,6 +3,7 @@ package com.dopamines.backend.friend.service;
 import com.dopamines.backend.friend.dto.FriendResponseDto;
 import com.dopamines.backend.friend.entity.Friend;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface FriendService {
