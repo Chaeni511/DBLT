@@ -1,8 +1,8 @@
 package com.dopamines.backend.item.service;
 
-import com.dopamines.backend.item.entity.MyCharacter;
+import com.dopamines.backend.item.dto.MyCharacterDto;
 
 public interface MyCharacterService {
-    MyCharacter getMyCharacter(String email);
+    MyCharacterDto getMyCharacter(String email);
 
 }

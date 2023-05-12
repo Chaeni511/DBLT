@@ -1,13 +1,20 @@
 package com.dopamines.backend.item.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.HashMap;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MyCharacterDto {
+
+    private int bodies;
+    private int bodyParts;
+    private int eyes;
+    private int gloves;
+    private int mouthAndGloves;
+    private int tail;
+
+
 }

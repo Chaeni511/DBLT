@@ -69,7 +69,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
 //                .name(dto.getNickname() + "의 캐릭터")
 //                .level(1)
 //                .experience(0)
-                .skin(1)
+                .body(1)
                 .eye(1)
                 .mouthAndNose(1)
                 .account(account)
