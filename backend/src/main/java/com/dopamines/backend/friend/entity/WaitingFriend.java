@@ -23,7 +23,7 @@ public class WaitingFriend {
     @Column
     private String friendEmail;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="account_id")
 //    @JsonIgnoreProperties({"friendWaitEntities", "friends"})
     @NonNull
