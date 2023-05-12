@@ -1,7 +1,6 @@
 package com.dopamines.backend.review.controller;
 
 import com.dopamines.backend.image.service.ImageService;
-import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.review.dto.PhotoDateDto;
 import com.dopamines.backend.review.dto.PhotoDetailDto;
@@ -11,7 +10,6 @@ import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,17 +30,11 @@ import java.util.Map;
 @Api(value = "photo", description = "약속 사진을 관리하는 컨트롤러입니다.")
 public class PhotoController {
 
-    @Autowired
-    ImageService imageService;
+    private final ImageService imageService;
 
-    @Autowired
-    PhotoService photoService;
+    private final PhotoService photoService;
 
-    @Autowired
-    ParticipantService participantService;
-
-    @Autowired
-    PlanService planService;
+    private final PlanService planService;
 
 
     @PostMapping("/register")

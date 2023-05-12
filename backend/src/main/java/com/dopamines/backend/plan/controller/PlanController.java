@@ -32,14 +32,11 @@ import java.util.List;
 @Api(value = "plan", description = "약속을 관리하는 컨트롤러입니다.")
 public class PlanController {
 
-    @Autowired
-    PlanService planService;
+    private final PlanService planService;
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    ParticipantService participantService;
+    private final ParticipantService participantService;
 
 
     @PostMapping("/create")

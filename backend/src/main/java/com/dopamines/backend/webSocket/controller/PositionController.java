@@ -3,12 +3,9 @@ package com.dopamines.backend.webSocket.controller;
 import com.dopamines.backend.webSocket.dto.PlanRoomDto;
 import com.dopamines.backend.webSocket.service.PositionService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

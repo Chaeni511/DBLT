@@ -30,20 +30,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    @Autowired
-    CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
-    @Autowired
-    ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
 
-    @Autowired
-    PlanRepository planRepository;
+    private final PlanRepository planRepository;
 
-    @Autowired
-    PlanService planService;
+    private final PlanService planService;
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
 
     private Comment getCommentById(Long commentId) {

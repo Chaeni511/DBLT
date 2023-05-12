@@ -2,8 +2,6 @@ package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
-import com.dopamines.backend.account.service.UserService;
-import com.dopamines.backend.plan.dto.GameMoneyDto;
 import com.dopamines.backend.plan.dto.GameResultMoneyDto;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
@@ -11,11 +9,13 @@ import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,14 +24,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ParticipantServiceImpl implements ParticipantService {
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    @Autowired
-    private PlanRepository planRepository;
+    private final PlanRepository planRepository;
+
 
     // 참가자 생성
     @Override

@@ -9,8 +9,6 @@ import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,17 +24,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PlanServiceImpl implements PlanService {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private PlanRepository planRepository;
+    private final PlanRepository planRepository;
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
 
-    @Autowired
-    private ParticipantServiceImpl participantService;
+    private final ParticipantServiceImpl participantService;
 
 
     // 약속 생성

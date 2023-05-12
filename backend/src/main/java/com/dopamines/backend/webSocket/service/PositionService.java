@@ -12,7 +12,6 @@ import com.dopamines.backend.webSocket.dto.PlanRoomDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -33,17 +32,13 @@ import java.util.Map;
 @Transactional
 public class PositionService {
 
-    @Autowired
-    private PlanService planService;
+    private final PlanService planService;
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
 
-    @Autowired
-    private PlanRepository planRepository;
+    private final PlanRepository planRepository;
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     private final ObjectMapper objectMapper;
     private Map<String, PlanRoomDto> planRooms;
