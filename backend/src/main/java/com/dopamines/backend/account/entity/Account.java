@@ -1,6 +1,7 @@
 package com.dopamines.backend.account.entity;
 
 import com.dopamines.backend.common.BaseTimeEntity;
+import com.dopamines.backend.friend.entity.Friend;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
@@ -65,6 +66,10 @@ public class Account extends BaseTimeEntity {
     public void updateRefreshToken(String newToken) {
         this.refreshToken = newToken;
     }
+
+    // 친구
+    @OneToMany(mappedBy="account")
+    private List<Friend> friends = new ArrayList<>();
 
 //    @OneToOne(mappedBy = "my_character_id", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private MyCharacter myCharacter;
