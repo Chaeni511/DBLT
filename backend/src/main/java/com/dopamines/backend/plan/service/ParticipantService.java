@@ -13,7 +13,7 @@ public interface ParticipantService {
     void updateParticipant(Plan plan, String newParticipantIdsStr);
 
     // 방장 인지 확인
-    Boolean findIsHostByPlanAndUser(Plan plan, Account account);
+    boolean findIsHostByPlanAndUser(Plan plan, Account account);
 
     // 게임 결과에 따른 거래 금액을 저장합니다.
     GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney, Integer balance);

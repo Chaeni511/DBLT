@@ -177,7 +177,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     // 방장 인지 확인
     @Override
-    public Boolean findIsHostByPlanAndUser(Plan plan, Account account) {
+    public boolean findIsHostByPlanAndUser(Plan plan, Account account) {
         Participant participant = participantRepository.findByPlanAndAccount(plan, account)
                 .orElseThrow(() -> new IllegalArgumentException("참가자가 아닙니다."));
 

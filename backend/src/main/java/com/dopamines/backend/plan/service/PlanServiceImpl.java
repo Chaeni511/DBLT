@@ -49,7 +49,7 @@ public class PlanServiceImpl implements PlanService {
                         .latitude(latitude)
                         .longitude(longitude)
                         .cost(cost)
-                        .status(0)
+                        .isSettle(false) //////////
                         .build()
         );
 
@@ -119,7 +119,7 @@ public class PlanServiceImpl implements PlanService {
         planDto.setAddress(plan.getAddress());
         planDto.setLatitude(plan.getLatitude());
         planDto.setLongitude(plan.getLongitude());
-        planDto.setStatus(plan.getStatus());
+        planDto.setState(plan.getState());
 
         // D-day 계산
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
@@ -175,7 +175,8 @@ public class PlanServiceImpl implements PlanService {
         endPlanDto.setLatitude(plan.getLatitude());
         endPlanDto.setLongitude(plan.getLongitude());
         endPlanDto.setCost(plan.getCost());
-        endPlanDto.setStatus(plan.getStatus());
+        endPlanDto.setState(plan.getState());
+        endPlanDto.setIsSettle(plan.getIsSettle());
 
         // 참가자 리스트 정보
         List<Participant> endParticipants = participantRepository.findByPlan(plan);
@@ -252,7 +253,7 @@ public class PlanServiceImpl implements PlanService {
                 planListDto.setAddress(plan.getAddress());
                 planListDto.setLatitude(plan.getLatitude());
                 planListDto.setLongitude(plan.getLongitude());
-                planListDto.setStatus(plan.getStatus());
+                planListDto.setState(plan.getState());
                 // 남은 시간 (-1이면 약속 시간 1시간 전)
                 planListDto.setDiffHours(getTimeHoursDifference(plan.getPlanDate(),plan.getPlanTime()));
                 // 남은 분 (-40이면 약속 시간 40분 전)
@@ -359,13 +360,13 @@ public class PlanServiceImpl implements PlanService {
         long diffMinutes = ChronoUnit.MINUTES.between(now, planDateTime);
 
         if (diffMinutes > 30) {
-            plan.setStatus(0); // 기본 상태
+            plan.setState(0); // 기본 상태
         } else if (diffMinutes > 0) {
-            plan.setStatus(1); // 위치공유 (30분 전 ~ 약속시간)
+            plan.setState(1); // 위치공유 (30분 전 ~ 약속시간)
         } else if (diffMinutes >= -60) {
-            plan.setStatus(2); // 게임 활성화 (약속시간 ~ 1시간 후)
+            plan.setState(2); // 게임 활성화 (약속시간 ~ 1시간 후)
         } else {
-            plan.setStatus(3); // 약속 종료 (1시간 이후)
+            plan.setState(3); // 약속 종료 (1시간 이후)
         }
 
         planRepository.save(plan);
@@ -388,7 +389,7 @@ public class PlanServiceImpl implements PlanService {
 
     // 내 약속이니?
     @Override
-    public Boolean isMyPlan(String userEmail, Long planId) {
+    public boolean isMyPlan(String userEmail, Long planId) {
         Account account = userService.findByEmail(userEmail);
         Plan plan = getPlanById(planId);
         Optional<Participant> participant = participantRepository.findByPlanAndAccount(plan, account);

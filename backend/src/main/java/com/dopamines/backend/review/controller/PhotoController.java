@@ -56,7 +56,7 @@ public class PhotoController {
 
         // 사진있는지 확인
         if (photoService.isPhotoRegistered(planId)) {
-            log.info("이미 등록된 사진입니다. planId:{}", planId);
+            log.info("이미 사진이 등록되어 있습니다. planId:{}", planId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 

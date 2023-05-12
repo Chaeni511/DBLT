@@ -23,7 +23,8 @@ public class EndPlanDto {
     private Double latitude; // 위도
     private Double longitude; // 경도
     private Integer cost;
-    private Integer status;
+    private Integer state;
+    private Boolean isSettle; // 정산 유무
     private MyEndPlanDto myDetail;
     private List<EndPlanParticipantDto> EndPlanParticipantDto;
 

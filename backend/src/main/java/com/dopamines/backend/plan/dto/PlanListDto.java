@@ -23,7 +23,7 @@ public class PlanListDto {
     private Long diffHours;
     private Long diffMinutes;
     private Integer participantCount;
-    private Integer status;
+    private Integer state;
     private List<PlanListParticipantDto> participantList;
 
 

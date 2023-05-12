@@ -38,7 +38,7 @@ public interface PlanService {
     boolean isAllMemberArrived(Long planId);
 
     // 내 약속이니?
-    Boolean isMyPlan(String userEmail, Long planId);
+    boolean isMyPlan(String userEmail, Long planId);
     //////////////// 중복 ///////////////////
 
     // 약속 상태 변경 함수

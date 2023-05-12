@@ -104,7 +104,7 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
             // 약속 상태 확인
-            if (plan.getStatus() > 1) {
+            if (plan.getState() > 1) {
                 log.warn("약속이 진행 중 이므로 수정할 수 없습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
@@ -152,7 +152,7 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
             // 약속 상태 확인
-            if (plan.getStatus() > 1) {
+            if (plan.getState() > 1) {
                 log.warn("약속이 진행 중 이므로 삭제할 수 없습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
