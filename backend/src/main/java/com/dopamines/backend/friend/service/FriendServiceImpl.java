@@ -85,6 +85,7 @@ public class FriendServiceImpl implements FriendService{
         friendResponseDto.setStatus(3);
         friendResponseDto.setNickname(friendAccount.get().getNickname());
         friendResponseDto.setFriendId(friendAccount.get().getAccountId());
+
         return friendResponseDto;
     }
     @DeleteMapping("/delete") //친구삭제
