@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,7 +25,7 @@ public class FriendController {
     private final FriendService friendService;
 
     @GetMapping("/get")
-    public ResponseEntity<List<Friend>> getFriendList(HttpServletRequest request){
+    public ResponseEntity<Map<String, List<FriendResponseDto>>> getFriendList(HttpServletRequest request){
         String email = request.getRemoteUser();
         return ResponseEntity.ok(friendService.getFriendList(email));
     }

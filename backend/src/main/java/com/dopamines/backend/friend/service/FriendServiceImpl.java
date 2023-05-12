@@ -15,8 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Transactional
@@ -30,10 +29,31 @@ public class FriendServiceImpl implements FriendService{
 
 
     @Override
-    public List<Friend> getFriendList(String email){
+    public Map<String, List<FriendResponseDto>> getFriendList(String email){
         Account account = getAccountByEmail(email);
+        Map<String, List<FriendResponseDto>> res = new HashMap<String, List<FriendResponseDto>>();
 
-        return friendRepository.findAllByAccount_AccountId(account.getAccountId());
+        // 받은 요청
+        List<FriendResponseDto> waitingValue = new ArrayList<FriendResponseDto>();
+        List<WaitingFriend> waitings = waitingFriendRepository.findAllByfriendId(account.getAccountId());
+        for(WaitingFriend waitingFriend : waitings) {
+            Account friendAccount = getAccountById(waitingFriend.getFriendId());
+            FriendResponseDto temp = toFriendResponseDto(2, friendAccount);
+            waitingValue.add(temp);
+        }
+        res.put("waitings", waitingValue);
+
+        // 친구
+        List<FriendResponseDto> friendValue = new ArrayList<FriendResponseDto>();
+        List<Friend> friends = friendRepository.findAllByAccount_AccountId(account.getAccountId());
+        for(Friend friend : friends) {
+            Account friendAccount = getAccountById(friend.getFriendId());
+            FriendResponseDto temp = toFriendResponseDto(3, friendAccount);
+            friendValue.add(temp);
+        }
+        res.put("friends", friendValue);
+
+        return res;
     }
 
 
@@ -183,7 +203,7 @@ public class FriendServiceImpl implements FriendService{
     }
 
     private void validateNotAlreadyFriends(Account myAccount, Account friendAccount) {
-        List<Friend> myFriends = getFriendList(myAccount.getEmail());
+        List<Friend> myFriends = friendRepository.findAllByFriendIdAndAccount_AccountId(friendAccount.getAccountId(), myAccount.getAccountId());
         for(Friend myFriend : myFriends) {
             if(myFriend.getFriendId().equals(friendAccount.getAccountId()))
                 throw new RuntimeException("이미 친구입니다.");
@@ -192,7 +212,7 @@ public class FriendServiceImpl implements FriendService{
 
     private WaitingFriend validateFriendRequest(Account myAccount, Account friendAccount){
         // 요청이 있는지 확인
-        Optional<WaitingFriend> waitingFriendOpt = waitingFriendRepository.findByFriendIdAndAccount_AccountId(friendAccount.getAccountId(), myAccount.getAccountId());
+        Optional<WaitingFriend> waitingFriendOpt = waitingFriendRepository.findByFriendIdAndAccount_AccountId(myAccount.getAccountId(), friendAccount.getAccountId());
         // 요청이 없으면
         if(waitingFriendOpt.isEmpty()) {
             throw new RuntimeException("해당 친구 요청이 없습니다.");

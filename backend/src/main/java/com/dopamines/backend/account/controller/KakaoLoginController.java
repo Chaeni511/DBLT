@@ -41,17 +41,15 @@ public class KakaoLoginController {
     @ResponseBody
     public ResponseEntity<AccountRequestDto> kakaoOauth(@RequestBody KakaoOauthDto kakaoOauthDto) throws IOException {
         String code = kakaoOauthDto.getCode();
-        System.out.println("code: " + code);
+        log.info("code: " + code);
 
         KakaoUserInfoResponseDto userInfo = kakaoUserInfo.getUserInfo(code);
-        System.out.println("회원 정보 입니다.{}" + userInfo);
 
         String email = userInfo.getKakao_account().getEmail();
         Long kakaoId = userInfo.getId();
         String nickname = userInfo.getKakao_account().getProfile().getNickname();
 
         Optional<Account> optional = accountRepository.findByEmail(email);
-        System.out.println("KakaoLoginController에서 찍는 optional: " + optional);
 
         Boolean signup;
 
@@ -93,7 +91,6 @@ public class KakaoLoginController {
 
     @GetMapping("/my")
     public ResponseEntity<String> my() {
-//        System.out.println();
         return ResponseEntity.ok("My");
     }
 

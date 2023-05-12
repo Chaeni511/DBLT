@@ -23,10 +23,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = request.getParameter("email");
         String password = request.getParameter("kakaoId");
-        System.out.println("email: "+ username);
-        System.out.println("kakao_id: "+ password);
 
-        System.out.println("CustomAuthenticationFilter에서 attemptAuthentication");
+        log.info("email: "+ username);
+        log.info("kakao_id: "+ password);
+        log.info("CustomAuthenticationFilter에서 attemptAuthentication");
+
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
         return authenticationManager.authenticate(token);
     }

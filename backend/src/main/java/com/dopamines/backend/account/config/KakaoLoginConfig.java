@@ -21,18 +21,14 @@ public class KakaoLoginConfig {
             Map<String, String> bodyMap = new HashMap<>();
             bodyMap.put("email", email);
             bodyMap.put("kakaoId", kakaoId.toString());
-            System.out.println("bodyMap: "+ bodyMap);
-
 
             Flux<TokenResponseDto> response = webClient.post()
                     .uri(uri)
-//                    .header("Authorization", "Bearer " + token)
                     .body(BodyInserters.fromValue(bodyMap))
                     .retrieve()
                     .bodyToFlux(TokenResponseDto.class);
 
             return response;
         }
-
 
 }

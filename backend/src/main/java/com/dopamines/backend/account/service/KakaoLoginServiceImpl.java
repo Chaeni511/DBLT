@@ -52,9 +52,9 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
 
     @Override
     public Long saveAccount(AccountRequestDto dto) {
-        System.out.println("saveAccount에서 찍는 email " + dto.getEmail());
-        System.out.println("saveAccount에서 찍는 kakaoId " + dto.getKakaoId());
-        System.out.println("saveAccount에서 찍는 nickname " + dto.getNickname());
+        log.info("saveAccount에서 찍는 email " + dto.getEmail());
+        log.info("saveAccount에서 찍는 kakaoId " + dto.getKakaoId());
+        log.info("saveAccount에서 찍는 nickname " + dto.getNickname());
 //        validateDuplicateUsername(dto);
 //        dto.encodePassword(passwordEncoder.encode(dto.getKakaoId()));
 //
