@@ -1,7 +1,14 @@
 package com.dopamines.backend.plan.dto;
 
+import lombok.*;
+
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class DetailMoneyInfoDto {
     private Long planId;
     private Integer totalPayment;

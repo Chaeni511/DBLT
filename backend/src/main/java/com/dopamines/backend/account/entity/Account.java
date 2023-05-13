@@ -58,6 +58,11 @@ public class Account extends BaseTimeEntity {
     @ColumnDefault("false")
     private boolean isDeleted;
 
+    // 지갑 총액
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private int totalWallet;
+
     @ManyToMany
     private List<Role> roles = new ArrayList<>();
 
