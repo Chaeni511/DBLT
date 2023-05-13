@@ -172,6 +172,7 @@ public class PlanController {
         }
     }
 
+    
     @GetMapping("/detail")
     @Operation(summary = "진행 중인 약속 상세 정보를 불러오는 api 입니다.", description = "PlanId를 입력하여 약속 상세 정보를 불러옵니다.<br>" +
             "designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.<br/>" +
@@ -181,6 +182,7 @@ public class PlanController {
         PlanDto planDto = planService.getPlanDetail(planId);
         return new ResponseEntity<>(planDto, HttpStatus.OK);
     }
+
 
     @GetMapping("/list")
     @Operation(summary = "약속 리스트를 불러오는 api 입니다.", description = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다.<br>" +
@@ -195,6 +197,7 @@ public class PlanController {
         return new ResponseEntity<>(planListDto, HttpStatus.OK);
     }
 
+
     @GetMapping("/endDetail")
     @Operation(summary = "완료된 약속 상세 정보를 불러오는 api 입니다.", description = "PlanId를 입력하여 약속 상세 정보를 불러옵니다.<br>" +
             "designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
@@ -206,6 +209,7 @@ public class PlanController {
         EndPlanDto endPlanDto = planService.getEndPlanDetail(planId, userEmail);
         return new ResponseEntity<>(endPlanDto, HttpStatus.OK);
     }
+
 
     @GetMapping("/gameMoney")
     @Operation(summary = "약속 지각자들의 총 지각비 정보를 불러오는 api 입니다.", description = "PlanId를 입력하여 약속 지각비 총 금액을 불러옵니다.<br>" +
@@ -227,4 +231,5 @@ public class PlanController {
         }
 
     }
+
 }

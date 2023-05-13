@@ -28,6 +28,11 @@ public class Wallet {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Account account;
 
+    // 약속 (null 허용) - 목록에 제목을 불러오기 때문에 필요
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="plan_id")
+    private Plan plan;
+
     private Integer money;
 
     @Column(name = "transaction_time")
@@ -35,6 +40,7 @@ public class Wallet {
 
     private Integer type; // 0: 충전, 1: 송금, 2: 약속으로 얻은 지각비, 3: 약속으로 잃은 지각비
 
+    // 목록에 누적 금액을 불러오기 때문에 필요
     @Column(name = "total_money")
     private Integer totalMoney;
 

@@ -34,7 +34,6 @@ public class Comment {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Participant participant;
 
-    @Column(name = "content")
     private String content;
 
     @Column(name = "register_dt")
