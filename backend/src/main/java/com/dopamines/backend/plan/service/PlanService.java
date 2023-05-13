@@ -34,6 +34,9 @@ public interface PlanService {
     // 게임으로 보낼 총 지각비를 계산합니다.
     GameMoneyDto getGameMoney(Long planId);
 
+    // 정산 여부 확인
+    boolean checkSettle(Long planId);
+
     // 모든 참가자가 도착한 경우 true 반환환
     boolean isAllMemberArrived(Long planId);
 

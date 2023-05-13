@@ -317,6 +317,7 @@ public class PlanServiceImpl implements PlanService {
 
 
     // 정산확인
+    @Override
     public boolean checkSettle(Long planId) {
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 약속 정보가 없습니다."));
