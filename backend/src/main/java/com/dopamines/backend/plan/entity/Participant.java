@@ -26,7 +26,6 @@ public class Participant {
     @ManyToOne(fetch = FetchType.LAZY)  // 1:N
     @JoinColumn(name="plan_id") //Join 기준
     @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JsonIgnore
     private Plan plan;
 
     // 참여자

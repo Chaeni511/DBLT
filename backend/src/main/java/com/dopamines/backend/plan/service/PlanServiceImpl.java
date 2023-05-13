@@ -1,6 +1,7 @@
 package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.service.UserService;
 import com.dopamines.backend.plan.dto.*;
 import com.dopamines.backend.plan.entity.Participant;
@@ -32,6 +33,8 @@ public class PlanServiceImpl implements PlanService {
 
     private final ParticipantServiceImpl participantService;
 
+    private final AccountRepository accountRepository;
+
 
     // 약속 생성
     @Override
@@ -49,7 +52,7 @@ public class PlanServiceImpl implements PlanService {
                         .latitude(latitude)
                         .longitude(longitude)
                         .cost(cost)
-                        .isSettle(false) //////////
+                        .isSettle(false) /////////////////
                         .build()
         );
 
@@ -310,6 +313,15 @@ public class PlanServiceImpl implements PlanService {
         gameMoneyDto.setPlanId(planId);
         gameMoneyDto.setTotalPayment(laterCount*plan.getCost());
         return gameMoneyDto;
+    }
+
+
+    // 정산확인
+    public boolean checkSettle(Long planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 약속 정보가 없습니다."));
+
+        return plan.getIsSettle();
     }
 
 
