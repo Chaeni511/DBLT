@@ -40,6 +40,12 @@ public class WalletServiceImpl implements WalletService {
         List<SettlementDto> settlementFailure = new ArrayList<>();
 
         for (Participant participant : participants) {
+
+            // transactionMoney가 null인 경우 에러 반환
+            if (participant.getTransactionMoney() == null) {
+                throw new IllegalArgumentException("참가자의 transactionMoney가 null입니다. 게임결과를 먼저 받아오세요.");
+            }
+
             if (participant.getTransactionMoney() < 0) {
                 if (participant.getAccount().getTotalWallet() < Math.abs(participant.getTransactionMoney())) {
                     SettlementDto settlementDto = new SettlementDto();
@@ -69,11 +75,17 @@ public class WalletServiceImpl implements WalletService {
 
 
         if (poorParticipants.isEmpty()) {
+            log.info("정산이 시작되었습니다.");
             // 정산 성공
             List<SettlementDto> settlementSuccess = new ArrayList<>();
             LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
+            // 정산 성공으로 변경
+            plan.setIsSettle(true);
+            planRepository.save(plan);
+
             for (Participant participant : participants) {
+
                 // 지갑 목록 생성
                 Wallet wallet = new Wallet();
                 wallet.setAccount(account);

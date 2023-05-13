@@ -47,5 +47,5 @@ public class Participant {
     private Long lateTime;
 
     @Column(name = "transaction_money")
-    private Integer transactionMoney;
+    private Integer transactionMoney = 0;
 }
