@@ -43,7 +43,7 @@ public class WalletServiceImpl implements WalletService {
 
             // transactionMoney가 null인 경우 에러 반환
             if (participant.getTransactionMoney() == null) {
-                throw new IllegalArgumentException("참가자의 transactionMoney가 null입니다. 게임결과를 먼저 받아오세요.");
+                throw new IllegalArgumentException("참가자의 transactionMoney가 null입니다. 게임 결과를 먼저 입력해주세요.");
             }
 
             if (participant.getTransactionMoney() < 0) {
@@ -59,6 +59,8 @@ public class WalletServiceImpl implements WalletService {
         return settlementFailure;
     }
 
+
+    // 정산하기
     @Override
     public SettlementResultDto settleMoney(String userEmail, Long planId) {
 

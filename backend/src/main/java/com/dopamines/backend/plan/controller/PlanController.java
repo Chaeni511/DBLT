@@ -238,7 +238,7 @@ public class PlanController {
 
     @PostMapping("/settle")
     @Operation(summary = "약속 참가자들의 지각비를 정산하는 api 입니다.", description = "PlanId를 입력하여 해당 약속의 정산을 수행합니다.<br>" +
-            "참가자 지갑에 지각비가 부족할 경우 정산을 실패하고 부족한 참가자 목록을 보여줍니다. 정산을 성공할 경우 전체 참가자 목록을 보여줍니다.")
+            "참가자 지갑에 지각비가 부족할 경우 정산에 실패하고 잔액이 부족한 참가자 목록을 보여줍니다. 정산에 성공할 경우 전체 참가자 목록을 보여줍니다.")
     public ResponseEntity<SettlementResultDto> settleMoney(
             HttpServletRequest request,
             @RequestParam("planId") Long planId
