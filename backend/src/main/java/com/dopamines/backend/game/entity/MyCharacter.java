@@ -1,4 +1,4 @@
-package com.dopamines.backend.item.entity;
+package com.dopamines.backend.game.entity;
 
 
 import com.dopamines.backend.account.entity.Account;
@@ -25,10 +25,10 @@ public class MyCharacter {
 
 //    @Column(nullable = false)
 //    @ColumnDefault("1")
-    private int skin = 1;
+    private int body = 1;
 
 //    @ColumnDefault("0")
-    private int body = 0;
+    private int bodyPart = 0;
 
 //    @ColumnDefault("1")
     private int eye = 1;

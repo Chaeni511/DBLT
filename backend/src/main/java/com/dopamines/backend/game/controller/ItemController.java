@@ -1,14 +1,12 @@
-package com.dopamines.backend.item.controller;
+package com.dopamines.backend.game.controller;
 
-import com.dopamines.backend.item.dto.ItemDto;
-import com.dopamines.backend.item.service.ItemService;
+import com.dopamines.backend.game.dto.InventoryDto;
+import com.dopamines.backend.game.dto.ItemDto;
+import com.dopamines.backend.game.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -25,6 +23,13 @@ public class ItemController {
     @GetMapping("/all")
     public ResponseEntity<Map<String, HashMap<String, List<ItemDto>>>> getItems(HttpServletRequest request) {
         return ResponseEntity.ok(itemService.getItems());
+    }
+
+    @PostMapping("/buy")
+    public ResponseEntity<InventoryDto> buyItem(HttpServletRequest reqest, @RequestParam int item) {
+        String email = reqest.getRemoteUser();
+        return ResponseEntity.ok(itemService.buyItem(email, item));
+
     }
 
 }

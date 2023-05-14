@@ -1,9 +1,9 @@
-package com.dopamines.backend.item.service;
+package com.dopamines.backend.game.service;
 
-import com.dopamines.backend.account.repository.AccountRepository;
-import com.dopamines.backend.item.dto.ItemDto;
-import com.dopamines.backend.item.entity.Item;
-import com.dopamines.backend.item.repository.ItemRepository;
+import com.dopamines.backend.game.dto.InventoryDto;
+import com.dopamines.backend.game.dto.ItemDto;
+import com.dopamines.backend.game.entity.Item;
+import com.dopamines.backend.game.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,5 +48,9 @@ public class ItemServiceImpl implements ItemService{
         return list;
     }
 
-
+    @Override
+    public InventoryDto buyItem(String email, int item){
+        InventoryDto inventoryDto = new InventoryDto();
+        return inventoryDto;
+    }
 }

@@ -1,4 +1,4 @@
-package com.dopamines.backend.item.entity;
+package com.dopamines.backend.game.entity;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;

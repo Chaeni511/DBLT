@@ -6,8 +6,8 @@ import com.dopamines.backend.account.dto.AccountRequestDto;
 import com.dopamines.backend.account.dto.RoleToUserRequestDto;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.repository.RoleRepository;
-import com.dopamines.backend.item.entity.MyCharacter;
-import com.dopamines.backend.item.repository.MyCharacterRepository;
+import com.dopamines.backend.game.entity.MyCharacter;
+import com.dopamines.backend.game.repository.MyCharacterRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -69,7 +69,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
 //                .name(dto.getNickname() + "의 캐릭터")
 //                .level(1)
 //                .experience(0)
-                .skin(1)
+                .body(1)
                 .eye(1)
                 .mouthAndNose(1)
                 .account(account)

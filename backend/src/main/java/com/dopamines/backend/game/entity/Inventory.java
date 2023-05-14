@@ -1,4 +1,4 @@
-package com.dopamines.backend.item.entity;
+package com.dopamines.backend.game.entity;
 
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -12,7 +12,7 @@ public class Inventory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="item_id")
-    private List<Item> skins;
+    private List<Item> inventory;
 
 
 }
