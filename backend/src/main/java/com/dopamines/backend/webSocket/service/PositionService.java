@@ -61,6 +61,12 @@ public class PositionService {
 
 
     public PlanRoomDto createRoom(String planId) {
+
+        if (planRooms.containsKey(planId)) {
+            // 이미 생성된 방이면 예외 처리
+            throw new IllegalArgumentException("planId : " + planId + " 방은 이미 존재합니다.");
+        }
+
         PlanRoomDto planRoom = PlanRoomDto.builder()
                 .roomId(planId)
                 .build();
