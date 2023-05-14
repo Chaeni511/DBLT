@@ -1,7 +1,7 @@
-package com.dopamines.backend.item.controller;
+package com.dopamines.backend.game.controller;
 
-import com.dopamines.backend.item.dto.MyCharacterDto;
-import com.dopamines.backend.item.service.MyCharacterService;
+import com.dopamines.backend.game.dto.MyCharacterDto;
+import com.dopamines.backend.game.service.MyCharacterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

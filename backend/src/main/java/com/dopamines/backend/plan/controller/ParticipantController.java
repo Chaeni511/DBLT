@@ -44,4 +44,5 @@ public class ParticipantController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package com.dopamines.backend.item.dto;
+package com.dopamines.backend.game.dto;
 
 import lombok.Getter;
 import lombok.Setter;
