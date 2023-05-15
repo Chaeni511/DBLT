@@ -50,5 +50,4 @@ public class AccountController {
     public ResponseEntity<NicknameProfileDto> getNicknameProfile(HttpServletRequest request, Long accountId){
         return ResponseEntity.ok(accountService.getNicknameProfile(accountId));
     }
-
 }

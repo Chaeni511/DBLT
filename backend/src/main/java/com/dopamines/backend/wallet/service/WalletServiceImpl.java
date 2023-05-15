@@ -181,13 +181,29 @@ public class WalletServiceImpl implements WalletService {
         return walletDto;
     }
 
-//    @Override
-//    public void chargeWallet(String email, ChargeRequestDto chargeRequestDto) {
-//        Optional<Account> account = accountRepository.findByEmail(email);
-//
-//        Wallet wallet = new Wallet(
-//                account,
-//        );
-//    }
+    @Override
+    public void chargeWallet(String email, ChargeRequestDto chargeRequestDto) {
+        Optional<Account> account = accountRepository.findByEmail(email);
+        if(account.isPresent()) {
+            // Wallet 기록 남기기
+            Wallet wallet = new Wallet();
+
+            wallet.setAccount(account.get());
+            wallet.setPlan(null);
+            wallet.setMoney(chargeRequestDto.getMoney());
+            wallet.setTransactionTime(chargeRequestDto.getTransactionTime());
+            wallet.setType(0);
+            wallet.setTotalMoney(account.get().getTotalWallet() + chargeRequestDto.getMoney());
+            wallet.setMethod(chargeRequestDto.getMethod());
+            wallet.setReceipt(chargeRequestDto.getReceipt());
+
+            // Account의 totalWallet 업뎃
+            int totalWallet = account.get().getTotalWallet();
+            account.get().setTotalWallet(totalWallet + chargeRequestDto.getMoney());
+            accountRepository.save(account.get());
+        } else {
+            throw new RuntimeException("충전에 실패했습니다.");
+        }
+    }
 
 }
