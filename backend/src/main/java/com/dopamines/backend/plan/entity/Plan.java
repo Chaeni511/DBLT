@@ -1,6 +1,7 @@
 package com.dopamines.backend.plan.entity;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -41,8 +42,10 @@ public class Plan {
 
     private Integer cost;
 
-    private int state = 0; // 0: 기본, 1: 위치공유(30분 전~약속시간), 2: 게임 활성화(약속시간~1시간 후), 3: 약속 종료(1시간 이후)
+    @ColumnDefault("0")
+    private Integer state ; // 0: 기본, 1: 위치공유(30분 전~약속시간), 2: 게임 활성화(약속시간~1시간 후), 3: 약속 종료(1시간 이후)
 
     @Column(name = "is_settle")
-    private Boolean isSettle = false;
+    @ColumnDefault("false")
+    private Boolean isSettle;
 }

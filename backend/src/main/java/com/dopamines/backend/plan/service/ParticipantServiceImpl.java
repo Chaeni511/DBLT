@@ -117,10 +117,10 @@ public class ParticipantServiceImpl implements ParticipantService {
         // 참가자 수
         int countParticipant = participantRepository.countByPlan(plan);
 
-        // 잔액과 참가자 수가 존재할 때 n빵 계산
         int quotient = 0; // 몫
         int remainder = 0; // 나머지
 
+        // 잔액과 참가자 수가 존재할 때 n빵 계산
         if (balance > 0 && countParticipant > 0) {
             quotient = balance / countParticipant; // n빵한 금액
             remainder = balance % countParticipant; // 나머지는 방장에게 줌

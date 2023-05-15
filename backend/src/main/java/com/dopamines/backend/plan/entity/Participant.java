@@ -3,6 +3,7 @@ package com.dopamines.backend.plan.entity;
 
 import com.dopamines.backend.account.entity.Account;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -47,5 +48,6 @@ public class Participant {
     private Long lateTime;
 
     @Column(name = "transaction_money")
-    private Integer transactionMoney = 0;
+    @ColumnDefault("0")
+    private Integer transactionMoney;
 }
