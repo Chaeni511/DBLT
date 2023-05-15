@@ -14,4 +14,5 @@ public interface WalletService {
     // 내역 가져오기
     public WalletDto getWalletDetails(String email);
     public void chargeWallet(String email, int money, String method, LocalDate trasactionDate, LocalTime transactionTime, String receipt);
+    public void withdrawWallet(String email, int money);
 }
