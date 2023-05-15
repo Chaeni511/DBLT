@@ -42,8 +42,18 @@ public class WalletController {
     }
 
 
-    @PostMapping("/transfer")
-    public void transferWallet(HttpServletRequest request, int money, Long planId) {
-
+    @PostMapping("/withdraw")
+    public ResponseEntity<WalletDto> withdrawWallet(HttpServletRequest request, int money) {
+        String email = request.getRemoteUser();
+        try {
+            walletService.withdrawWallet(email, money);
+            return ResponseEntity.ok(walletService.getWalletDetails(email));
+        } catch (RuntimeException e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

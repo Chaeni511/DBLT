@@ -210,4 +210,32 @@ public class WalletServiceImpl implements WalletService {
         }
     }
 
+    @Override
+    public void withdrawWallet(String email, int money){
+        Optional<Account> account = accountRepository.findByEmail(email);
+        if(account.isEmpty()){
+            throw new RuntimeException("해당 계정을 찾을 수 없습니다.");
+        }
+
+        int totalWallet = account.get().getTotalWallet();
+
+        // money가 잔액보다 클 때
+        if(totalWallet<money) {
+            throw new RuntimeException("잔액이 부족하여 출금할 수 없습니다.");
+        }
+        // Account 정보 업뎃
+        account.get().setTotalWallet(totalWallet-money);
+        accountRepository.save(account.get());
+        // Wallet 생성
+        Wallet wallet = new Wallet();
+        wallet.setType(1);
+        wallet.setTransactionTime(LocalTime.now());
+        wallet.setTransactionDate(LocalDate.now());
+        wallet.setAccount(account.get());
+        wallet.setMoney(-money);
+        wallet.setTotalMoney(account.get().getTotalWallet());
+
+        walletRepository.save(wallet);
+
+    };
 }
