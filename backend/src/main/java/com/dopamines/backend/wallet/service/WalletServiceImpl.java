@@ -6,23 +6,22 @@ import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
-import com.dopamines.backend.wallet.dto.SettlementDto;
-import com.dopamines.backend.wallet.dto.SettlementResultDto;
-import com.dopamines.backend.wallet.dto.WalletDetailDto;
+import com.dopamines.backend.wallet.dto.*;
 import com.dopamines.backend.wallet.entity.Wallet;
 import com.dopamines.backend.wallet.repository.WalletRepository;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -135,9 +134,60 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Map<LocalDate, List<WalletDetailDto>> getWalletDetails(String email) {
-        Map<LocalDate, List<WalletDetailDto>> res = new HashMap<LocalDate, List<WalletDetailDto>>();
+    public WalletDto getWalletDetails(String email) {
 
-        return
+        List<Wallet> wallets = walletRepository.findAllByAccount_Email(email);
+
+        // 일짜별로 매핑
+        Map<String, List<WalletDetailDto>> res = new HashMap<String, List<WalletDetailDto>>();
+
+        for (Wallet wallet: wallets) {
+            List<WalletDetailDto> walletDetailDtos = new ArrayList<WalletDetailDto>();
+
+            WalletDetailDto walletDetailDto = new WalletDetailDto();
+            walletDetailDto.setMoney(wallet.getMoney());
+            walletDetailDto.setType(wallet.getType());
+            walletDetailDto.setTransactionTime(wallet.getTransactionTime());
+
+            if (wallet.getPlan() == null){
+                walletDetailDto.setTitle(null);
+            } else{
+                walletDetailDto.setTitle(wallet.getPlan().getTitle());
+            }
+
+            walletDetailDtos.add(walletDetailDto);
+            String transactionTime = wallet.getTransactionTime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+
+            int year = wallet.getTransactionTime().getYear();
+            Month month = wallet.getTransactionTime().getMonth();
+            int date = wallet.getTransactionTime().getDayOfMonth();
+            if(res.containsKey(transactionTime)) {
+                res.get(transactionTime).addAll(walletDetailDtos);
+            } else {
+
+                res.put(transactionTime, walletDetailDtos);
+            }
+
+
+        }
+        WalletDto walletDto;
+        if (wallets.isEmpty()){
+            walletDto = new WalletDto(0, res);
+        } else {
+            walletDto = new WalletDto(wallets.get(0).getTotalMoney(), res);
+        }
+
+
+        return walletDto;
     }
+
+    @Override
+    public void chargeWallet(String email, ChargeRequestDto chargeRequestDto) {
+        Optional<Account> account = accountRepository.findByEmail(email);
+
+        Wallet wallet = new Wallet(
+                account,
+        );
+    }
+
 }
