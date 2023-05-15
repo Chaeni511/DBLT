@@ -8,6 +8,7 @@ import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.wallet.dto.SettlementDto;
 import com.dopamines.backend.wallet.dto.SettlementResultDto;
+import com.dopamines.backend.wallet.dto.WalletDetailDto;
 import com.dopamines.backend.wallet.entity.Wallet;
 import com.dopamines.backend.wallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -128,5 +132,12 @@ public class WalletServiceImpl implements WalletService {
             log.info("정산 실패: 일부 참가자의 지갑 금액이 부족합니다.");
             return new SettlementResultDto(false, poorParticipants);
         }
+    }
+
+    @Override
+    public Map<LocalDate, List<WalletDetailDto>> getWalletDetails(String email) {
+        Map<LocalDate, List<WalletDetailDto>> res = new HashMap<LocalDate, List<WalletDetailDto>>();
+
+        return
     }
 }
