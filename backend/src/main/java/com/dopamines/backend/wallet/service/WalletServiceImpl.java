@@ -155,6 +155,8 @@ public class WalletServiceImpl implements WalletService {
             if (wallet.getPlan() == null){
                 if(wallet.getType() == 0){
                     walletDetailDto.setTitle(wallet.getMethod());
+                }else if (wallet.getType() == 1) {
+                    walletDetailDto.setTitle("출금");
                 }else {
                     walletDetailDto.setTitle(null);
                 }
