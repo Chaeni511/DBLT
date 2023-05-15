@@ -29,12 +29,12 @@ public class WalletController {
         return ResponseEntity.ok(walletService.getWalletDetails(email));
     }
 
-    @PostMapping("/charge")
-    public ResponseEntity chargeWallet(HttpServletRequest request, ChargeRequestDto chargeRequestDto) {
-        String email = request.getRemoteUser();
-        walletService.chargeWallet(email, chargeRequestDto);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/charge")
+//    public ResponseEntity chargeWallet(HttpServletRequest request, ChargeRequestDto chargeRequestDto) {
+//        String email = request.getRemoteUser();
+//        walletService.chargeWallet(email, chargeRequestDto);
+//        return ResponseEntity.ok().build();
+//    }
 
 
     @PostMapping("/transfer")

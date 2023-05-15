@@ -181,13 +181,13 @@ public class WalletServiceImpl implements WalletService {
         return walletDto;
     }
 
-    @Override
-    public void chargeWallet(String email, ChargeRequestDto chargeRequestDto) {
-        Optional<Account> account = accountRepository.findByEmail(email);
-
-        Wallet wallet = new Wallet(
-                account,
-        );
-    }
+//    @Override
+//    public void chargeWallet(String email, ChargeRequestDto chargeRequestDto) {
+//        Optional<Account> account = accountRepository.findByEmail(email);
+//
+//        Wallet wallet = new Wallet(
+//                account,
+//        );
+//    }
 
 }

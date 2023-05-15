@@ -16,5 +16,5 @@ public interface WalletService {
 
     // 내역 가져오기
     public WalletDto getWalletDetails(String email);
-    public void chargeWallet(String email, ChargeRequestDto chargeRequestDto);
+//    public void chargeWallet(String email, ChargeRequestDto chargeRequestDto);
 }
