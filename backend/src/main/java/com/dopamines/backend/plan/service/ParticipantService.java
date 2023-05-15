@@ -16,6 +16,6 @@ public interface ParticipantService {
     boolean findIsHostByPlanAndUser(Plan plan, Account account);
 
     // 게임 결과에 따른 거래 금액을 저장합니다.
-    GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney, Integer balance);
+    GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney);
 
 }

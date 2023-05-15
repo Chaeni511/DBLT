@@ -30,12 +30,12 @@ public class ParticipantController {
     public ResponseEntity<GameResultMoneyDto> registerGetMoney(
             HttpServletRequest request,
             @RequestParam("planId") Long planId,
-            @RequestParam("getGameMoney") Integer getGameMoney,
-            @RequestParam("balance") Integer balance
+            @RequestParam("getGameMoney") Integer getGameMoney
+//            @RequestParam("balance") Integer balance
     ){
         try {
             String userEmail = request.getRemoteUser();
-            GameResultMoneyDto gameResultMoneyDto = participantService.registerGetMoney(userEmail, planId, getGameMoney, balance);
+            GameResultMoneyDto gameResultMoneyDto = participantService.registerGetMoney(userEmail, planId, getGameMoney);
             return ResponseEntity.ok(gameResultMoneyDto);
         } catch (IllegalArgumentException e) {
             log.error("게임 결과 반영 API 호출 중 예외 발생: {}", e.getMessage());
