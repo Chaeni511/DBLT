@@ -1,18 +1,28 @@
 package com.dopamines.backend.game.entity;
 
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.util.List;
+import com.dopamines.backend.account.entity.Account;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.*;
+@Slf4j
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class Inventory {
     @Id
-    private int inventoryId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long inventoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="account_id")
+    private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="item_id")
-    private List<Item> inventory;
-
+    private Item item;
 
 }

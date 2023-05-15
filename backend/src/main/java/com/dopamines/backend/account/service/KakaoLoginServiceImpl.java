@@ -1,12 +1,13 @@
 package com.dopamines.backend.account.service;
 
-import com.dopamines.backend.account.entity.Account;
-import com.dopamines.backend.account.entity.Role;
 import com.dopamines.backend.account.dto.AccountRequestDto;
 import com.dopamines.backend.account.dto.RoleToUserRequestDto;
+import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.entity.Role;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.repository.RoleRepository;
 import com.dopamines.backend.game.entity.MyCharacter;
+import com.dopamines.backend.game.repository.InventoryRepository;
 import com.dopamines.backend.game.repository.MyCharacterRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -23,7 +24,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.dopamines.backend.security.JwtConstants.*;
@@ -37,6 +41,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final MyCharacterRepository myCharacterRepository;
+    private final InventoryRepository inventoryRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -76,6 +81,11 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
                 .build();
 
         myCharacterRepository.save(myCharacter);
+
+//        Inventory inventory = new Inventory();
+//        inventory.setAccount(account);
+//        inventory.setItem();
+//        inventoryRepository.save(inventory);
 
         return accountId;
     }

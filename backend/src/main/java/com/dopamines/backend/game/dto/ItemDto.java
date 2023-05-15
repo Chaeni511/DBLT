@@ -8,5 +8,7 @@ import lombok.Setter;
 public class ItemDto {
     private int code;
     private int price;
+    private boolean bought;
+    private boolean worn;
 
 }
