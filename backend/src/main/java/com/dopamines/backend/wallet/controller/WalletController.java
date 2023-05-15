@@ -37,8 +37,16 @@ public class WalletController {
             String receipt
     ) {
         String email = request.getRemoteUser();
-        walletService.chargeWallet(email, money, method, transactionDate, transactionTime, receipt);
-        return ResponseEntity.ok(walletService.getWalletDetails(email));
+        try {
+            walletService.chargeWallet(email, money, method, transactionDate, transactionTime, receipt);
+            return ResponseEntity.ok(walletService.getWalletDetails(email));
+        } catch (RuntimeException e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 
