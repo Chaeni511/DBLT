@@ -13,7 +13,7 @@ import java.util.Map;
 @Builder
 public class WalletDto {
     private int total;
-    private Map<String, List<WalletDetailDto>> details;
+    private Map<LocalDate, List<WalletDetailDto>> details;
 
 
 }
