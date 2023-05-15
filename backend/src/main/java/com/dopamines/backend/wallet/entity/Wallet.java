@@ -44,7 +44,7 @@ public class Wallet {
     @Column(name = "transaction_time")
     private LocalTime transactionTime;
 
-    private Integer type; // 0: 충전, 1: 송금, 2: 약속으로 얻은 지각비, 3: 약속으로 잃은 지각비
+    private Integer type; // 0: 충전, 1: 출금, 2: 약속으로 얻은 지각비, 3: 약속으로 잃은 지각비
 
     // 목록에 누적 금액을 불러오기 때문에 필요
     @Column(name = "total_money")

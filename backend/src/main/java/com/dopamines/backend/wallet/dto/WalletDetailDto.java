@@ -15,4 +15,5 @@ public class WalletDetailDto {
     private LocalTime transactionTime;
     private Integer type; // 0: 충전, 1: 송금, 2: 약속으로 얻은 지각비, 3: 약속으로 잃은 지각비
     private Integer money;
+    private Integer total;
 }
