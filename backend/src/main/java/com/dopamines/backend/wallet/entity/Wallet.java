@@ -44,5 +44,9 @@ public class Wallet {
     @Column(name = "total_money")
     private Integer totalMoney;
 
+    private String method;
+
+    private String receipt;
+
 }
 
