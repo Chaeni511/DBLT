@@ -1,8 +1,10 @@
 package com.dopamines.backend.account.controller;
 
+import com.dopamines.backend.account.dto.IdDto;
 import com.dopamines.backend.account.dto.NicknameProfileDto;
 import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequestMapping("/account")
@@ -18,6 +21,7 @@ import java.util.List;
 @RestController
 public class AccountController {
     private final AccountService accountService;
+    private final AccountRepository accountRepository;
     @PutMapping("/nickname")
     public ResponseEntity<Account> editNickname(HttpServletRequest request, @RequestParam String nickname) {
         String user = request.getRemoteUser();
@@ -49,6 +53,20 @@ public class AccountController {
     @GetMapping("/participant")
     public ResponseEntity<NicknameProfileDto> getNicknameProfile(HttpServletRequest request, Long accountId){
         return ResponseEntity.ok(accountService.getNicknameProfile(accountId));
+    }
+
+    @GetMapping("/id")
+    public ResponseEntity<IdDto>  getAccountId(HttpServletRequest request) {
+        String email = request.getRemoteUser();
+        Optional<Account> account = accountRepository.findByEmail(email);
+        IdDto idDto = new IdDto();
+        if(account.isEmpty()) {
+            idDto.setId(null);
+        } else {
+            idDto.setId(account.get().getAccountId());
+        }
+
+        return ResponseEntity.ok(idDto);
     }
 
 }
