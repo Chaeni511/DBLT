@@ -150,7 +150,7 @@ public class WalletServiceImpl implements WalletService {
             walletDetailDto.setMoney(wallet.getMoney());
             walletDetailDto.setType(wallet.getType());
             walletDetailDto.setTransactionTime(wallet.getTransactionTime());
-            walletDetailDto.setTotal(walletDetailDto.getTotal());
+            walletDetailDto.setTotal(wallet.getTotalMoney());
 
             if (wallet.getPlan() == null){
                 if(wallet.getType() == 0){
