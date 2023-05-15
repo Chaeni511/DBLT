@@ -1,13 +1,10 @@
 package com.dopamines.backend.wallet.service;
 
-import com.dopamines.backend.wallet.dto.ChargeRequestDto;
 import com.dopamines.backend.wallet.dto.SettlementResultDto;
-import com.dopamines.backend.wallet.dto.WalletDetailDto;
 import com.dopamines.backend.wallet.dto.WalletDto;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
 
 public interface WalletService {
 
@@ -16,5 +13,5 @@ public interface WalletService {
 
     // 내역 가져오기
     public WalletDto getWalletDetails(String email);
-    public void chargeWallet(String email, ChargeRequestDto chargeRequestDto);
+    public void chargeWallet(String email, int money, String method, LocalDate trasactionDate, LocalTime transactionTime, String receipt);
 }

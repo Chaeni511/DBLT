@@ -1,19 +1,17 @@
 package com.dopamines.backend.wallet.controller;
 
-import com.dopamines.backend.wallet.dto.ChargeRequestDto;
-import com.dopamines.backend.wallet.dto.WalletDetailDto;
 import com.dopamines.backend.wallet.dto.WalletDto;
 import com.dopamines.backend.wallet.service.WalletService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
 
 @Slf4j
 @RestController
@@ -29,12 +27,19 @@ public class WalletController {
         return ResponseEntity.ok(walletService.getWalletDetails(email));
     }
 
-//    @PostMapping("/charge")
-//    public ResponseEntity chargeWallet(HttpServletRequest request, ChargeRequestDto chargeRequestDto) {
-//        String email = request.getRemoteUser();
-//        walletService.chargeWallet(email, chargeRequestDto);
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping("/charge")
+    public ResponseEntity<WalletDto> chargeWallet(
+            HttpServletRequest request,
+            int money,
+            String method,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate transactionDate,
+            @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime transactionTime,
+            String receipt
+    ) {
+        String email = request.getRemoteUser();
+        walletService.chargeWallet(email, money, method, transactionDate, transactionTime, receipt);
+        return ResponseEntity.ok(walletService.getWalletDetails(email));
+    }
 
 
     @PostMapping("/transfer")
