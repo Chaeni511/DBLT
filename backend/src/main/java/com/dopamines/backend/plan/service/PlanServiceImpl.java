@@ -223,7 +223,6 @@ public class PlanServiceImpl implements PlanService {
     }
 
 
-
     // 약속 리스트
     @Override
     public List<PlanListDto> getPlanList(String userEmail, LocalDate planDate) {
@@ -233,7 +232,10 @@ public class PlanServiceImpl implements PlanService {
         // 해당 account가 참여하고 있는 participant 목록 가져오기
         List<Participant> participants = participantRepository.findByAccount(account);
 
-        List<PlanListDto> planHomeListDto = new ArrayList<>();
+        List<PlanListDto> stateOneTwoList = new ArrayList<>();
+        List<PlanListDto> otherList = new ArrayList<>();
+
+//        List<PlanListDto> planHomeListDto = new ArrayList<>();
         for (Participant participant : participants) {
             // 참여한 약속
             Plan plan = participant.getPlan();
@@ -277,15 +279,29 @@ public class PlanServiceImpl implements PlanService {
                 planListDto.setParticipantList(planHomeListParticipantDto);
 
                 // 해당 날짜의 약속 리스트에 현재 약속 정보 저장
-                planHomeListDto.add(planListDto);
+//                planHomeListDto.add(planListDto);
+                if (plan.getState() == 1 || plan.getState() == 2) {
+                    stateOneTwoList.add(planListDto);
+                } else {
+                    otherList.add(planListDto);
+                }
             }
-
         }
         // 약속 시간을 기준으로 정렬
-        planHomeListDto.sort(Comparator.comparing(PlanListDto::getPlanTime));
-        
-        return planHomeListDto;
+//        planHomeListDto.sort(Comparator.comparing(PlanListDto::getPlanTime));
 
+        // 상태가 1 또는 2인 리스트를 시간 순으로 정렬
+        stateOneTwoList.sort(Comparator.comparing(PlanListDto::getPlanTime));
+        // 나머지 리스트를 시간 순으로 정렬
+        otherList.sort(Comparator.comparing(PlanListDto::getPlanTime));
+
+        // 상태가 1 또는 2인 리스트를 앞에 추가한 뒤, 나머지 리스트를 추가하여 최종 리스트 생성
+        List<PlanListDto> sortedList = new ArrayList<>();
+        sortedList.addAll(stateOneTwoList);
+        sortedList.addAll(otherList);
+
+        return sortedList;
+//        return planHomeListDto;
     }
 
 

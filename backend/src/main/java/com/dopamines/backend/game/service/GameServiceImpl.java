@@ -53,6 +53,21 @@ public class GameServiceImpl implements GameService{
         return new GameResponseDto(account.get().getNickname(), myCharacterDto, transactionMoney);
     }
 
+    @Override
+    public int updateMoney(String email, long planId, int money) {
+        Optional<Account> account = accountRepository.findByEmail(email);
+        Optional<Plan> plan = planRepository.findById(planId);
+        if(account.isEmpty() || plan.isEmpty()) {
+            return 0;
+        }
+        Optional<Participant> userOptional = participantRepository.findByPlanAndAccount(plan.get(), account.get());
+        if(userOptional.isEmpty()) return 0;
+        Participant user = userOptional.get();
+        int newMoney = user.getTransactionMoney() + money;
+        user.setTransactionMoney(newMoney);
+        participantRepository.save(user);
+        return newMoney;
+    }
 
 
     @Override
