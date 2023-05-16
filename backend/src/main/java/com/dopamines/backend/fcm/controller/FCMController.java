@@ -32,6 +32,8 @@ public class FCMController {
     @Operation(summary = "fcm deviceToken을 저장하는 api 입니다.", description = "로그인한 기기의 Token을 저장합니다.")
     public ResponseEntity<Void> registerToken(HttpServletRequest request, @RequestBody TokenDto tokenDto) {
 
+        log.info("registerToken :-------------------------------------------------------------------------------------------");
+
         try {
             // 헤더에서 유저 이메일 가져옴
             String userEmail = request.getRemoteUser();
