@@ -23,6 +23,6 @@ public class PlanDto {
     private Integer cost;
     private Long diffDay;
     private Integer participantCount;
-    private Integer status;
+    private Integer state;
     private List<ParticipantDto> participantList;
 }

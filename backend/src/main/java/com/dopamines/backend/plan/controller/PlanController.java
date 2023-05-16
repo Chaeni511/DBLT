@@ -9,6 +9,8 @@ import com.dopamines.backend.plan.dto.GameMoneyDto;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.service.ParticipantService;
 import com.dopamines.backend.plan.service.PlanService;
+import com.dopamines.backend.wallet.dto.SettlementResultDto;
+import com.dopamines.backend.wallet.service.WalletService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +34,13 @@ import java.util.List;
 @Api(value = "plan", description = "약속을 관리하는 컨트롤러입니다.")
 public class PlanController {
 
-    @Autowired
-    PlanService planService;
+    private final PlanService planService;
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    ParticipantService participantService;
+    private final ParticipantService participantService;
+
+    private final WalletService walletService;
 
 
     @PostMapping("/create")
@@ -107,7 +108,7 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
             // 약속 상태 확인
-            if (plan.getStatus() > 1) {
+            if (plan.getState() > 1) {
                 log.warn("약속이 진행 중 이므로 수정할 수 없습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
@@ -155,7 +156,7 @@ public class PlanController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
             // 약속 상태 확인
-            if (plan.getStatus() > 1) {
+            if (plan.getState() > 1) {
                 log.warn("약속이 진행 중 이므로 삭제할 수 없습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
@@ -175,6 +176,7 @@ public class PlanController {
         }
     }
 
+
     @GetMapping("/detail")
     @Operation(summary = "진행 중인 약속 상세 정보를 불러오는 api 입니다.", description = "PlanId를 입력하여 약속 상세 정보를 불러옵니다.<br>" +
             "designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.<br/>" +
@@ -184,6 +186,7 @@ public class PlanController {
         PlanDto planDto = planService.getPlanDetail(planId);
         return new ResponseEntity<>(planDto, HttpStatus.OK);
     }
+
 
     @GetMapping("/list")
     @Operation(summary = "약속 리스트를 불러오는 api 입니다.", description = "userId와 planDate를 입력하여 유저의 해당 날짜 약속 리스트를 불러옵니다.<br>" +
@@ -198,6 +201,7 @@ public class PlanController {
         return new ResponseEntity<>(planListDto, HttpStatus.OK);
     }
 
+
     @GetMapping("/endDetail")
     @Operation(summary = "완료된 약속 상세 정보를 불러오는 api 입니다.", description = "PlanId를 입력하여 약속 상세 정보를 불러옵니다.<br>" +
             "designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.")
@@ -209,6 +213,7 @@ public class PlanController {
         EndPlanDto endPlanDto = planService.getEndPlanDetail(planId, userEmail);
         return new ResponseEntity<>(endPlanDto, HttpStatus.OK);
     }
+
 
     @GetMapping("/gameMoney")
     @Operation(summary = "약속 지각자들의 총 지각비 정보를 불러오는 api 입니다.", description = "PlanId를 입력하여 약속 지각비 총 금액을 불러옵니다.<br>" +
@@ -230,4 +235,27 @@ public class PlanController {
         }
 
     }
+
+    @PostMapping("/settle")
+    @Operation(summary = "약속 참가자들의 지각비를 정산하는 api 입니다.", description = "PlanId를 입력하여 해당 약속의 정산을 수행합니다.<br>" +
+            "참가자 지갑에 지각비가 부족할 경우 정산에 실패하고 잔액이 부족한 참가자 목록을 보여줍니다. 정산에 성공할 경우 전체 참가자 목록을 보여줍니다.")
+    public ResponseEntity<SettlementResultDto> settleMoney(
+            HttpServletRequest request,
+            @RequestParam("planId") Long planId
+    ) {
+
+        try {
+            String userEmail = request.getRemoteUser();
+            SettlementResultDto settlementResultDto = walletService.settleMoney(userEmail, planId);
+            return ResponseEntity.ok(settlementResultDto);
+        } catch (IllegalArgumentException e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            log.error("API 호출 중 예외 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
 }

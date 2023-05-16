@@ -63,10 +63,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
         log.info("saveAccount에서 찍는 email " + dto.getEmail());
         log.info("saveAccount에서 찍는 kakaoId " + dto.getKakaoId());
         log.info("saveAccount에서 찍는 nickname " + dto.getNickname());
-//        validateDuplicateUsername(dto);
-//        dto.encodePassword(passwordEncoder.encode(dto.getKakaoId()));
-//
-//        return accountRepository.save(dto.toEntity()).getAccountId();
+
         validateDuplicateUsername(dto);
         dto.encodePassword(passwordEncoder.encode(dto.getKakaoId()));
 
@@ -78,12 +75,13 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
 //                .level(1)
 //                .experience(0)
                 .body(1)
-                .eye(1)
-                .mouthAndNose(1)
+                .eye(17)
+                .mouthAndNose(38)
                 .account(account)
                 .build();
 
         myCharacterRepository.save(myCharacter);
+
 
         Inventory inventory1 = new Inventory();
         inventory1.setAccount(account);
@@ -99,8 +97,6 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
         inventory3.setAccount(account);
         inventory3.setItem(itemRepository.findById(38).get());
         inventoryRepository.save(inventory3);
-
-
 
 
 

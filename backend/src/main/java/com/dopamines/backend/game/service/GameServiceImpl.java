@@ -2,6 +2,7 @@ package com.dopamines.backend.game.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
+import com.dopamines.backend.game.GameManager;
 import com.dopamines.backend.game.dto.GameResponseDto;
 import com.dopamines.backend.game.dto.MyCharacterDto;
 import com.dopamines.backend.game.repository.ItemRepository;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -29,6 +31,8 @@ public class GameServiceImpl implements GameService{
     private final ParticipantRepository participantRepository;
     private final PlanRepository planRepository;
     private final MyCharacterService myCharacterService;
+    private final GameManager gameManager;
+
     @Override
     public GameResponseDto enterGame(String email, Long planId) {
         log.info("planId: " + planId);
@@ -48,11 +52,28 @@ public class GameServiceImpl implements GameService{
             log.info("participant isPresent : " + participant.isPresent());
         }
 
-        int transactionMoney = participant.get().getTransactionMoney();
+//        int transactionMoney = participant.get().getTransactionMoney();
+        int transactionMoney = gameManager.getGameMoney(plan.get().getPlanId());
 
         return new GameResponseDto(account.get().getNickname(), myCharacterDto, transactionMoney);
     }
 
+    @Override
+    public int updateMoney(String email, long planId, int money) {
+        Optional<Account> account = accountRepository.findByEmail(email);
+        Optional<Plan> plan = planRepository.findById(planId);
+        if(account.isEmpty() || plan.isEmpty()) {
+            return 0;
+        }
+        Optional<Participant> userOptional = participantRepository.findByPlanAndAccount(plan.get(), account.get());
+        if(userOptional.isEmpty()) return 0;
+        Participant user = userOptional.get();
+        int newMoney = user.getTransactionMoney() + money;
+        user.setTransactionMoney(newMoney);
+        gameManager.subGameMoney(planId, money);
+        participantRepository.save(user);
+        return newMoney;
+    }
 
 
     @Override

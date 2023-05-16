@@ -5,7 +5,6 @@ import com.dopamines.backend.account.service.UserService;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
-import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.review.dto.PhotoDateDto;
 import com.dopamines.backend.review.dto.PhotoDetailDto;
@@ -14,7 +13,6 @@ import com.dopamines.backend.review.entity.Photo;
 import com.dopamines.backend.review.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -30,20 +28,13 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PhotoServiceImpl implements PhotoService {
 
-    @Autowired
-    PhotoRepository photoRepository;
+    private final PhotoRepository photoRepository;
 
-    @Autowired
-    PlanService planService;
+    private final PlanService planService;
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    PlanRepository planRepository;
-
-    @Autowired
-    ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
 
     // 인증을 사진을 등록하는 함수
     @Override

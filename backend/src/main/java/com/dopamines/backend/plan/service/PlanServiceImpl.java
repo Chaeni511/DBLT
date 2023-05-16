@@ -1,7 +1,9 @@
 package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.service.UserService;
+import com.dopamines.backend.game.GameManager;
 import com.dopamines.backend.plan.dto.*;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
@@ -9,16 +11,12 @@ import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -26,17 +24,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PlanServiceImpl implements PlanService {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private PlanRepository planRepository;
+    private final PlanRepository planRepository;
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
 
-    @Autowired
-    private ParticipantServiceImpl participantService;
+    private final ParticipantServiceImpl participantService;
+
+    private final AccountRepository accountRepository;
+
+    private final GameManager gameManager;
 
 
     // 약속 생성
@@ -55,7 +53,7 @@ public class PlanServiceImpl implements PlanService {
                         .latitude(latitude)
                         .longitude(longitude)
                         .cost(cost)
-                        .status(0)
+                        .isSettle(false) /////////////////
                         .build()
         );
 
@@ -125,7 +123,7 @@ public class PlanServiceImpl implements PlanService {
         planDto.setAddress(plan.getAddress());
         planDto.setLatitude(plan.getLatitude());
         planDto.setLongitude(plan.getLongitude());
-        planDto.setStatus(plan.getStatus());
+        planDto.setState(plan.getState());
 
         // D-day 계산
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
@@ -181,7 +179,8 @@ public class PlanServiceImpl implements PlanService {
         endPlanDto.setLatitude(plan.getLatitude());
         endPlanDto.setLongitude(plan.getLongitude());
         endPlanDto.setCost(plan.getCost());
-        endPlanDto.setStatus(plan.getStatus());
+        endPlanDto.setState(plan.getState());
+        endPlanDto.setIsSettle(plan.getIsSettle());
 
         // 참가자 리스트 정보
         List<Participant> endParticipants = participantRepository.findByPlan(plan);
@@ -227,7 +226,6 @@ public class PlanServiceImpl implements PlanService {
     }
 
 
-
     // 약속 리스트
     @Override
     public List<PlanListDto> getPlanList(String userEmail, LocalDate planDate) {
@@ -237,7 +235,10 @@ public class PlanServiceImpl implements PlanService {
         // 해당 account가 참여하고 있는 participant 목록 가져오기
         List<Participant> participants = participantRepository.findByAccount(account);
 
-        List<PlanListDto> planHomeListDto = new ArrayList<>();
+        List<PlanListDto> stateOneTwoList = new ArrayList<>();
+        List<PlanListDto> otherList = new ArrayList<>();
+
+//        List<PlanListDto> planHomeListDto = new ArrayList<>();
         for (Participant participant : participants) {
             // 참여한 약속
             Plan plan = participant.getPlan();
@@ -258,7 +259,7 @@ public class PlanServiceImpl implements PlanService {
                 planListDto.setAddress(plan.getAddress());
                 planListDto.setLatitude(plan.getLatitude());
                 planListDto.setLongitude(plan.getLongitude());
-                planListDto.setStatus(plan.getStatus());
+                planListDto.setState(plan.getState());
                 // 남은 시간 (-1이면 약속 시간 1시간 전)
                 planListDto.setDiffHours(getTimeHoursDifference(plan.getPlanDate(),plan.getPlanTime()));
                 // 남은 분 (-40이면 약속 시간 40분 전)
@@ -281,13 +282,31 @@ public class PlanServiceImpl implements PlanService {
                 planListDto.setParticipantList(planHomeListParticipantDto);
 
                 // 해당 날짜의 약속 리스트에 현재 약속 정보 저장
-                planHomeListDto.add(planListDto);
+//                planHomeListDto.add(planListDto);
+                if (plan.getState() == 1 || plan.getState() == 2) {
+                    stateOneTwoList.add(planListDto);
+                } else {
+                    otherList.add(planListDto);
+                }
             }
-
         }
-        return planHomeListDto;
+        // 약속 시간을 기준으로 정렬
+//        planHomeListDto.sort(Comparator.comparing(PlanListDto::getPlanTime));
 
+        // 상태가 1 또는 2인 리스트를 시간 순으로 정렬
+        stateOneTwoList.sort(Comparator.comparing(PlanListDto::getPlanTime));
+        // 나머지 리스트를 시간 순으로 정렬
+        otherList.sort(Comparator.comparing(PlanListDto::getPlanTime));
+
+        // 상태가 1 또는 2인 리스트를 앞에 추가한 뒤, 나머지 리스트를 추가하여 최종 리스트 생성
+        List<PlanListDto> sortedList = new ArrayList<>();
+        sortedList.addAll(stateOneTwoList);
+        sortedList.addAll(otherList);
+
+        return sortedList;
+//        return planHomeListDto;
     }
+
 
     // 해당 약속의 지각비 총 금액 계산
     public GameMoneyDto getGameMoney(Long planId){
@@ -315,6 +334,16 @@ public class PlanServiceImpl implements PlanService {
         gameMoneyDto.setPlanId(planId);
         gameMoneyDto.setTotalPayment(laterCount*plan.getCost());
         return gameMoneyDto;
+    }
+
+
+    // 정산확인
+    @Override
+    public boolean checkSettle(Long planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 약속 정보가 없습니다."));
+
+        return plan.getIsSettle();
     }
 
 
@@ -365,13 +394,14 @@ public class PlanServiceImpl implements PlanService {
         long diffMinutes = ChronoUnit.MINUTES.between(now, planDateTime);
 
         if (diffMinutes > 30) {
-            plan.setStatus(0); // 기본 상태
+            plan.setState(0); // 기본 상태
         } else if (diffMinutes > 0) {
-            plan.setStatus(1); // 위치공유 (30분 전 ~ 약속시간)
+            plan.setState(1); // 위치공유 (30분 전 ~ 약속시간)
         } else if (diffMinutes >= -60) {
-            plan.setStatus(2); // 게임 활성화 (약속시간 ~ 1시간 후)
+            gameManager.setGameMoney(plan.getPlanId(), getGameMoney(plan.getPlanId()).getTotalPayment());
+            plan.setState(2); // 게임 활성화 (약속시간 ~ 1시간 후)
         } else {
-            plan.setStatus(3); // 약속 종료 (1시간 이후)
+            plan.setState(3); // 약속 종료 (1시간 이후)
         }
 
         planRepository.save(plan);
@@ -394,7 +424,7 @@ public class PlanServiceImpl implements PlanService {
 
     // 내 약속이니?
     @Override
-    public Boolean isMyPlan(String userEmail, Long planId) {
+    public boolean isMyPlan(String userEmail, Long planId) {
         Account account = userService.findByEmail(userEmail);
         Plan plan = getPlanById(planId);
         Optional<Participant> participant = participantRepository.findByPlanAndAccount(plan, account);

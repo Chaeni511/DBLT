@@ -20,22 +20,33 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
     @GetMapping("/all")
-    public ResponseEntity<HashMap<String, List<ItemDto>> > getItems(HttpServletRequest request) {
+    public ResponseEntity<HashMap<String, List<ItemDto>>> getItems(HttpServletRequest request) {
         String email = request.getRemoteUser();
         return ResponseEntity.ok(itemService.getItems(email));
-    }
-
-    @PostMapping("/buy")
-    public ResponseEntity buyItem(HttpServletRequest request, int itemId) {
-        String email = request.getRemoteUser();
-        itemService.buyItem(email, itemId);
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/getShop")
     public ResponseEntity<ShopResponseDto> getShop(HttpServletRequest request) {
         String email = request.getRemoteUser();
         return ResponseEntity.ok(itemService.getShop(email));
+    }
+    @PostMapping("/buy")
+    public ResponseEntity buyItem(HttpServletRequest reqest, @RequestParam int itemId) {
+        String email = reqest.getRemoteUser();
+        try {
+            itemService.buyItem(email, itemId);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+
+        }
+
+
     }
 
 }

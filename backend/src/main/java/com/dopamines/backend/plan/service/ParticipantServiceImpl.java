@@ -2,8 +2,7 @@ package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
-import com.dopamines.backend.account.service.UserService;
-import com.dopamines.backend.plan.dto.GameMoneyDto;
+import com.dopamines.backend.game.GameManager;
 import com.dopamines.backend.plan.dto.GameResultMoneyDto;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
@@ -11,7 +10,6 @@ import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,14 +22,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ParticipantServiceImpl implements ParticipantService {
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    @Autowired
-    private PlanRepository planRepository;
+    private final PlanRepository planRepository;
+
+    private final GameManager gameManager;
+
 
     // 참가자 생성
     @Override
@@ -103,7 +101,8 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     // 게임으로 획득한 돈을 참가자의 거래금액에 등록하고 회원계정의 누적금액으로 업데이트합니다.
-    public GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney, Integer balance) {
+    public GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney) {
+        int balance = gameManager.getGameMoney(planId);
         // 약속 정보 가져오기
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 약속의 약속 정보가 없습니다."));
@@ -116,13 +115,17 @@ public class ParticipantServiceImpl implements ParticipantService {
         Participant participant = participantRepository.findByPlanAndAccount(plan,account)
                 .orElseThrow(() -> new IllegalArgumentException("해당 약속에 참가자의 정보가 없습니다."));
 
+        List<Participant> participantList = participantRepository.findAllByPlan(plan);
+        participantList.sort((o1, o2) -> o2.getTransactionMoney() - o1.getTransactionMoney());
+        int rank = participantList.indexOf(participant) + 1;
         // 참가자 수
-        int countParticipant = participantRepository.countByPlan(plan);
+//        int countParticipant = participantRepository.countByPlan(plan);
+        int countParticipant = participantList.size();
 
-        // 잔액과 참가자 수가 존재할 때 n빵 계산
         int quotient = 0; // 몫
         int remainder = 0; // 나머지
 
+        // 잔액과 참가자 수가 존재할 때 n빵 계산
         if (balance > 0 && countParticipant > 0) {
             quotient = balance / countParticipant; // n빵한 금액
             remainder = balance % countParticipant; // 나머지는 방장에게 줌
@@ -154,7 +157,6 @@ public class ParticipantServiceImpl implements ParticipantService {
         } else {
             account.setTotalIn(account.getTotalIn() + finalAmount);
         }
-        accountRepository.save(account);
 
         // 결과 dto 생성
         GameResultMoneyDto gameResultMoneyDto = new GameResultMoneyDto();
@@ -164,7 +166,15 @@ public class ParticipantServiceImpl implements ParticipantService {
         gameResultMoneyDto.setIsLate(participant.getLateTime() == null || participant.getLateTime()>0);
         gameResultMoneyDto.setGetGameMoney(getGameMoney);
         gameResultMoneyDto.setFinalAmount(finalAmount);
-
+        gameResultMoneyDto.setParticipantCount(countParticipant);
+        gameResultMoneyDto.setRank(rank);
+        if(gameResultMoneyDto.getIsLate()) {
+            gameResultMoneyDto.setThyme(0);
+        } else {
+            gameResultMoneyDto.setThyme(500);
+            account.setThyme(account.getThyme() + 500);
+            accountRepository.save(account);
+        }
         if (participant.getIsHost()){
             gameResultMoneyDto.setGetBalance(quotient+remainder);
         } else {
@@ -179,7 +189,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     // 방장 인지 확인
     @Override
-    public Boolean findIsHostByPlanAndUser(Plan plan, Account account) {
+    public boolean findIsHostByPlanAndUser(Plan plan, Account account) {
         Participant participant = participantRepository.findByPlanAndAccount(plan, account)
                 .orElseThrow(() -> new IllegalArgumentException("참가자가 아닙니다."));
 
