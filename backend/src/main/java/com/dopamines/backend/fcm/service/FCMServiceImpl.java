@@ -60,6 +60,7 @@ public class FCMServiceImpl implements FCMService{
     public void updateToken(String userEmail, String deviceToken) {
         Account account = accountRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원 정보가 없습니다."));
+
         FCM fcm = fcmRepository.findByAccount(account)
                 .orElseThrow(() -> new IllegalArgumentException("해당 토큰 정보가 없습니다."));
 
