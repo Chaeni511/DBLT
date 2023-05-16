@@ -10,6 +10,7 @@ import com.dopamines.backend.game.entity.MyCharacter;
 import com.dopamines.backend.game.repository.InventoryRepository;
 import com.dopamines.backend.game.repository.ItemRepository;
 import com.dopamines.backend.game.repository.MyCharacterRepository;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,7 @@ public class ItemServiceImpl implements ItemService{
     private List<ItemDto> toItemList(List<Item> items, String email) {
         List<Inventory> inventory = inventoryRepository.findAllByAccount_Email(email);
 //        log.info("toItemList의 inventory: "+ inventory.get(0).toString());
-        List<Item> itemIdList = inventoryListToItemIdList(inventory);
+        List<Integer> itemIdList = inventoryListToItemIdList(inventory);
         MyCharacter myCharacter = myCharacterRepository.findMyCharacterByAccount_Email(email);
         List<ItemDto> list = new ArrayList<ItemDto>();
         for(Item item : items){
@@ -58,7 +59,7 @@ public class ItemServiceImpl implements ItemService{
             itemDto.setPrice(item.getPrice());
             itemDto.setItemId(item.getItemId());
 
-            if(itemIdList.contains(item)){
+            if(itemIdList.contains(item.getItemId())){
                 itemDto.setBought(true);
             } else {
                 itemDto.setBought(false);
@@ -133,10 +134,11 @@ public class ItemServiceImpl implements ItemService{
         return shopResponseDto;
     };
 
-    private List<Item> inventoryListToItemIdList(List<Inventory> inventoryList) {
-        List<Item> itemIdList = new ArrayList<Item>();
+    @Override
+    public List<Integer> inventoryListToItemIdList(List<Inventory> inventoryList) {
+        List<Integer> itemIdList = new ArrayList<Integer>();
         for(Inventory inventory : inventoryList) {
-            itemIdList.add(inventory.getItem());
+            itemIdList.add(inventory.getItem().getItemId());
         }
         return itemIdList;
     }

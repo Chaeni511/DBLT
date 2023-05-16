@@ -13,8 +13,8 @@ public class MyCharacterDto {
     private int bodyParts;
     private int eyes;
     private int gloves;
-    private int mouthAndGloves;
-    private int tail;
+    private int mouthAndNoses;
+    private int tails;
 
 
 }
