@@ -5,10 +5,7 @@ import com.dopamines.backend.game.service.MyCharacterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,5 +23,19 @@ public class MyCharacterController {
         log.info("CharacterController의 getMyCharacter에서 찍는 email: " + email);
         return ResponseEntity.ok(myCharacterService.getMyCharacter(email));
 
+    }
+
+    @PostMapping("/wearItem")
+//    public ResponseEntity wearItem(HttpServletRequest request, @RequestParam int bodies) {
+    public ResponseEntity wearItem(HttpServletRequest request, @RequestBody MyCharacterDto myCharacterDto) {
+        log.info("myCharacterDto: "+myCharacterDto.getBodies());
+        String email = request.getRemoteUser();
+        try {
+            myCharacterService.wearItem(email, myCharacterDto);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

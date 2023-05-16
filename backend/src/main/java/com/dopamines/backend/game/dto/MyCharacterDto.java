@@ -2,8 +2,8 @@ package com.dopamines.backend.game.dto;
 
 import lombok.*;
 
-@Getter
 @Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,8 +13,8 @@ public class MyCharacterDto {
     private int bodyParts;
     private int eyes;
     private int gloves;
-    private int mouthAndGloves;
-    private int tail;
+    private int mouthAndNoses;
+    private int tails;
 
 
 }
