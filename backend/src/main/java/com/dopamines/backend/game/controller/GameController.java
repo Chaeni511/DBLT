@@ -30,7 +30,7 @@ public class GameController {
     }
 
     @PostMapping("/money")
-    public ResponseEntity<Integer> updateMoney(HttpServletRequest request, Integer money, Long roomNumber) {
+    public ResponseEntity<Integer> updateMoney(HttpServletRequest request, @RequestBody Integer money, @RequestBody Long roomNumber) {
         String email = request.getRemoteUser();
         int result = gameService.updateMoney(email, roomNumber, money);
         return ResponseEntity.ok(result);
