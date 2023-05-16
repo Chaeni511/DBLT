@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +26,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
     private final MyCharacterRepository myCharacterRepository;
     private final AccountRepository accountRepository;
     private final InventoryRepository inventoryRepository;
-    private final ItemRepository itemRepository;
-    private final ItemService itemService;
+
     @Override
     public MyCharacterDto getMyCharacter(String email){
         Optional<Account> account = accountRepository.findByEmail(email);
@@ -52,15 +52,15 @@ public class MyCharacterServiceImpl implements MyCharacterService {
     @Override
     public void wearItem(String email, MyCharacterDto myCharacterDto){
         List<Inventory> inventoryList = inventoryRepository.findAllByAccount_Email(email);
-        List<Integer> itemIdList = itemService.inventoryListToItemIdList(inventoryList);
+        List<Integer> itemIdList = inventoryListToItemIdList(inventoryList);
         MyCharacter myCharacter = myCharacterRepository.findMyCharacterByAccount_Email(email);
         if (
                 itemIdList.contains(myCharacterDto.getBodies())
-                || itemIdList.contains(myCharacterDto.getEyes())
-                || itemIdList.contains(myCharacterDto.getGloves())
-                || itemIdList.contains(myCharacterDto.getTails())
-                || itemIdList.contains(myCharacterDto.getBodyParts())
-                || itemIdList.contains(myCharacterDto.getMouthAndNoses())
+                && itemIdList.contains(myCharacterDto.getGloves())
+                && itemIdList.contains(myCharacterDto.getEyes())
+                && itemIdList.contains(myCharacterDto.getBodyParts())
+                && itemIdList.contains(myCharacterDto.getMouthAndNoses())
+                && itemIdList.contains(myCharacterDto.getTails())
         ) {
             myCharacter.setBody(myCharacterDto.getBodies());
             myCharacter.setEye(myCharacterDto.getEyes());
@@ -72,5 +72,13 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         } else {
             throw new IllegalArgumentException("구매하지 않은 아이템이 포함되어 있습니다.");
         }
+    }
+
+    private List<Integer> inventoryListToItemIdList(List<Inventory> inventoryList) {
+        List<Integer> itemIdList = new ArrayList<Integer>();
+        for(Inventory inventory : inventoryList) {
+            itemIdList.add(inventory.getItem().getItemId());
+        }
+        return itemIdList;
     }
 }
