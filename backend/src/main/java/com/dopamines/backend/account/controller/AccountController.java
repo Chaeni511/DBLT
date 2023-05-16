@@ -3,6 +3,7 @@ package com.dopamines.backend.account.controller;
 
 import com.dopamines.backend.account.dto.NicknameProfileDto;
 import com.dopamines.backend.account.dto.SearchResponseDto;
+import com.dopamines.backend.account.dto.UserInfoResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.service.AccountService;
@@ -56,14 +57,14 @@ public class AccountController {
     }
 
     @GetMapping("/id")
-    public ResponseEntity<Long>  getAccountId(HttpServletRequest request) {
+    public ResponseEntity<UserInfoResponseDto>  getAccountId(HttpServletRequest request) {
         String email = request.getRemoteUser();
         Optional<Account> account = accountRepository.findByEmail(email);
         if(account.isEmpty()) {
             return ResponseEntity.badRequest().build();
         } else {
-            return ResponseEntity.ok(account.get().getAccountId());
-
+            UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(account.get().getAccountId(), account.get().getProfile());
+            return ResponseEntity.ok(userInfoResponseDto);
         }
 
     }
