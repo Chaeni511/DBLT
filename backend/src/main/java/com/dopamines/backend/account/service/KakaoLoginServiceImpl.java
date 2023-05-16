@@ -1,12 +1,15 @@
 package com.dopamines.backend.account.service;
 
-import com.dopamines.backend.account.entity.Account;
-import com.dopamines.backend.account.entity.Role;
 import com.dopamines.backend.account.dto.AccountRequestDto;
 import com.dopamines.backend.account.dto.RoleToUserRequestDto;
+import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.entity.Role;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.repository.RoleRepository;
+import com.dopamines.backend.game.entity.Inventory;
 import com.dopamines.backend.game.entity.MyCharacter;
+import com.dopamines.backend.game.repository.InventoryRepository;
+import com.dopamines.backend.game.repository.ItemRepository;
 import com.dopamines.backend.game.repository.MyCharacterRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -23,7 +26,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.dopamines.backend.security.JwtConstants.*;
@@ -37,6 +43,8 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final MyCharacterRepository myCharacterRepository;
+    private final InventoryRepository inventoryRepository;
+    private final ItemRepository itemRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -55,10 +63,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
         log.info("saveAccount에서 찍는 email " + dto.getEmail());
         log.info("saveAccount에서 찍는 kakaoId " + dto.getKakaoId());
         log.info("saveAccount에서 찍는 nickname " + dto.getNickname());
-//        validateDuplicateUsername(dto);
-//        dto.encodePassword(passwordEncoder.encode(dto.getKakaoId()));
-//
-//        return accountRepository.save(dto.toEntity()).getAccountId();
+
         validateDuplicateUsername(dto);
         dto.encodePassword(passwordEncoder.encode(dto.getKakaoId()));
 
@@ -70,12 +75,30 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
 //                .level(1)
 //                .experience(0)
                 .body(1)
-                .eye(1)
-                .mouthAndNose(1)
+                .eye(17)
+                .mouthAndNose(38)
                 .account(account)
                 .build();
 
         myCharacterRepository.save(myCharacter);
+
+
+        Inventory inventory1 = new Inventory();
+        inventory1.setAccount(account);
+        inventory1.setItem(itemRepository.findById(1).get());
+        inventoryRepository.save(inventory1);
+
+        Inventory inventory2 = new Inventory();
+        inventory2.setAccount(account);
+        inventory2.setItem(itemRepository.findById(17).get());
+        inventoryRepository.save(inventory2);
+
+        Inventory inventory3 = new Inventory();
+        inventory3.setAccount(account);
+        inventory3.setItem(itemRepository.findById(38).get());
+        inventoryRepository.save(inventory3);
+
+
 
         return accountId;
     }

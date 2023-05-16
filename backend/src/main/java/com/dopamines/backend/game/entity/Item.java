@@ -3,10 +3,8 @@ package com.dopamines.backend.game.entity;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 @Slf4j
 @Setter
 @Getter
@@ -17,6 +15,7 @@ import javax.persistence.Id;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="item_id")
     private int itemId;
     private int code;
     private int price;
