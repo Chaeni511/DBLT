@@ -4,13 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
 @Setter
 @Component
 public class GameManager {
-    private Map<Long, Integer> remainMoney;
+    private Map<Long, Integer> remainMoney = new HashMap<>();
 
     public void setGameMoney(long planId, int money) {
         remainMoney.put(planId, money);
