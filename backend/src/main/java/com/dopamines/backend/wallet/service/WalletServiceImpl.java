@@ -232,8 +232,8 @@ public class WalletServiceImpl implements WalletService {
         // Wallet 생성
         Wallet wallet = new Wallet();
         wallet.setType(1);
-        wallet.setTransactionTime(LocalTime.now());
-        wallet.setTransactionDate(LocalDate.now());
+        wallet.setTransactionTime(LocalTime.now(ZoneId.of("Asia/Seoul")));
+        wallet.setTransactionDate(LocalDate.now(ZoneId.of("Asia/Seoul")));
         wallet.setAccount(account.get());
         wallet.setMoney(-money);
         wallet.setTotalMoney(account.get().getTotalWallet());
