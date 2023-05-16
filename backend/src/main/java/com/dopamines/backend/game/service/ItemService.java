@@ -13,6 +13,8 @@ public interface ItemService {
 //    HashMap<String, List<ItemDto>> getItems(String email);
 //    InventoryDto buyItem(String email, int item);
     ShopResponseDto getShop(String email);
-    Map<String, HashMap<String, List<ItemDto>>> getItems();
-    void buyItem(String email, int item);
+
+    HashMap<String, List<ItemDto>> getItems(String email);
+
+    void buyItem(String email, int itemId);
 }

@@ -157,7 +157,6 @@ public class ParticipantServiceImpl implements ParticipantService {
         } else {
             account.setTotalIn(account.getTotalIn() + finalAmount);
         }
-        accountRepository.save(account);
 
         // 결과 dto 생성
         GameResultMoneyDto gameResultMoneyDto = new GameResultMoneyDto();
@@ -169,7 +168,13 @@ public class ParticipantServiceImpl implements ParticipantService {
         gameResultMoneyDto.setFinalAmount(finalAmount);
         gameResultMoneyDto.setParticipantCount(countParticipant);
         gameResultMoneyDto.setRank(rank);
-
+        if(gameResultMoneyDto.getIsLate()) {
+            gameResultMoneyDto.setThyme(0);
+        } else {
+            gameResultMoneyDto.setThyme(500);
+            account.setThyme(account.getThyme() + 500);
+            accountRepository.save(account);
+        }
         if (participant.getIsHost()){
             gameResultMoneyDto.setGetBalance(quotient+remainder);
         } else {

@@ -18,5 +18,6 @@ public class GameResultMoneyDto {
     private Integer finalAmount;
     private Integer participantCount;
     private Integer rank;
+    private Integer thyme;
 
 }

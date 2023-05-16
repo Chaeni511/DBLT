@@ -40,4 +40,10 @@ public class MyCharacterServiceImpl implements MyCharacterService {
 
         }
     }
+
+    @Override
+    public void wearItem(String email, MyCharacterDto myCharacterDto){
+        MyCharacter myCharacter = myCharacterRepository.findMyCharacterByAccount_Email(email);
+        myCharacter.setBody(myCharacter.getBody());
+    }
 }

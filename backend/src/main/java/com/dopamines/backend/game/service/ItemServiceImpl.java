@@ -1,15 +1,9 @@
 package com.dopamines.backend.game.service;
 
 import com.dopamines.backend.account.entity.Account;
-<<<<<<< HEAD
-import com.dopamines.backend.game.dto.InventoryDto;
 import com.dopamines.backend.game.dto.ItemDto;
 import com.dopamines.backend.game.dto.ShopResponseDto;
-=======
 import com.dopamines.backend.account.repository.AccountRepository;
-import com.dopamines.backend.game.dto.InventoryDto;
-import com.dopamines.backend.game.dto.ItemDto;
->>>>>>> abd5e89ce4cf86f871226bdd5a0ee8e23fee5c51
 import com.dopamines.backend.game.entity.Inventory;
 import com.dopamines.backend.game.entity.Item;
 import com.dopamines.backend.game.entity.MyCharacter;
@@ -116,16 +110,17 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public void buyItem(String email, int item){
+    public void buyItem(String email, int itemId){
         Optional<Account> account = accountRepository.findByEmail(email);
         if (account.isEmpty()) {
             throw new RuntimeException("사용자 정보를 찾을 수 없습니다.");
         } else {
             Inventory inventory = new Inventory();
-//            inventory.set
+            inventory.setItem(itemRepository.findById(itemId).get());
+            inventory.setAccount(account.get());
+            inventoryRepository.save(inventory);
         }
 
-//        return inventoryDto;
     }
 
     @Override

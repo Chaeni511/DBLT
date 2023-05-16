@@ -27,22 +27,28 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItems(email));
     }
 
-    @PostMapping("/buy")
-    public ResponseEntity<InventoryDto> buyItem(HttpServletRequest reqest, @RequestParam int item) {
-        String email = reqest.getRemoteUser();
-        return ResponseEntity.ok(itemService.buyItem(email, item));
-    }
-
     @GetMapping("/getShop")
     public ResponseEntity<ShopResponseDto> getShop(HttpServletRequest request) {
         String email = request.getRemoteUser();
         return ResponseEntity.ok(itemService.getShop(email));
     }
-//    @PostMapping("/buy")
-//    public ResponseEntity<InventoryDto> buyItem(HttpServletRequest reqest, @RequestParam int item) {
-//        String email = reqest.getRemoteUser();
-//        return ResponseEntity.ok(itemService.buyItem(email, item));
-//
-//    }
+    @PostMapping("/buy")
+    public ResponseEntity buyItem(HttpServletRequest reqest, @RequestParam int itemId) {
+        String email = reqest.getRemoteUser();
+        try {
+            itemService.buyItem(email, itemId);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+
+        }
+
+
+    }
 
 }
