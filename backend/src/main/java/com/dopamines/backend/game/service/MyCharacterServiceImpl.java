@@ -97,38 +97,86 @@ public class MyCharacterServiceImpl implements MyCharacterService {
     @Override
     public void wearItem(String email, MyCharacterDto myCharacterDto){
         Optional<Account> account = accountRepository.findByEmail(email);
+
+        // 내 인벤토리 가져오기
         List<Inventory> inventoryList = inventoryRepository.findAllByAccount(account.get());
         for(Inventory i : inventoryList) {
-            log.info("inventoryList: " + i.getItem().getCategory()+ "/" + i.getItem().getCode());
+            log.info("inventoryList: " + i.getItem().getCategory()+ "/" + i.getItem().getItemId());
         }
+
+        // 인벤토리에서 itemId값만 가져오기
         List<Integer> itemIdList = inventoryListToItemIdList(inventoryList);
         for(Integer i : itemIdList) {
             log.info("itemIdList: " + i);
         }
+
         MyCharacter myCharacter = myCharacterRepository.findMyCharacterByAccount_Email(email);
-        if (
-                itemIdList.contains(myCharacterDto.getBodies())
-                && itemIdList.contains(myCharacterDto.getGloves())
-                && itemIdList.contains(myCharacterDto.getEyes())
-                && itemIdList.contains(myCharacterDto.getBodyParts())
-                && itemIdList.contains(myCharacterDto.getMouthAndNoses())
-                && itemIdList.contains(myCharacterDto.getTails())
-        ) {
-            myCharacter.setBody(myCharacterDto.getBodies());
-            myCharacter.setEye(myCharacterDto.getEyes());
-            myCharacter.setGloves(myCharacterDto.getGloves());
-            myCharacter.setTail(myCharacterDto.getTails());
-            myCharacter.setBodyPart(myCharacterDto.getBodyParts());
-            myCharacter.setMouthAndNose(myCharacterDto.getMouthAndNoses());
-            myCharacterRepository.save(myCharacter);
+
+        Optional<Item> body = itemRepository.findByCategoryAndCode("bodies", myCharacterDto.getBodies());
+        Optional<Item> bodyPart = itemRepository.findByCategoryAndCode("bodyParts", myCharacterDto.getBodies());
+        Optional<Item> eye = itemRepository.findByCategoryAndCode("eyes", myCharacterDto.getEyes());
+        Optional<Item> gloves = itemRepository.findByCategoryAndCode("gloves", myCharacterDto.getGloves());
+        Optional<Item> mouthAndNose = itemRepository.findByCategoryAndCode("mouth_and_noses", myCharacterDto.getMouthAndNoses());
+        Optional<Item> tail = itemRepository.findByCategoryAndCode("tails", myCharacterDto.getTails());
+
+        if (body.isEmpty()) {
+            myCharacter.setBody(0);
         } else {
-            log.info("myCharacterDto.getBodies()"+ itemIdList.contains(myCharacterDto.getBodies()));
-            log.info("myCharacterDto.getGloves()"+ itemIdList.contains(myCharacterDto.getGloves()));
-            log.info("myCharacterDto.getEyes()"+ itemIdList.contains(myCharacterDto.getEyes()));
-            log.info("myCharacterDto.getBodyParts()"+ itemIdList.contains(myCharacterDto.getBodyParts()));
-            log.info("myCharacterDto.getMouthAndNoses()"+ itemIdList.contains(myCharacterDto.getMouthAndNoses()));
-            log.info("myCharacterDto.getTails()"+ itemIdList.contains(myCharacterDto.getTails()));
-            throw new IllegalArgumentException("구매하지 않은 아이템이 포함되어 있습니다.");
+            if(itemIdList.contains(body.get().getItemId())){
+                myCharacter.setBody(body.get().getItemId());
+            } else {
+                throw new IllegalArgumentException("구매하지 않은 아이템이 포함되어 있습니다.");
+            }
+        }
+
+        if (bodyPart.isEmpty()) {
+            myCharacter.setBodyPart(0);
+        } else {
+            if(itemIdList.contains(bodyPart.get().getItemId())){
+                myCharacter.setBodyPart(bodyPart.get().getItemId());
+            } else {
+                throw new IllegalArgumentException("구매하지 않은 아이템이 포함되어 있습니다.");
+            }
+        }
+
+        if (eye.isEmpty()) {
+            myCharacter.setEye(0);
+        } else {
+            if(itemIdList.contains(eye.get().getItemId())){
+                myCharacter.setEye(eye.get().getItemId());
+            } else {
+                throw new IllegalArgumentException("구매하지 않은 아이템이 포함되어 있습니다.");
+            }
+        }
+
+        if (gloves.isEmpty()) {
+            myCharacter.setGloves(0);
+        } else {
+            if(itemIdList.contains(gloves.get().getItemId())){
+                myCharacter.setGloves(gloves.get().getItemId());
+            } else {
+                throw new IllegalArgumentException("구매하지 않은 아이템이 포함되어 있습니다.");
+            }
+        }
+
+        if (mouthAndNose.isEmpty()) {
+            myCharacter.setMouthAndNose(0);
+        } else {
+            if(itemIdList.contains(mouthAndNose.get().getItemId())){
+                myCharacter.setMouthAndNose(mouthAndNose.get().getItemId());
+            } else {
+                throw new IllegalArgumentException("구매하지 않은 아이템이 포함되어 있습니다.");
+            }
+        }
+
+        if (tail.isEmpty()) {
+            myCharacter.setTail(0);
+        } else {
+            if(itemIdList.contains(tail.get().getItemId())){
+                myCharacter.setTail(tail.get().getItemId());
+            } else {
+                throw new IllegalArgumentException("구매하지 않은 아이템이 포함되어 있습니다.");
+            }
         }
     }
 

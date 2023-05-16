@@ -1,5 +1,6 @@
 package com.dopamines.backend.fcm.controller;
 
+import com.dopamines.backend.fcm.dto.GroupTokenListDto;
 import com.dopamines.backend.fcm.dto.RequestDto;
 import com.dopamines.backend.fcm.dto.TokenDto;
 import com.dopamines.backend.fcm.service.FCMService;
@@ -31,8 +32,6 @@ public class FCMController {
     @PostMapping("/register")
     @Operation(summary = "fcm deviceToken을 저장하는 api 입니다.", description = "로그인한 기기의 Token을 저장합니다.")
     public ResponseEntity<Void> registerToken(HttpServletRequest request, @RequestBody TokenDto tokenDto) {
-
-        log.info("registerToken :-------------------------------------------------------------------------------------------");
 
         try {
             // 헤더에서 유저 이메일 가져옴
@@ -68,7 +67,7 @@ public class FCMController {
 
 
     @DeleteMapping("/delete")
-    @Operation(summary = "fcm deviceToken을 삭제하는 api 입니다.", description = "로그아웃시 기기의 Token을 삭제제합니다")
+    @Operation(summary = "fcm deviceToken을 삭제하는 api 입니다.", description = "로그아웃시 기기의 Token을 삭제합니다")
     public ResponseEntity<Void> deleteToken(HttpServletRequest request) {
 
         try {
@@ -77,6 +76,24 @@ public class FCMController {
             fcmService.deleteToken(userEmail);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @GetMapping("/groupToken")
+    @Operation(summary = "같은 그룹에 있는 deviceToken의 리스트를 불러오는 api 입니다.", description = "로그아웃시 기기의 Token을 삭제합니다")
+    public ResponseEntity<GroupTokenListDto> getGroupToken(@RequestParam Long planId) {
+
+        try {
+            GroupTokenListDto groupTokenListDto = fcmService.getGroupToken(planId);
+            return ResponseEntity.ok(groupTokenListDto);
+        } catch (IllegalArgumentException e) {
+            // 약속 정보가 없는 경우에 대한 예외 처리
             log.error("API 호출 중 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {

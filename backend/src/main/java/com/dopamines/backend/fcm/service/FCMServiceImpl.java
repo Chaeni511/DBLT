@@ -3,10 +3,13 @@ package com.dopamines.backend.fcm.service;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.fcm.dto.FCMMessage;
+import com.dopamines.backend.fcm.dto.GroupTokenListDto;
 import com.dopamines.backend.fcm.entity.FCM;
 import com.dopamines.backend.fcm.repository.FCMRepository;
 import com.dopamines.backend.plan.entity.Participant;
-import com.dopamines.backend.review.entity.Comment;
+import com.dopamines.backend.plan.entity.Plan;
+import com.dopamines.backend.plan.repository.ParticipantRepository;
+import com.dopamines.backend.plan.repository.PlanRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +40,10 @@ public class FCMServiceImpl implements FCMService{
     private final AccountRepository accountRepository;
 
     private final FCMRepository fcmRepository;
+
+    private final PlanRepository planRepository;
+
+    private final ParticipantRepository participantRepository;
 
 
     @Override
@@ -81,6 +89,25 @@ public class FCMServiceImpl implements FCMService{
                 .orElseThrow(() -> new IllegalArgumentException("해당 토큰 정보가 없습니다."));
 
         fcmRepository.delete(fcm);
+    }
+
+    @Override
+    public GroupTokenListDto getGroupToken(Long planId) {
+
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 약속 정보가 없습니다."));
+
+        List<Participant> participants = participantRepository.findByPlan(plan);
+
+        List<String> tokenList = new ArrayList<>();
+        for (Participant participant : participants) {
+            Optional<FCM> fcm = fcmRepository.findByAccount(participant.getAccount());
+            if (fcm.isPresent()) {
+                tokenList.add(fcm.get().getDeviceToken());
+            }
+        }
+        GroupTokenListDto groupTokenListDto = new GroupTokenListDto(tokenList);
+        return groupTokenListDto;
     }
 
 
