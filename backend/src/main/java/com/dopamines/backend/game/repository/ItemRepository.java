@@ -10,5 +10,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findByCategory(String category);
 
     Optional<Item> findByItemId(int itemId);
+    Optional<Item> findByCategoryAndCode(String category, int code);
+
 
 }
