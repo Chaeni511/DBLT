@@ -63,6 +63,9 @@ public class AccountController {
         if(account.isEmpty()) {
             return ResponseEntity.badRequest().build();
         } else {
+            log.info("account.get().getAccountId(): " + account.get().getAccountId());
+            log.info("account.get().getProfile(): " + account.get().getProfile());
+
             UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(account.get().getAccountId(), account.get().getProfile());
             return ResponseEntity.ok(userInfoResponseDto);
         }
