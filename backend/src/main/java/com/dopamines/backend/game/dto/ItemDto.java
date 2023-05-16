@@ -1,10 +1,12 @@
 package com.dopamines.backend.game.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
 @Setter
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemDto {
     private int code;
     private int price;

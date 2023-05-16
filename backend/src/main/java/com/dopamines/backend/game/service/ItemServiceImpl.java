@@ -58,16 +58,42 @@ public class ItemServiceImpl implements ItemService{
                 itemDto.setBought(false);
             }
 
-            if(item.getItemId() == myCharacter.getBody()
-                    || item.getItemId() == myCharacter.getTail()
-                    || item.getItemId() == myCharacter.getEye()
-                    || item.getItemId() == myCharacter.getGloves()
-                    || item.getItemId() == myCharacter.getBodyPart()
-                    || item.getItemId() == myCharacter.getMouthAndNose()
-            ) {
-                itemDto.setWorn(true);
-            } else {
-                itemDto.setWorn(false);
+            if(item.getCategory() == "bodies"){
+                if (item.getCode() == myCharacter.getBody()) {
+                    itemDto.setWorn(true);
+                } else {
+                    itemDto.setWorn(false);
+                }
+            } else if(item.getCategory() == "body_parts"){
+                if (item.getCode() == myCharacter.getBodyPart()) {
+                    itemDto.setWorn(true);
+                } else {
+                    itemDto.setWorn(false);
+                }
+            } else if(item.getCategory() == "eyes"){
+                if (item.getCode() == myCharacter.getEye()) {
+                    itemDto.setWorn(true);
+                } else {
+                    itemDto.setWorn(false);
+                }
+            } else if(item.getCategory() == "gloves"){
+                if (item.getCode() == myCharacter.getGloves()) {
+                    itemDto.setWorn(true);
+                } else {
+                    itemDto.setWorn(false);
+                }
+            } else if(item.getCategory() == "mouth_and_noses"){
+                if (item.getCode() == myCharacter.getMouthAndNose()) {
+                    itemDto.setWorn(true);
+                } else {
+                    itemDto.setWorn(false);
+                }
+            } else if(item.getCategory() == "tails"){
+                if (item.getCode() == myCharacter.getTail()) {
+                    itemDto.setWorn(true);
+                } else {
+                    itemDto.setWorn(false);
+                }
             }
 
             list.add(itemDto);

@@ -2,8 +2,8 @@ package com.dopamines.backend.game.dto;
 
 import lombok.*;
 
-@Getter
 @Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

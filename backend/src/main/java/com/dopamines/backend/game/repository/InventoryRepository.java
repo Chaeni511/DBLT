@@ -9,5 +9,4 @@ public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
     Inventory findByAccount_Email(String email);
 
     List<Inventory> findAllByAccount_Email(String email);
-]
 }

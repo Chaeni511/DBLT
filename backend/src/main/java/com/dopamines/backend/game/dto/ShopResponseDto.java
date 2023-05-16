@@ -11,13 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShopResponseDto {
-    private MyCharacterDto myCharacterDto;
-    private InventoryDto inventoryDto;
-    private List<ItemDto> bodies;
-    private List<ItemDto> bodyParts;
-    private List<ItemDto> eyes;
-    private List<ItemDto> gloves;
-    private List<ItemDto> mouthAndNoses;
-    private List<ItemDto> tails;
-
+    private MyCharacterDto myCharacter;
+    private InventoryDto inventory;
+    private ItemByCategoryDto items;
 }
