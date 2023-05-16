@@ -49,6 +49,17 @@ public class FCMServiceImpl implements FCMService{
         log.info("{} 님의 deviceToken : {} 이 저장되었습니다.",  account.getEmail(), deviceToken);
     }
 
+    @Override
+    public void updateToken(String userEmail, String deviceToken) {
+        Account account = accountRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원 정보가 없습니다."));
+        FCM fcm = fcmRepository.findByAccount(account)
+                .orElseThrow(() -> new IllegalArgumentException("해당 토큰 정보가 없습니다."));
+
+        fcm.setDeviceToken(deviceToken);
+        fcmRepository.save(fcm);
+        log.info("{} 님의 deviceToken : {} 이 갱신되었습니다.",  account.getEmail(), deviceToken);
+    }
 
     // targetToken에 해당하는 device로 FCM 푸시알림을 전송 요청
     @Override
