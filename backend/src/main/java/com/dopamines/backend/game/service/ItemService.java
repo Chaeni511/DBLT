@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface ItemService {
 
-    Map<String, HashMap<String, List<ItemDto>>> getItems(String email);
+    HashMap<String, List<ItemDto>> getItems(String email);
     InventoryDto buyItem(String email, int item);
     ShopResponseDto getShop(String email);
 }

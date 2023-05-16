@@ -3,6 +3,7 @@ package com.dopamines.backend.game.dto;
 
 import lombok.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -12,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ShopResponseDto {
     private MyCharacterDto myCharacter;
-    private InventoryDto inventory;
-    private ItemByCategoryDto items;
+//    private InventoryDto inventory;
+    private HashMap<String, List<ItemDto>> items;
 }

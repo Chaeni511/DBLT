@@ -22,7 +22,7 @@ import java.util.Map;
 public class ItemController {
     private final ItemService itemService;
     @GetMapping("/all")
-    public ResponseEntity<Map<String, HashMap<String, List<ItemDto>>>> getItems(HttpServletRequest request) {
+    public ResponseEntity<HashMap<String, List<ItemDto>>> getItems(HttpServletRequest request) {
         String email = request.getRemoteUser();
         return ResponseEntity.ok(itemService.getItems(email));
     }
