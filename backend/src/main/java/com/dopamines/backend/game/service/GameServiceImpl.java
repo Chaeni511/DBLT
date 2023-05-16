@@ -59,7 +59,7 @@ public class GameServiceImpl implements GameService{
     }
 
     @Override
-    public int updateMoney(String email, long planId, int money) {
+    public int updateMoney(String email, Long planId, Integer money) {
         Optional<Account> account = accountRepository.findByEmail(email);
         Optional<Plan> plan = planRepository.findById(planId);
         if(account.isEmpty() || plan.isEmpty()) {
