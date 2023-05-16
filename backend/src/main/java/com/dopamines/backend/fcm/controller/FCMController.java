@@ -4,8 +4,6 @@ import com.dopamines.backend.fcm.dto.GroupTokenListDto;
 import com.dopamines.backend.fcm.dto.RequestDto;
 import com.dopamines.backend.fcm.dto.TokenDto;
 import com.dopamines.backend.fcm.service.FCMService;
-import com.dopamines.backend.fcm.service.FCMServiceImpl;
-import com.dopamines.backend.wallet.dto.SettlementResultDto;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +44,7 @@ public class FCMController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     @PutMapping("/update")
     @Operation(summary = "fcm deviceToken을 갱신하는 api 입니다.", description = "로그인한 기기의 Token을 갱신합니다.")
