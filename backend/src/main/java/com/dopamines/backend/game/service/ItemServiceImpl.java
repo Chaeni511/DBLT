@@ -1,7 +1,10 @@
 package com.dopamines.backend.game.service;
 
+import com.dopamines.backend.account.entity.Account;
+import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.game.dto.InventoryDto;
 import com.dopamines.backend.game.dto.ItemDto;
+import com.dopamines.backend.game.entity.Inventory;
 import com.dopamines.backend.game.entity.Item;
 import com.dopamines.backend.game.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Transactional
@@ -21,6 +21,7 @@ import java.util.Map;
 public class ItemServiceImpl implements ItemService{
 
     private final ItemRepository itemRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public Map<String, HashMap<String, List<ItemDto>>> getItems(){
@@ -49,8 +50,15 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public InventoryDto buyItem(String email, int item){
-        InventoryDto inventoryDto = new InventoryDto();
-        return inventoryDto;
+    public void buyItem(String email, int item){
+        Optional<Account> account = accountRepository.findByEmail(email);
+        if (account.isEmpty()) {
+            throw new RuntimeException("사용자 정보를 찾을 수 없습니다.");
+        } else {
+            Inventory inventory = new Inventory();
+//            inventory.set
+        }
+
+//        return inventoryDto;
     }
 }
