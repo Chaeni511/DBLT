@@ -17,9 +17,15 @@ import java.io.IOException;
 @RequestMapping("/fcm")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@Api(value = "fcm", description = "firebaseCloudMessageService를 관리하는 컨트롤러입니다.")
+@Api(value = "fcm", description = "firebaseCloudMessage를 관리하는 컨트롤러입니다.")
 public class FCMController {
+
     private final FCMService firebaseCloudMessageService;
+
+
+//    @PostMapping("/register")
+//    @Operation(summary = "fcm deviceToken을 저장하는 api 입니다.", description = "로그인한 기기의 Token을 저장합니다.")
+//    public ResponseEntity registerToken(@RequestBody )
 
     @PostMapping("/push")
     @Operation(summary = "fcm push를 테스트하는 api 입니다.", description = "targetToken, title, body를 작성하여 보내면 firebase 서버에 메세지 푸시를 요청하여 클라이언트에게 메세지를 푸시합니다")
