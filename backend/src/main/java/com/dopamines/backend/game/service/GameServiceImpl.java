@@ -52,10 +52,10 @@ public class GameServiceImpl implements GameService{
             log.info("participant isPresent : " + participant.isPresent());
         }
 
-//        int transactionMoney = participant.get().getTransactionMoney();
-        int transactionMoney = gameManager.getGameMoney(plan.get().getPlanId());
+        int transactionMoney = participant.get().getTransactionMoney();
+        int totalMoney = gameManager.getGameMoney(plan.get().getPlanId());
 
-        return new GameResponseDto(account.get().getNickname(), myCharacterDto, transactionMoney);
+        return new GameResponseDto(account.get().getNickname(), myCharacterDto, totalMoney, transactionMoney);
     }
 
     @Override

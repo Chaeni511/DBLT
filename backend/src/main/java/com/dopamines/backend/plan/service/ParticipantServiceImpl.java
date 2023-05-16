@@ -33,7 +33,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     // 참가자 생성
     @Override
-    public void createParticipant(Account account, Plan plan, Boolean host) {
+    public void createParticipant(Account account, Plan plan, boolean host) {
         Participant participant = Participant.builder()
                 .account(account)
                 .plan(plan)

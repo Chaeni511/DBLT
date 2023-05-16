@@ -7,7 +7,7 @@ import com.dopamines.backend.plan.entity.Plan;
 public interface ParticipantService {
 
     // 참가자 생성
-    void createParticipant(Account account, Plan plan, Boolean host);
+    void createParticipant(Account account, Plan plan, boolean host);
 
     // 참가자 수정
     void updateParticipant(Plan plan, String newParticipantIdsStr);
