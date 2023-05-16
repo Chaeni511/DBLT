@@ -15,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Transactional
@@ -47,6 +44,7 @@ public class ItemServiceImpl implements ItemService{
 
     private List<ItemDto> toItemList(List<Item> items, String email) {
         List<Inventory> inventory = inventoryRepository.findAllByAccount_Email(email);
+//        log.info("toItemList의 inventory: "+ inventory.get(0).toString());
         MyCharacter myCharacter = myCharacterRepository.findMyCharacterByAccount_Email(email);
         List<ItemDto> list = new ArrayList<ItemDto>();
         for(Item item : items){
