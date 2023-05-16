@@ -25,7 +25,7 @@ public class MyCharacterController {
 
     }
 
-    @PostMapping("/wearItem")
+    @PostMapping("/wear")
 //    public ResponseEntity wearItem(HttpServletRequest request, @RequestParam int bodies) {
     public ResponseEntity wearItem(HttpServletRequest request, @RequestBody MyCharacterDto myCharacterDto) {
         log.info("myCharacterDto: "+myCharacterDto.getBodies());
