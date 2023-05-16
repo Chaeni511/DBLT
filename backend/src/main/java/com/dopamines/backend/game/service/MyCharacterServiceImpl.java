@@ -4,8 +4,10 @@ import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.game.dto.MyCharacterDto;
 import com.dopamines.backend.game.entity.Inventory;
+import com.dopamines.backend.game.entity.Item;
 import com.dopamines.backend.game.entity.MyCharacter;
 import com.dopamines.backend.game.repository.InventoryRepository;
+import com.dopamines.backend.game.repository.ItemRepository;
 import com.dopamines.backend.game.repository.MyCharacterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
     private final MyCharacterRepository myCharacterRepository;
     private final AccountRepository accountRepository;
     private final InventoryRepository inventoryRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     public MyCharacterDto getMyCharacter(String email){
@@ -33,14 +36,58 @@ public class MyCharacterServiceImpl implements MyCharacterService {
             return null;
         } else{
             MyCharacter myCharacter = myCharacterRepository.findByAccount(account.get());
-            MyCharacterDto myCharacterDto = new MyCharacterDto(
-                    myCharacter.getBody(),
-                    myCharacter.getBodyPart(),
-                    myCharacter.getEye(),
-                    myCharacter.getGloves(),
-                    myCharacter.getMouthAndNose(),
-                    myCharacter.getTail()
-            );
+            log.info("eye" +myCharacter.getEye());
+            log.info("tail" +myCharacter.getTail());
+            log.info("body" +myCharacter.getBody());
+            log.info("bodyPart" +myCharacter.getBodyPart());
+            log.info("gloves" +myCharacter.getGloves());
+            log.info("mouth&nose" +myCharacter.getMouthAndNose());
+            MyCharacterDto myCharacterDto = new MyCharacterDto();
+
+            Optional<Item> body = itemRepository.findByItemId(myCharacter.getBody());
+            Optional<Item> bodyPart = itemRepository.findByItemId(myCharacter.getBodyPart());
+            Optional<Item> eye = itemRepository.findByItemId(myCharacter.getEye());
+            Optional<Item> gloves = itemRepository.findByItemId(myCharacter.getGloves());
+            Optional<Item> mouthAndNose = itemRepository.findByItemId(myCharacter.getMouthAndNose());
+            Optional<Item> tail = itemRepository.findByItemId(myCharacter.getTail());
+
+            if(body.isEmpty()) {
+                myCharacterDto.setBodies(0);
+            } else {
+                myCharacterDto.setBodies(body.get().getCode());
+            }
+
+            if(bodyPart.isEmpty()) {
+                myCharacterDto.setBodyParts(0);
+            } else {
+                myCharacterDto.setBodyParts(bodyPart.get().getCode());
+            }
+
+            if(eye.isEmpty()) {
+                myCharacterDto.setEyes(0);
+            } else {
+                myCharacterDto.setEyes(eye.get().getCode());
+            }
+
+            if(gloves.isEmpty()) {
+                myCharacterDto.setGloves(0);
+            } else {
+                myCharacterDto.setGloves(gloves.get().getCode());
+            }
+
+            if(mouthAndNose.isEmpty()) {
+                myCharacterDto.setMouthAndNoses(0);
+            } else {
+                myCharacterDto.setMouthAndNoses(mouthAndNose.get().getCode());
+            }
+
+            if(tail.isEmpty()) {
+                myCharacterDto.setTails(0);
+            } else {
+                myCharacterDto.setTails(tail.get().getCode());
+            }
+
+
 
             return myCharacterDto;
 

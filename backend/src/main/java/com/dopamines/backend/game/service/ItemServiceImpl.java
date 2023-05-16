@@ -65,37 +65,37 @@ public class ItemServiceImpl implements ItemService{
             }
 
             if(item.getCategory().equals("bodies")){
-                if (item.getCode() == myCharacter.getBody()) {
+                if (item.getItemId() == myCharacter.getBody()) {
                     itemDto.setWorn(true);
                 } else {
                     itemDto.setWorn(false);
                 }
             } else if(item.getCategory().equals("body_parts")){
-                if (item.getCode() == myCharacter.getBodyPart()) {
+                if (item.getItemId() == myCharacter.getBodyPart()) {
                     itemDto.setWorn(true);
                 } else {
                     itemDto.setWorn(false);
                 }
             } else if(item.getCategory().equals("eyes")){
-                if (item.getCode() == myCharacter.getEye()) {
+                if (item.getItemId() == myCharacter.getEye()) {
                     itemDto.setWorn(true);
                 } else {
                     itemDto.setWorn(false);
                 }
             } else if(item.getCategory().equals("gloves")){
-                if (item.getCode() == myCharacter.getGloves()) {
+                if (item.getItemId() == myCharacter.getGloves()) {
                     itemDto.setWorn(true);
                 } else {
                     itemDto.setWorn(false);
                 }
             } else if(item.getCategory().equals("mouth_and_noses")){
-                if (item.getCode() == myCharacter.getMouthAndNose()) {
+                if (item.getItemId() == myCharacter.getMouthAndNose()) {
                     itemDto.setWorn(true);
                 } else {
                     itemDto.setWorn(false);
                 }
             } else if(item.getCategory().equals("tails")){
-                if (item.getCode() == myCharacter.getTail()) {
+                if (item.getItemId() == myCharacter.getTail()) {
                     itemDto.setWorn(true);
                 } else {
                     itemDto.setWorn(false);
