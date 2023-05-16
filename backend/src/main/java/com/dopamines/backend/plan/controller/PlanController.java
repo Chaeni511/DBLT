@@ -230,7 +230,7 @@ public class PlanController {
             log.error("API 호출 중 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
-            log.error("API 호출 중 예외 발생", e);
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -252,7 +252,7 @@ public class PlanController {
             log.error("API 호출 중 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
-            log.error("API 호출 중 예외 발생", e);
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
