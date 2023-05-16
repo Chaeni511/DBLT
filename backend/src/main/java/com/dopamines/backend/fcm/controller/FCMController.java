@@ -32,14 +32,11 @@ public class FCMController {
     @PostMapping("/register")
     @Operation(summary = "fcm deviceToken을 저장하는 api 입니다.", description = "로그인한 기기의 Token을 저장합니다.")
     public ResponseEntity<Void> registerToken(HttpServletRequest request, @RequestBody TokenDto tokenDto) {
-//    public ResponseEntity<Void> registerToken(HttpServletRequest request, @RequestParam("deviceToken") String deviceToken) {
 
         try {
             // 헤더에서 유저 이메일 가져옴
             String userEmail = request.getRemoteUser();
             fcmService.registerToken(userEmail, tokenDto.getDeviceToken());
-            // fcmService.registerToken(userEmail, deviceToken);
-            log.info("{} 님의 deviceToken: {} 이 저장되었습니다.", userEmail, tokenDto.getDeviceToken());
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             log.error("API 호출 중 예외 발생: {}", e.getMessage());
@@ -70,7 +67,7 @@ public class FCMController {
 
 
     @DeleteMapping("/delete")
-    @Operation(summary = "fcm deviceToken을 삭제하는 api 입니다.", description = "로그아웃시 기기의 Token을 삭제제합니다")
+    @Operation(summary = "fcm deviceToken을 삭제하는 api 입니다.", description = "로그아웃시 기기의 Token을 삭제합니다")
     public ResponseEntity<Void> deleteToken(HttpServletRequest request) {
 
         try {
