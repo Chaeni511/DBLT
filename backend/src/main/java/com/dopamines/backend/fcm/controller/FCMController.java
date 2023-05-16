@@ -1,7 +1,7 @@
 package com.dopamines.backend.fcm.controller;
 
 import com.dopamines.backend.fcm.dto.RequestDto;
-import com.dopamines.backend.fcm.service.FcmService;
+import com.dopamines.backend.fcm.service.FCMService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Api(value = "fcm", description = "firebaseCloudMessageService를 관리하는 컨트롤러입니다.")
-public class FcmController {
-    private final FcmService firebaseCloudMessageService;
+public class FCMController {
+    private final FCMService firebaseCloudMessageService;
 
     @PostMapping("/push")
     @Operation(summary = "fcm push를 테스트하는 api 입니다.", description = "targetToken, title, body를 작성하여 보내면 firebase 서버에 메세지 푸시를 요청하여 클라이언트에게 메세지를 푸시합니다")

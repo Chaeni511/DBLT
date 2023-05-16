@@ -49,5 +49,5 @@ public class Participant {
 
     @Column(name = "transaction_money")
     @ColumnDefault("0")
-    private Integer transactionMoney;
+    private int transactionMoney;
 }

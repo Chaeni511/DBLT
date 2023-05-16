@@ -1,6 +1,6 @@
 package com.dopamines.backend.fcm.service;
 
-import com.dopamines.backend.fcm.dto.FcmMessage;
+import com.dopamines.backend.fcm.dto.FCMMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FcmService {
+public class FCMService {
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/d209-dopamines/messages:send";
 
@@ -48,10 +48,10 @@ public class FcmService {
 
     // FcmMessage를 만들고, 이를 ObjectMapper을 이용해 String으로 변환하여 반환
     private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
-        FcmMessage fcmMessage = FcmMessage.builder()
-                .message(FcmMessage.Message.builder()
+        FCMMessage fcmMessage = FCMMessage.builder()
+                .message(FCMMessage.Message.builder()
                         .token(targetToken)
-                        .notification(FcmMessage.Notification.builder()
+                        .notification(FCMMessage.Notification.builder()
                                 .title(title)
                                 .body(body)
                                 .image(null)
