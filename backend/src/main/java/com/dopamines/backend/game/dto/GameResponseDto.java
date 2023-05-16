@@ -10,7 +10,7 @@ import lombok.*;
 public class GameResponseDto {
     private String nickname;
     private MyCharacterDto myCharacter;
-
+    private int totalMoney;
     private int transactionMoney;
 
 }

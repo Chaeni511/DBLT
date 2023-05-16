@@ -55,7 +55,7 @@ public class GameServiceImpl implements GameService{
 //        int transactionMoney = participant.get().getTransactionMoney();
         int transactionMoney = gameManager.getGameMoney(plan.get().getPlanId());
 
-        return new GameResponseDto(account.get().getNickname(), myCharacterDto, transactionMoney);
+        return new GameResponseDto(account.get().getNickname(), myCharacterDto, gameManager.getGameMoney(planId), transactionMoney);
     }
 
     @Override
