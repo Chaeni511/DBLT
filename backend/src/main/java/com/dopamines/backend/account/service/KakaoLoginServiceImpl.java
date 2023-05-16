@@ -6,8 +6,10 @@ import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.entity.Role;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.repository.RoleRepository;
+import com.dopamines.backend.game.entity.Inventory;
 import com.dopamines.backend.game.entity.MyCharacter;
 import com.dopamines.backend.game.repository.InventoryRepository;
+import com.dopamines.backend.game.repository.ItemRepository;
 import com.dopamines.backend.game.repository.MyCharacterRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -42,6 +44,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
     private final RoleRepository roleRepository;
     private final MyCharacterRepository myCharacterRepository;
     private final InventoryRepository inventoryRepository;
+    private final ItemRepository itemRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -82,10 +85,24 @@ public class KakaoLoginServiceImpl implements KakaoLoginService, UserDetailsServ
 
         myCharacterRepository.save(myCharacter);
 
-//        Inventory inventory = new Inventory();
-//        inventory.setAccount(account);
-//        inventory.setItem();
-//        inventoryRepository.save(inventory);
+        Inventory inventory1 = new Inventory();
+        inventory1.setAccount(account);
+        inventory1.setItem(itemRepository.findById(1).get());
+        inventoryRepository.save(inventory1);
+
+        Inventory inventory2 = new Inventory();
+        inventory2.setAccount(account);
+        inventory2.setItem(itemRepository.findById(17).get());
+        inventoryRepository.save(inventory2);
+
+        Inventory inventory3 = new Inventory();
+        inventory3.setAccount(account);
+        inventory3.setItem(itemRepository.findById(38).get());
+        inventoryRepository.save(inventory3);
+
+
+
+
 
         return accountId;
     }

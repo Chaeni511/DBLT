@@ -1,7 +1,7 @@
 package com.dopamines.backend.game.service;
 
 import com.dopamines.backend.account.entity.Account;
-import com.dopamines.backend.game.dto.InventoryDto;
+import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.game.dto.ItemDto;
 import com.dopamines.backend.game.dto.ShopResponseDto;
 import com.dopamines.backend.game.entity.Inventory;
@@ -15,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Transactional
@@ -29,9 +26,12 @@ public class ItemServiceImpl implements ItemService{
     private final ItemRepository itemRepository;
     private final InventoryRepository inventoryRepository;
     private final MyCharacterRepository myCharacterRepository;
+    private final AccountRepository accountRepository;
+    private final MyCharacterService myCharacterService;
 
     @Override
-    public Map<String, HashMap<String, List<ItemDto>>> getItems(String email){
+    public HashMap<String, List<ItemDto>> getItems(String email){
+//    public Map<String, HashMap<String, List<ItemDto>>> getItems(String email){
         Map<String, HashMap<String, List<ItemDto>>> res = new HashMap<>();
         res.put("items", new HashMap<String, List<ItemDto>>());
 
@@ -42,7 +42,7 @@ public class ItemServiceImpl implements ItemService{
         res.get("items").put("Gloves", toItemList(itemRepository.findByCategory("gloves"), email));
         res.get("items").put("Tails", toItemList(itemRepository.findByCategory("tails"), email));
 
-        return res;
+        return res.get("items");
     }
 
     private List<ItemDto> toItemList(List<Item> items, String email) {
@@ -78,16 +78,26 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public InventoryDto buyItem(String email, int item){
-        InventoryDto inventoryDto = new InventoryDto();
-        return inventoryDto;
+    public void buyItem(String email, int item){
+        Optional<Account> account = accountRepository.findByEmail(email);
+        if(account.isPresent()) {
+            Inventory inventory = new Inventory();
+            inventory.setItem(itemRepository.findById(item).get());
+            inventory.setAccount(account.get());
+            inventoryRepository.save(inventory);
+        }
     }
 
     @Override
     public ShopResponseDto getShop(String email) {
-        Account account = new Account();
+
+        HashMap<String, List<ItemDto>> items = getItems(email);
 
         ShopResponseDto shopResponseDto = new ShopResponseDto();
+
+        shopResponseDto.setItems(items);
+        shopResponseDto.setMyCharacter(myCharacterService.getMyCharacter(email));
+        shopResponseDto.setInventory(inventoryRepository.findAllByAccount_Email(email));
 
         return shopResponseDto;
     };
