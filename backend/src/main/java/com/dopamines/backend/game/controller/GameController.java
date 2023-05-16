@@ -2,7 +2,8 @@ package com.dopamines.backend.game.controller;
 
 import com.dopamines.backend.game.dto.ExitGameRequestDto;
 import com.dopamines.backend.game.dto.GameResponseDto;
-import com.dopamines.backend.game.dto.UpdateMoneyDto;
+import com.dopamines.backend.game.dto.UpdateMoneyRequestDto;
+import com.dopamines.backend.game.dto.UpdateMoneyResponseDto;
 import com.dopamines.backend.game.service.GameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +32,10 @@ public class GameController {
     }
 
     @PostMapping("/money")
-    public ResponseEntity<Integer> updateMoney(HttpServletRequest request, @RequestBody UpdateMoneyDto dto) {
+    public ResponseEntity<UpdateMoneyResponseDto> updateMoney(HttpServletRequest request, @RequestBody UpdateMoneyRequestDto dto) {
         String email = request.getRemoteUser();
         int result = gameService.updateMoney(email, dto.getRoomNumber(), dto.getMoney());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(new UpdateMoneyResponseDto(result));
     }
 
     @PostMapping("/exit")
