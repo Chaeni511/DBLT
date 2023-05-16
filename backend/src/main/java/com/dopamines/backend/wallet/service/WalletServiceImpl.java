@@ -45,9 +45,9 @@ public class WalletServiceImpl implements WalletService {
         for (Participant participant : participants) {
 
             // transactionMoney가 null인 경우 에러 반환
-            if (participant.getTransactionMoney() == null) {
-                throw new IllegalArgumentException(participant.getAccount().getEmail() + " 님의 게임결과 transactionMoney가 null입니다. 게임 결과를 먼저 입력해주세요.");
-            }
+//            if (participant.getTransactionMoney() == null) {
+//                throw new IllegalArgumentException(participant.getAccount().getEmail() + " 님의 게임결과 transactionMoney가 null입니다. 게임 결과를 먼저 입력해주세요.");
+//            }
 
             if (participant.getTransactionMoney() < 0) {
                 if (participant.getAccount().getTotalWallet() < Math.abs(participant.getTransactionMoney())) {
