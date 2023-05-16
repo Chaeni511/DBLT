@@ -32,7 +32,6 @@ public class FCMController {
     @Operation(summary = "fcm deviceToken을 저장하는 api 입니다.", description = "로그인한 기기의 Token을 저장합니다.")
     public ResponseEntity<Void> registerToken(HttpServletRequest request, @RequestBody TokenDto tokenDto) {
 
-
         try {
             // 헤더에서 유저 이메일 가져옴
             String userEmail = request.getRemoteUser();
@@ -46,6 +45,25 @@ public class FCMController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PutMapping("/update")
+    @Operation(summary = "fcm deviceToken을 갱신하는 api 입니다.", description = "로그인한 기기의 Token을 갱신합니다.")
+    public ResponseEntity<Void> updateToken(HttpServletRequest request, @RequestBody TokenDto tokenDto) {
+
+        try {
+            // 헤더에서 유저 이메일 가져옴
+            String userEmail = request.getRemoteUser();
+            fcmService.updateToken(userEmail, tokenDto.getDeviceToken());
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            log.error("API 호출 중 예외 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     @PostMapping("/push")
     @Operation(summary = "fcm push를 테스트하는 api 입니다.", description = "targetToken, title, body를 작성하여 보내면 firebase 서버에 메세지 푸시를 요청하여 클라이언트에게 메세지를 푸시합니다")

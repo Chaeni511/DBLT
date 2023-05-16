@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -41,12 +42,31 @@ public class FCMServiceImpl implements FCMService{
         Account account = accountRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원 정보가 없습니다."));
 
+        Optional<FCM> existingFcm = fcmRepository.findByAccount(account);
+        if (existingFcm.isPresent()) {
+            throw new IllegalArgumentException("이미 해당 유저의 FCM deviceToken이 존재합니다.");
+        }
+
         FCM fcm = FCM.builder()
                 .account(account)
                 .deviceToken(deviceToken)
                 .build();
         fcmRepository.save(fcm);
         log.info("{} 님의 deviceToken : {} 이 저장되었습니다.",  account.getEmail(), deviceToken);
+    }
+
+
+    @Override
+    public void updateToken(String userEmail, String deviceToken) {
+        Account account = accountRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원 정보가 없습니다."));
+
+        FCM fcm = fcmRepository.findByAccount(account)
+                .orElseThrow(() -> new IllegalArgumentException("해당 토큰 정보가 없습니다."));
+
+        fcm.setDeviceToken(deviceToken);
+        fcmRepository.save(fcm);
+        log.info("{} 님의 deviceToken : {} 이 갱신되었습니다.",  account.getEmail(), deviceToken);
     }
 
 
