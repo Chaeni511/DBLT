@@ -7,12 +7,12 @@ import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.PlanService;
+import com.dopamines.backend.webSocket.dto.CreateRoomDto;
 import com.dopamines.backend.webSocket.dto.MessageDto;
 import com.dopamines.backend.webSocket.dto.PlanRoomDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -33,17 +33,13 @@ import java.util.Map;
 @Transactional
 public class PositionService {
 
-    @Autowired
-    private PlanService planService;
+    private final PlanService planService;
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
 
-    @Autowired
-    private PlanRepository planRepository;
+    private final PlanRepository planRepository;
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     private final ObjectMapper objectMapper;
     private Map<String, PlanRoomDto> planRooms;
@@ -65,13 +61,27 @@ public class PositionService {
     }
 
 
-    public PlanRoomDto createRoom(String planId) {
+    public CreateRoomDto createRoom(String planId) {
+
+        if (planRooms.containsKey(planId)) {
+            // 이미 생성된 방이면
+            log.info("planId {} 는 이미 존재하는 방입니다.", planId);
+            CreateRoomDto createRoomDto = new CreateRoomDto();
+            createRoomDto.setRoomId(planId);
+            createRoomDto.setState("exist");
+            return createRoomDto;
+        }
+
         PlanRoomDto planRoom = PlanRoomDto.builder()
                 .roomId(planId)
                 .build();
         planRooms.put(planId, planRoom);
 
-        return planRoom;
+        CreateRoomDto createRoomDto = new CreateRoomDto();
+        createRoomDto.setRoomId(planId);
+        createRoomDto.setState("create");
+
+        return createRoomDto;
     }
 
 
@@ -134,6 +144,26 @@ public class PositionService {
         // 변경사항 저장
         participantRepository.save(participant);
     }
+
+    // 방 삭제
+    public void closeRoom(String roomId) {
+        PlanRoomDto room = planRooms.get(roomId);
+        if (room != null) {
+            for (WebSocketSession session : room.getSessions()) {
+                try {
+                    session.close();
+                } catch (IOException e) {
+                    log.error("Error closing WebSocket session: {}", e.getMessage());
+                }
+            }
+            room.getSessions().clear();
+            planRooms.remove(roomId);
+            log.info("Room {} closed successfully", roomId);
+        } else {
+            log.warn("Room {} does not exist", roomId);
+        }
+    }
+
 
     // 모든 참가자가 도착했는지 확인하고 모두 도착했으면 세션을 종료하고 방을 제거
     public void arrivedAllParticipant(PlanRoomDto room, MessageDto message) {

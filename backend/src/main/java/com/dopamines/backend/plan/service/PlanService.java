@@ -34,11 +34,14 @@ public interface PlanService {
     // 게임으로 보낼 총 지각비를 계산합니다.
     GameMoneyDto getGameMoney(Long planId);
 
+    // 정산 여부 확인
+    boolean checkSettle(Long planId);
+
     // 모든 참가자가 도착한 경우 true 반환환
     boolean isAllMemberArrived(Long planId);
 
     // 내 약속이니?
-    Boolean isMyPlan(String userEmail, Long planId);
+    boolean isMyPlan(String userEmail, Long planId);
     //////////////// 중복 ///////////////////
 
     // 약속 상태 변경 함수

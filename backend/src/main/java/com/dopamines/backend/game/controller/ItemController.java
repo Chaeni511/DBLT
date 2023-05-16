@@ -38,5 +38,11 @@ public class ItemController {
         String email = request.getRemoteUser();
         return ResponseEntity.ok(itemService.getShop(email));
     }
+//    @PostMapping("/buy")
+//    public ResponseEntity<InventoryDto> buyItem(HttpServletRequest reqest, @RequestParam int item) {
+//        String email = reqest.getRemoteUser();
+//        return ResponseEntity.ok(itemService.buyItem(email, item));
+//
+//    }
 
 }

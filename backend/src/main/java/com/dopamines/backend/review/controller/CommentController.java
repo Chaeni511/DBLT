@@ -1,13 +1,11 @@
 package com.dopamines.backend.review.controller;
 
-import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.review.dto.CommentDto;
 import com.dopamines.backend.review.service.CommentService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +23,7 @@ import java.util.Map;
 @Api(value = "comment", description = "약속 후기 댓글을 관리하는 컨트롤러입니다.")
 public class CommentController {
 
-    @Autowired
-    CommentService commentService;
-
-    @Autowired
-    PlanService planService;
+    private final CommentService commentService;
 
 
     @PostMapping("/register")
