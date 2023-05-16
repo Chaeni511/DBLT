@@ -7,7 +7,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -35,14 +36,23 @@ public class Wallet {
 
     private Integer money;
 
-    @Column(name = "transaction_time")
-    private LocalDateTime transactionTime;
+//    @Column(name = "transaction_time")
+//    private LocalDateTime transactionTime;
+    @Column(name = "transaction_date")
+    private LocalDate transactionDate;
 
-    private Integer type; // 0: 충전, 1: 송금, 2: 약속으로 얻은 지각비, 3: 약속으로 잃은 지각비
+    @Column(name = "transaction_time")
+    private LocalTime transactionTime;
+
+    private Integer type; // 0: 충전, 1: 출금, 2: 약속으로 얻은 지각비, 3: 약속으로 잃은 지각비
 
     // 목록에 누적 금액을 불러오기 때문에 필요
     @Column(name = "total_money")
     private Integer totalMoney;
+
+    private String method;
+
+    private String receipt;
 
 }
 

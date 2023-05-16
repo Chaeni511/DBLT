@@ -8,6 +8,8 @@ import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.wallet.dto.SettlementDto;
 import com.dopamines.backend.wallet.dto.SettlementResultDto;
+import com.dopamines.backend.wallet.dto.WalletDetailDto;
+import com.dopamines.backend.wallet.dto.WalletDto;
 import com.dopamines.backend.wallet.entity.Wallet;
 import com.dopamines.backend.wallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -94,7 +97,9 @@ public class WalletServiceImpl implements WalletService {
                 wallet.setPlan(plan);
                 wallet.setMoney(participant.getTransactionMoney());
                 wallet.setTotalMoney(participant.getAccount().getTotalWallet() + participant.getTransactionMoney());
-                wallet.setTransactionTime(now);
+                wallet.setTransactionDate(now.toLocalDate());
+                wallet.setTransactionTime(now.toLocalTime());
+
                 if (participant.getTransactionMoney() < 0) {
                     // 잃은 지각비
                     wallet.setType(3);
@@ -129,4 +134,111 @@ public class WalletServiceImpl implements WalletService {
             return new SettlementResultDto(false, poorParticipants);
         }
     }
+
+    @Override
+    public WalletDto getWalletDetails(String email) {
+
+        List<Wallet> wallets = walletRepository.findAllByAccount_Email(email);
+
+        // 일자별로 매핑
+        Map<LocalDate, List<WalletDetailDto>> res = new HashMap<LocalDate, List<WalletDetailDto>>();
+
+        for (Wallet wallet: wallets) {
+            List<WalletDetailDto> walletDetailDtos = new ArrayList<WalletDetailDto>();
+
+            WalletDetailDto walletDetailDto = new WalletDetailDto();
+            walletDetailDto.setMoney(wallet.getMoney());
+            walletDetailDto.setType(wallet.getType());
+            walletDetailDto.setTransactionTime(wallet.getTransactionTime());
+            walletDetailDto.setTotal(wallet.getTotalMoney());
+
+            if (wallet.getPlan() == null){
+                if(wallet.getType() == 0){
+                    walletDetailDto.setTitle(wallet.getMethod());
+                }else if (wallet.getType() == 1) {
+                    walletDetailDto.setTitle("출금");
+                }else {
+                    walletDetailDto.setTitle(null);
+                }
+            } else{
+                walletDetailDto.setTitle(wallet.getPlan().getTitle());
+            }
+
+            walletDetailDtos.add(walletDetailDto);
+            LocalDate transactionDate = wallet.getTransactionDate();
+
+            if(res.containsKey(transactionDate)) {
+                res.get(transactionDate).addAll(walletDetailDtos);
+            } else {
+
+                res.put(transactionDate, walletDetailDtos);
+            }
+
+
+        }
+        WalletDto walletDto;
+        Optional<Account> account = accountRepository.findByEmail(email);
+
+        if (account.isEmpty()){
+            throw new RuntimeException("계정 정보가 없습니다.");
+        } else {
+            return new WalletDto(account.get().getTotalWallet(), res);
+        }
+    }
+
+    @Override
+    public void chargeWallet(String email, int money, String method, LocalDate trasactionDate, LocalTime transactionTime, String receipt) {
+        Optional<Account> account = accountRepository.findByEmail(email);
+        if(account.isPresent()) {
+            // Wallet 기록 남기기
+            Wallet wallet = new Wallet();
+
+            wallet.setAccount(account.get());
+            wallet.setPlan(null);
+            wallet.setMoney(money);
+            wallet.setTransactionDate(trasactionDate);
+            wallet.setTransactionTime(transactionTime);
+            wallet.setType(0);
+            wallet.setTotalMoney(account.get().getTotalWallet() + money);
+            wallet.setMethod(method);
+            wallet.setReceipt(receipt);
+            walletRepository.save(wallet);
+
+            // Account의 totalWallet 업뎃
+            int totalWallet = account.get().getTotalWallet();
+            account.get().setTotalWallet(totalWallet + money);
+            accountRepository.save(account.get());
+        } else {
+            throw new RuntimeException("충전에 실패했습니다.");
+        }
+    }
+
+    @Override
+    public void withdrawWallet(String email, int money){
+        Optional<Account> account = accountRepository.findByEmail(email);
+        if(account.isEmpty()){
+            throw new RuntimeException("해당 계정을 찾을 수 없습니다.");
+        }
+
+        int totalWallet = account.get().getTotalWallet();
+
+        // money가 잔액보다 클 때
+        if(totalWallet<money) {
+            throw new RuntimeException("잔액이 부족하여 출금할 수 없습니다.");
+        }
+        // Account 정보 업뎃
+        account.get().setTotalWallet(totalWallet-money);
+        accountRepository.save(account.get());
+        // Wallet 생성
+        Wallet wallet = new Wallet();
+        wallet.setType(1);
+        wallet.setTransactionTime(LocalTime.now(ZoneId.of("Asia/Seoul")));
+        wallet.setTransactionDate(LocalDate.now(ZoneId.of("Asia/Seoul")));
+        wallet.setAccount(account.get());
+        wallet.setMoney(-money);
+        wallet.setTotalMoney(account.get().getTotalWallet());
+
+        walletRepository.save(wallet);
+
+    };
 }

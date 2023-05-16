@@ -2,6 +2,7 @@ package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
+import com.dopamines.backend.game.GameManager;
 import com.dopamines.backend.plan.dto.GameResultMoneyDto;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
@@ -12,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,6 +27,8 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final AccountRepository accountRepository;
 
     private final PlanRepository planRepository;
+
+    private final GameManager gameManager;
 
 
     // 참가자 생성
@@ -101,7 +101,8 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     // 게임으로 획득한 돈을 참가자의 거래금액에 등록하고 회원계정의 누적금액으로 업데이트합니다.
-    public GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney, Integer balance) {
+    public GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney) {
+        int balance = gameManager.getGameMoney(planId);
         // 약속 정보 가져오기
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 약속의 약속 정보가 없습니다."));
@@ -114,8 +115,12 @@ public class ParticipantServiceImpl implements ParticipantService {
         Participant participant = participantRepository.findByPlanAndAccount(plan,account)
                 .orElseThrow(() -> new IllegalArgumentException("해당 약속에 참가자의 정보가 없습니다."));
 
+        List<Participant> participantList = participantRepository.findAllByPlan(plan);
+        participantList.sort((o1, o2) -> o2.getTransactionMoney() - o1.getTransactionMoney());
+        int rank = participantList.indexOf(participant) + 1;
         // 참가자 수
-        int countParticipant = participantRepository.countByPlan(plan);
+//        int countParticipant = participantRepository.countByPlan(plan);
+        int countParticipant = participantList.size();
 
         int quotient = 0; // 몫
         int remainder = 0; // 나머지
@@ -162,6 +167,8 @@ public class ParticipantServiceImpl implements ParticipantService {
         gameResultMoneyDto.setIsLate(participant.getLateTime() == null || participant.getLateTime()>0);
         gameResultMoneyDto.setGetGameMoney(getGameMoney);
         gameResultMoneyDto.setFinalAmount(finalAmount);
+        gameResultMoneyDto.setParticipantCount(countParticipant);
+        gameResultMoneyDto.setRank(rank);
 
         if (participant.getIsHost()){
             gameResultMoneyDto.setGetBalance(quotient+remainder);

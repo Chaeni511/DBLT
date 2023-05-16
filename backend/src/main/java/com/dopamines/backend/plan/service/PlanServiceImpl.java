@@ -3,6 +3,7 @@ package com.dopamines.backend.plan.service;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.service.UserService;
+import com.dopamines.backend.game.GameManager;
 import com.dopamines.backend.plan.dto.*;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
@@ -32,6 +33,8 @@ public class PlanServiceImpl implements PlanService {
     private final ParticipantServiceImpl participantService;
 
     private final AccountRepository accountRepository;
+
+    private final GameManager gameManager;
 
 
     // 약속 생성
@@ -395,6 +398,7 @@ public class PlanServiceImpl implements PlanService {
         } else if (diffMinutes > 0) {
             plan.setState(1); // 위치공유 (30분 전 ~ 약속시간)
         } else if (diffMinutes >= -60) {
+            gameManager.setGameMoney(plan.getPlanId(), getGameMoney(plan.getPlanId()).getTotalPayment());
             plan.setState(2); // 게임 활성화 (약속시간 ~ 1시간 후)
         } else {
             plan.setState(3); // 약속 종료 (1시간 이후)

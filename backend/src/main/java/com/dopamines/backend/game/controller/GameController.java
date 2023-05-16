@@ -29,6 +29,13 @@ public class GameController {
         }
     }
 
+    @PostMapping("/money")
+    public ResponseEntity<Integer> updateMoney(HttpServletRequest request,@RequestParam int money, @RequestParam long roomNumber) {
+        String email = request.getRemoteUser();
+        int result = gameService.updateMoney(email, roomNumber, money);
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("/exit")
     public ResponseEntity exitGame(HttpServletRequest request, ExitGameRequestDto exitGameRequest){
         String email = request.getRemoteUser();
