@@ -10,5 +10,5 @@ import java.util.Map;
 public interface ItemService {
 
     Map<String, HashMap<String, List<ItemDto>>> getItems();
-    InventoryDto buyItem(String email, int item);
+    void buyItem(String email, int item);
 }
