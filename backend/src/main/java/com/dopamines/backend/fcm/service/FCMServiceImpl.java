@@ -6,6 +6,7 @@ import com.dopamines.backend.fcm.dto.FCMMessage;
 import com.dopamines.backend.fcm.entity.FCM;
 import com.dopamines.backend.fcm.repository.FCMRepository;
 import com.dopamines.backend.plan.entity.Participant;
+import com.dopamines.backend.review.entity.Comment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -67,6 +68,19 @@ public class FCMServiceImpl implements FCMService{
         fcm.setDeviceToken(deviceToken);
         fcmRepository.save(fcm);
         log.info("{} 님의 deviceToken : {} 이 갱신되었습니다.",  account.getEmail(), deviceToken);
+    }
+
+
+    @Override
+    public void deleteToken(String userEmail) {
+
+        Account account = accountRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원 정보가 없습니다."));
+
+        FCM fcm = fcmRepository.findByAccount(account)
+                .orElseThrow(() -> new IllegalArgumentException("해당 토큰 정보가 없습니다."));
+
+        fcmRepository.delete(fcm);
     }
 
 

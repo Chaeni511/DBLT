@@ -41,7 +41,7 @@ public class FCMController {
             log.error("API 호출 중 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
-            log.error("API 호출 중 예외 발생", e);
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -59,7 +59,26 @@ public class FCMController {
             log.error("API 호출 중 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
-            log.error("API 호출 중 예외 발생", e);
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @DeleteMapping("/delete")
+    @Operation(summary = "fcm deviceToken을 삭제하는 api 입니다.", description = "로그아웃시 기기의 Token을 삭제제합니다")
+    public ResponseEntity<Void> deleteToken(HttpServletRequest request) {
+
+        try {
+            // 헤더에서 유저 이메일 가져옴
+            String userEmail = request.getRemoteUser();
+            fcmService.deleteToken(userEmail);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
