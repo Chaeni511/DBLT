@@ -14,6 +14,7 @@ public class GameManager {
     private Map<Long, Integer> remainMoney = new HashMap<>();
 
     public void setGameMoney(long planId, int money) {
+        if(remainMoney.containsKey(planId)) return;
         remainMoney.put(planId, money);
     }
     public void subGameMoney(long planId, int money) {
