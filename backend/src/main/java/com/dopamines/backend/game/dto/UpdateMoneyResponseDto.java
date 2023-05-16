@@ -7,9 +7,8 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UpdateMoneyDto {
-    int money;
-    long roomNumber;
+@NoArgsConstructor
+public class UpdateMoneyResponseDto {
+    private int money;
 }
