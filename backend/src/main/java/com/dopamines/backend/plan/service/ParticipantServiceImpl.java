@@ -140,7 +140,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         }
 
         // 지각자면 최종 획득한 금액에서 지각비 뺀다. (음수가 된다.)
-        if (participant.getLateTime() > 0 || participant.getLateTime() == null) {
+        if (participant.getLateTime() == null || participant.getLateTime() > 0) {
             finalAmount -=  plan.getCost();
         }
 
