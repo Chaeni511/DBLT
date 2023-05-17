@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @Getter
-public class FCMMessage {
-    private boolean validateOnly;
+public class FirebaseCloudMessageTopic {
+    private boolean validate_only;
     private Message message;
 
     @Builder
@@ -16,7 +18,8 @@ public class FCMMessage {
     @Getter
     public static class Message {
         private Notification notification;
-        private String token;
+        private String topic;
+        private Data data;
     }
 
     @Builder
@@ -25,6 +28,13 @@ public class FCMMessage {
     public static class Notification {
         private String title;
         private String body;
-        private String image;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Data {
+        private String planId;
+        private String type;
     }
 }
