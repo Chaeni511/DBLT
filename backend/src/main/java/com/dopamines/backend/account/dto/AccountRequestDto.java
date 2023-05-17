@@ -21,7 +21,7 @@ public class AccountRequestDto {
                 .kakaoId(kakaoId)
                 .nickname(nickname)
                 .profile(profile)
-                .thyme(0)
+                .thyme(500)
                 .totalIn(0)
                 .totalOut(0)
                 .accumulatedTime(0)
