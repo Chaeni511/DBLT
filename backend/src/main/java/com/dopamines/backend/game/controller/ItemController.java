@@ -31,7 +31,7 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getShop(email));
     }
     @PostMapping("/buy")
-    public ResponseEntity buyItem(HttpServletRequest reqest, @RequestBody int itemId) {
+    public ResponseEntity buyItem(HttpServletRequest reqest, int itemId) {
         String email = reqest.getRemoteUser();
         try {
             itemService.buyItem(email, itemId);
