@@ -38,13 +38,15 @@ public class Participant {
     @Column(name = "is_host")
     private Boolean isHost;
 
-    @Column(name = "is_arrived", nullable = false)
+    @Column(name = "is_arrived")
+    @ColumnDefault("false")
     private Boolean isArrived;
 
     @Column(name = "arrival_time")
     private LocalTime arrivalTime;
 
     @Column(name = "late_time")
+    @ColumnDefault("0")
     private Long lateTime;
 
     @Column(name = "transaction_money")

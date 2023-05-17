@@ -5,6 +5,7 @@ import com.dopamines.backend.fcm.dto.TopicRequestDto;
 import com.dopamines.backend.fcm.dto.RequestDto;
 import com.dopamines.backend.fcm.dto.TokenDto;
 import com.dopamines.backend.fcm.service.FirebaseCloudMessageService;
+import com.dopamines.backend.plan.service.PlanService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 
 @Slf4j
@@ -26,6 +28,8 @@ import java.io.IOException;
 public class FirebaseCloudMessageController {
 
     private final FirebaseCloudMessageService fcmService;
+
+    private final PlanService planService;
 
 
     @PostMapping("/register")
@@ -123,6 +127,25 @@ public class FirebaseCloudMessageController {
 
 
         return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/planIdList")
+    @Operation(summary = "참가한 약속 리스트를 불러오는 api 입니다.", description = "api를 요청한 회원이 참가한 planId 목록을 리스트로 반환합니다.")
+    public ResponseEntity<List<Long>> getPlanIdList(HttpServletRequest request){
+
+        try {
+            String userEmail = request.getRemoteUser();
+            List<Long> myPlanIds = planService.getMyPlanIds(userEmail);
+            return ResponseEntity.ok(myPlanIds);
+        } catch (IllegalArgumentException e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 
 
