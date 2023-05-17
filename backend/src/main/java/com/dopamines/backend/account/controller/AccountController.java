@@ -64,9 +64,10 @@ public class AccountController {
             return ResponseEntity.badRequest().build();
         } else {
             log.info("account.get().getAccountId(): " + account.get().getAccountId());
+            log.info("account.get().getNickname(): " + account.get().getNickname());
             log.info("account.get().getProfile(): " + account.get().getProfile());
 
-            UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(account.get().getAccountId(), account.get().getProfile());
+            UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(account.get().getAccountId(), account.get().getNickname(), account.get().getProfile());
             return ResponseEntity.ok(userInfoResponseDto);
         }
 
