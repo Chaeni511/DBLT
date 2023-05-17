@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -141,36 +142,47 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public MyPageDto getMyInfo(String userEmail) {
         Account account = accountRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("회원 정보를 찾을 수 없습니다."));
 
-        System.out.println("----------------------------------");
         List<Participant> participants = participantRepository.findByAccount(account);
+
         int planCount = participants.size();
 
-        int latenessRate = 0;
-
-        if (planCount > 0) {
-            int lateCount = 0;
-
-            for (Participant participant : participants) {
-                if (participant.getLateTime() > 0){
-                    lateCount ++;
-                }
-            }
-            latenessRate = planCount*100/lateCount;
-        }
+        int lateCount = calculateLateCount(participants);
+        int latenessRate = calculateLatenessRate(planCount, lateCount);
+        System.out.println(account.getAccumulatedTime() / planCount );
 
         MyPageDto myPageDto = new MyPageDto();
         myPageDto.setAccountId(account.getAccountId());
         myPageDto.setNickname(account.getNickname());
         myPageDto.setProfile(account.getProfile());
         myPageDto.setProfileMessage(account.getProfileMessage());
-        myPageDto.setAverageArrivalTime(account.getAccumulatedTime()/planCount);
+        myPageDto.setAverageArrivalTime(planCount > 0 ? account.getAccumulatedTime() / planCount : 0);
         myPageDto.setLatenessRate(latenessRate);
-        myPageDto.setTotalCost(account.getTotalIn()+account.getTotalOut());
+        myPageDto.setTotalCost(account.getTotalIn() + account.getTotalOut());
 
         return myPageDto;
 
+    }
+
+    // 지각자 수
+    private int calculateLateCount(List<Participant> participants) {
+        int lateCount = 0;
+        for (Participant participant : participants) {
+            if (participant.getLateTime() > 0) {
+                lateCount++;
+            }
+        }
+        return lateCount;
+    }
+
+    // 지각 비율
+    private int calculateLatenessRate(int planCount, int lateCount) {
+        if (lateCount > 0) {
+            return lateCount * 100 / planCount;
+        } else {
+            return 0;
+        }
     }
 
 }
