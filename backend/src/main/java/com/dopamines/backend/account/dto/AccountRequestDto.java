@@ -13,12 +13,14 @@ public class AccountRequestDto {
     private String email;
     private String kakaoId;
     private String nickname;
+    private  String profile;
 
     public Account toEntity() {
         return Account.builder()
                 .email(email)
                 .kakaoId(kakaoId)
                 .nickname(nickname)
+                .profile(profile)
                 .thyme(0)
                 .totalIn(0)
                 .totalOut(0)

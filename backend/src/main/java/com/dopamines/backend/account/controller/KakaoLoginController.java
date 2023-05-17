@@ -65,7 +65,8 @@ public class KakaoLoginController {
             log.info("signup: " +signup);
         }
 
-        AccountRequestDto accountRequestDto = new AccountRequestDto(signup, email, kakaoId.toString(), nickname);
+        AccountRequestDto accountRequestDto = new AccountRequestDto(signup, email, kakaoId.toString(), nickname, userInfo.getKakao_account().getProfile().getProfile_image_url());
+
         log.info("accountRequestDto: " + accountRequestDto.getSignup());
         return ResponseEntity.ok(accountRequestDto);
 
@@ -73,9 +74,9 @@ public class KakaoLoginController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<Long> signup(@RequestParam String email, @RequestParam String kakaoId, @RequestParam String nickname) {
+    public ResponseEntity<Long> signup(@RequestParam String email, @RequestParam String kakaoId, @RequestParam String nickname, @RequestParam String profile) {
 //    public ResponseEntity<Long> signup(@RequestBody AccountRequestDto dto) {
-        AccountRequestDto dto = new AccountRequestDto(false, email, kakaoId, nickname);
+        AccountRequestDto dto = new AccountRequestDto(false, email, kakaoId, nickname, profile);
         return ResponseEntity.ok(accountService.saveAccount(dto));
     }
 
