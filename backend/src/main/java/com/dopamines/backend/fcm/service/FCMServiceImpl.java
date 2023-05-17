@@ -111,7 +111,7 @@ public class FCMServiceImpl implements FCMService{
     }
 
 
-    // targetToken에 해당하는 device로 FCM 푸시알림을 전송 요청
+    // targetToken에 해당하는 device로 FCM 푸시알림을 전송 요청 (특정 기기에 메시지 전송)
     @Override
     public void sendMessageTo(String targetToken, String title, String body) throws IOException {
         String message = makeMessage(targetToken, title, body);
