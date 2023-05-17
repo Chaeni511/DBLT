@@ -22,6 +22,9 @@ public interface PlanService {
     // 약속 삭제
     void deletePlan(Plan plan);
 
+    // 약속 리스트
+    List<Long> getMyPlanIds(String userEmail);
+
     // 진행 중인 약속 상세 정보
     PlanDto getPlanDetail(Long planId);
 
