@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 @Slf4j
@@ -116,14 +117,15 @@ public class ItemServiceImpl implements ItemService{
             throw new RuntimeException("사용자 정보를 찾을 수 없습니다.");
         } else {
             int thyme = account.get().getThyme();
-            int price = itemRepository.findById(itemId).get().getPrice();
+            Optional<Item> item = itemRepository.findById(itemId);
+            int price = item.get().getPrice();
 
             // 충분한 thyme이 있을 때
             if (thyme - price >= 0) {
                 account.get().setThyme(thyme - price);
                 // 인벤토리 추가
                 Inventory inventory = new Inventory();
-                inventory.setItem(itemRepository.findById(itemId).get());
+                inventory.setItem(item.get());
                 inventory.setAccount(account.get());
                 inventoryRepository.save(inventory);
 
