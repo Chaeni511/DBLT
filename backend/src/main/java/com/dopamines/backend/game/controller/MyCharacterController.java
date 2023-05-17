@@ -27,19 +27,12 @@ public class MyCharacterController {
 
     @PostMapping("/wear")
 //    public ResponseEntity wearItem(HttpServletRequest request, @RequestParam int bodies) {
-    public ResponseEntity wearItem(HttpServletRequest request,
-                                   @RequestParam int bodies,
-                                   @RequestParam int bodyParts,
-                                   @RequestParam int eyes,
-                                   @RequestParam int gloves,
-                                   @RequestParam int mouthAndNoses,
-                                   @RequestParam int tails
-   ) {
+    public ResponseEntity wearItem(HttpServletRequest request, @RequestBody MyCharacterDto dto) {
 //    public ResponseEntity wearItem(HttpServletRequest request, @RequestBody MyCharacterDto myCharacterDto) {
 
         String email = request.getRemoteUser();
 
-        MyCharacterDto myCharacterDto = new MyCharacterDto(bodies, bodyParts, eyes, gloves, mouthAndNoses, tails);
+        MyCharacterDto myCharacterDto = new MyCharacterDto(dto.getBodies(), dto.getBodyParts(), dto.getEyes(), dto.getGloves(), dto.getMouthAndNoses(), dto.getTails());
         try {
             myCharacterService.wearItem(email, myCharacterDto);
             return ResponseEntity.ok().build();
