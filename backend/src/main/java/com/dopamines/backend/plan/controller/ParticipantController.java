@@ -1,5 +1,6 @@
 package com.dopamines.backend.plan.controller;
 
+import com.dopamines.backend.plan.dto.GameOverRequestDto;
 import com.dopamines.backend.plan.dto.GameResultMoneyDto;
 import com.dopamines.backend.plan.service.ParticipantService;
 import io.swagger.annotations.Api;
@@ -29,13 +30,12 @@ public class ParticipantController {
             "balance는 총 지각비 중 참가자들이 획득하지 못 한 남은 잔액을 입력합니다. 마지막 지각자가 도착하여 못 찾은 돈은 전체 참가자가 N빵하여 획득하게 됩니다.")
     public ResponseEntity<GameResultMoneyDto> registerGetMoney(
             HttpServletRequest request,
-            @RequestParam("planId") Long planId,
-            @RequestParam("getGameMoney") Integer getGameMoney
+            @RequestBody GameOverRequestDto dto
 //            @RequestParam("balance") Integer balance
     ){
         try {
             String userEmail = request.getRemoteUser();
-            GameResultMoneyDto gameResultMoneyDto = participantService.registerGetMoney(userEmail, planId, getGameMoney);
+            GameResultMoneyDto gameResultMoneyDto = participantService.registerGetMoney(userEmail, dto.getPlanId(), dto.getGetGameMoney());
             return ResponseEntity.ok(gameResultMoneyDto);
         } catch (IllegalArgumentException e) {
             log.error("게임 결과 반영 API 호출 중 예외 발생: {}", e.getMessage());

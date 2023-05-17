@@ -1,5 +1,6 @@
 package com.dopamines.backend.game.controller;
 
+import com.dopamines.backend.game.dto.BuyItemRequestDto;
 import com.dopamines.backend.game.dto.ItemDto;
 import com.dopamines.backend.game.dto.ShopResponseDto;
 import com.dopamines.backend.game.service.ItemService;
@@ -31,10 +32,10 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getShop(email));
     }
     @PostMapping("/buy")
-    public ResponseEntity buyItem(HttpServletRequest reqest, @RequestParam int itemId) {
+    public ResponseEntity buyItem(HttpServletRequest reqest, @RequestBody BuyItemRequestDto dto) {
         String email = reqest.getRemoteUser();
         try {
-            itemService.buyItem(email, itemId);
+            itemService.buyItem(email, dto.getItemId());
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             log.info(e.getMessage());

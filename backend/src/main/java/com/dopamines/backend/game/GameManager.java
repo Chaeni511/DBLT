@@ -24,6 +24,7 @@ public class GameManager {
         }
     }
     public int getGameMoney(long planId) {
+        if(!remainMoney.containsKey(planId)) return 0;
         return remainMoney.get(planId);
     }
 }

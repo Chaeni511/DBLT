@@ -10,11 +10,14 @@ import com.dopamines.backend.game.entity.MyCharacter;
 import com.dopamines.backend.game.repository.InventoryRepository;
 import com.dopamines.backend.game.repository.ItemRepository;
 import com.dopamines.backend.game.repository.MyCharacterRepository;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 @Slf4j
@@ -110,27 +113,39 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public void buyItem(String email, int itemId){
+    public void buyItem(String email, int itemId) {
         Optional<Account> account = accountRepository.findByEmail(email);
         if (account.isEmpty()) {
             throw new RuntimeException("사용자 정보를 찾을 수 없습니다.");
-        } else {
-            int thyme = account.get().getThyme();
-            int price = itemRepository.findById(itemId).get().getPrice();
-
-            // 충분한 thyme이 있을 때
-            if (thyme - price >= 0) {
-                account.get().setThyme(thyme - price);
-                // 인벤토리 추가
-                Inventory inventory = new Inventory();
-                inventory.setItem(itemRepository.findById(itemId).get());
-                inventory.setAccount(account.get());
-                inventoryRepository.save(inventory);
-
-            } else {
-                throw new RuntimeException("해당 아이템을 구매하기엔 thyme이 모자랍니다.");
-            }
         }
+
+        List<Inventory> inventories = inventoryRepository.findAllByAccount(account.get());
+        Optional<Item> item = itemRepository.findById(itemId);
+
+        if(item.isEmpty()) {
+            throw new RuntimeException("해당 아이템이 존재하지 않습니다.");
+        }
+
+        if(inventoryListToItemIdList(inventories).contains(item.get().getItemId())) {
+            throw new RuntimeException("이미 구매한 상품입니다.");
+        }
+
+        int thyme = account.get().getThyme();
+        int price = item.get().getPrice();
+
+        // 충분한 thyme이 있을 때
+        if (thyme - price >= 0) {
+            account.get().setThyme(thyme - price);
+            // 인벤토리 추가
+            Inventory inventory = new Inventory();
+            inventory.setItem(item.get());
+            inventory.setAccount(account.get());
+            inventoryRepository.save(inventory);
+
+        } else {
+            throw new RuntimeException("해당 아이템을 구매하기엔 thyme이 모자랍니다.");
+        }
+
     }
 
     @Override
