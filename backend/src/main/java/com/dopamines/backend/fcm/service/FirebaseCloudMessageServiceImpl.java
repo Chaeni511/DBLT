@@ -92,6 +92,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
         fcmRepository.delete(fcm);
     }
 
+
     @Override
     public GroupTokenListDto getGroupToken(Long planId) {
 
@@ -111,6 +112,7 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
         return groupTokenListDto;
     }
 
+
     @Override
     public List<String> getGroupTokens(Long planId) {
 
@@ -128,6 +130,11 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
         }
         return tokenList;
     }
+
+
+    // fcm 주제를 구독 시킴니다.
+//    public void
+
 
     @Override
     public void sendTopicMessageTo(String topic, String title, String body, String planId, String type) throws IOException {
