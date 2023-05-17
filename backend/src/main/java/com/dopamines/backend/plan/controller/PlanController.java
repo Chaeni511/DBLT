@@ -258,4 +258,22 @@ public class PlanController {
 
     }
 
+    @GetMapping("/planIdList")
+    @Operation(summary = "참가한 약속 리스트를 불러오는 api 입니다.", description = "리스트로 반환합니다.")
+    public ResponseEntity<List<Long>> getPlanIdList(HttpServletRequest request){
+
+        try {
+            String userEmail = request.getRemoteUser();
+            List<Long> myPlanIds = planService.getMyPlanIds(userEmail);
+            return ResponseEntity.ok(myPlanIds);
+        } catch (IllegalArgumentException e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            log.error("API 호출 중 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
 }

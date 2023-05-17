@@ -307,6 +307,19 @@ public class PlanServiceImpl implements PlanService {
 //        return planHomeListDto;
     }
 
+    @Override
+    public List<Long> getMyPlanIds(String userEmail){
+        Account account = accountRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저 정보가 없습니다."));
+        List<Participant> participants = participantRepository.findByAccount(account);
+
+        List<Long> myPlanIds = new ArrayList<>();
+        for (Participant user : participants) {
+            myPlanIds.add(user.getPlan().getPlanId());
+        }
+        return myPlanIds;
+    }
+
 
     // 해당 약속의 지각비 총 금액 계산
     public GameMoneyDto getGameMoney(Long planId){

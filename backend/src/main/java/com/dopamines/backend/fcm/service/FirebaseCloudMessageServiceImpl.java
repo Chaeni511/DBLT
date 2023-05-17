@@ -2,10 +2,11 @@ package com.dopamines.backend.fcm.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
-import com.dopamines.backend.fcm.dto.FCMMessage;
+import com.dopamines.backend.fcm.dto.FirebaseCloudMessage;
+import com.dopamines.backend.fcm.dto.FirebaseCloudMessageTopic;
 import com.dopamines.backend.fcm.dto.GroupTokenListDto;
 import com.dopamines.backend.fcm.entity.FCM;
-import com.dopamines.backend.fcm.repository.FCMRepository;
+import com.dopamines.backend.fcm.repository.FirebaseCloudMessageRepository;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
@@ -31,7 +32,7 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class FCMServiceImpl implements FCMService{
+public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageService {
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/d209-dopamines/messages:send";
 
@@ -39,7 +40,7 @@ public class FCMServiceImpl implements FCMService{
 
     private final AccountRepository accountRepository;
 
-    private final FCMRepository fcmRepository;
+    private final FirebaseCloudMessageRepository fcmRepository;
 
     private final PlanRepository planRepository;
 
@@ -91,6 +92,7 @@ public class FCMServiceImpl implements FCMService{
         fcmRepository.delete(fcm);
     }
 
+
     @Override
     public GroupTokenListDto getGroupToken(Long planId) {
 
@@ -111,35 +113,117 @@ public class FCMServiceImpl implements FCMService{
     }
 
 
-    // targetToken에 해당하는 device로 FCM 푸시알림을 전송 요청
+    @Override
+    public List<String> getGroupTokens(Long planId) {
+
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 약속 정보가 없습니다."));
+
+        List<Participant> participants = participantRepository.findByPlan(plan);
+
+        List<String> tokenList = new ArrayList<>();
+        for (Participant participant : participants) {
+            Optional<FCM> fcm = fcmRepository.findByAccount(participant.getAccount());
+            if (fcm.isPresent()) {
+                tokenList.add(fcm.get().getDeviceToken());
+            }
+        }
+        return tokenList;
+    }
+
+
+    // fcm 주제를 구독 시킴니다.
+//    public void
+
+
+    @Override
+    public void sendTopicMessageTo(String topic, String title, String body, String planId, String type) throws IOException {
+        String message = makeTopicMessage(topic, title, body, planId, type);
+
+        try {
+            // OkHttp3 를 이용해, Http Post Request를 생성
+            OkHttpClient client = new OkHttpClient();
+            RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+            Request request = new Request.Builder()
+                    .url(API_URL)
+                    .post(requestBody)
+                    // header에 AccessToken을 추가
+                    .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                    .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                    .build();
+
+            Response response = client.newCall(request)
+                    .execute();
+
+            log.info("Successfully sent message: " + response);
+            log.info("성공하면 각 전송 메서드가 메시지 ID를 반환: " + response.body().string());
+//            log.info(response.body().string());
+        } catch (IOException e) {
+            log.error("Error in sending message to FCM server " + e);
+        }
+    }
+
+
+    // FcmMessage를 만들고, 이를 ObjectMapper을 이용해 String으로 변환하여 반환
+    private String makeTopicMessage(String topic, String title, String body, String planId, String type) throws JsonProcessingException {
+
+        FirebaseCloudMessageTopic fcmMessage = FirebaseCloudMessageTopic.builder()
+                .message(FirebaseCloudMessageTopic.Message.builder()
+                        .topic(topic)
+                        .notification(FirebaseCloudMessageTopic.Notification.builder()
+                                .title(title)
+                                .body(body)
+                                .build()
+                        )
+                        .data(FirebaseCloudMessageTopic.Data.builder()
+                                .planId(planId)
+                                .type(type)
+                                .build()
+                        )
+                        .build()
+                )
+                .validate_only(false)
+                .build();
+
+        return objectMapper.writeValueAsString(fcmMessage);
+    }
+
+
+    // targetToken에 해당하는 device로 FCM 푸시알림을 전송 요청 (특정 기기에 메시지 전송)
     @Override
     public void sendMessageTo(String targetToken, String title, String body) throws IOException {
         String message = makeMessage(targetToken, title, body);
 
-        // OkHttp3 를 이용해, Http Post Request를 생성
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(requestBody)
-                // header에 AccessToken을 추가
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-                .build();
+        try {
+            // OkHttp3 를 이용해, Http Post Request를 생성
+            OkHttpClient client = new OkHttpClient();
+            RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+            Request request = new Request.Builder()
+                    .url(API_URL)
+                    .post(requestBody)
+                    // header에 AccessToken을 추가
+                    .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                    .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                    .build();
 
-        Response response = client.newCall(request)
-                .execute();
+            Response response = client.newCall(request)
+                    .execute();
 
-        log.info("성공하면 각 전송 메서드가 메시지 ID를 반환");
-        log.info(response.body().string());
+            log.info("Successfully sent message: " + response);
+            log.info("성공하면 각 전송 메서드가 메시지 ID를 반환");
+            log.info(response.body().string());
+        } catch (IOException e) {
+            log.error("Error in sending message to FCM server " + e);
+        }
     }
+
 
     // FcmMessage를 만들고, 이를 ObjectMapper을 이용해 String으로 변환하여 반환
     private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
-        FCMMessage fcmMessage = FCMMessage.builder()
-                .message(FCMMessage.Message.builder()
+        FirebaseCloudMessage fcmMessage = FirebaseCloudMessage.builder()
+                .message(FirebaseCloudMessage.Message.builder()
                         .token(targetToken)
-                        .notification(FCMMessage.Notification.builder()
+                        .notification(FirebaseCloudMessage.Notification.builder()
                                 .title(title)
                                 .body(body)
                                 .image(null)
@@ -152,6 +236,7 @@ public class FCMServiceImpl implements FCMService{
 
         return objectMapper.writeValueAsString(fcmMessage);
     }
+
 
     // FCM을 이용할수 있는 권한이 부여된 Oauth2의 AccessToken을 받음
     private String getAccessToken() throws IOException {

@@ -37,6 +37,9 @@ public class WalletController {
             String receipt
     ) {
         String email = request.getRemoteUser();
+        log.info("transactionTime+" + String.valueOf(transactionTime));
+        log.info("transactionDate" + String.valueOf(transactionDate));
+
         try {
             walletService.chargeWallet(email, money, method, transactionDate, transactionTime, receipt);
             return ResponseEntity.ok(walletService.getWalletDetails(email));
