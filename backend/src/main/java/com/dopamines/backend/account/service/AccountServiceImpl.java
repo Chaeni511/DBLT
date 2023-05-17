@@ -1,10 +1,13 @@
 package com.dopamines.backend.account.service;
 
 
+import com.dopamines.backend.account.dto.MyPageDto;
 import com.dopamines.backend.account.dto.NicknameProfileDto;
 import com.dopamines.backend.account.dto.SearchResponseDto;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
+import com.dopamines.backend.plan.entity.Participant;
+import com.dopamines.backend.plan.repository.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import java.util.Optional;
 @Service
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
+    private final ParticipantRepository participantRepository;
 
     @Override
 
@@ -131,6 +135,42 @@ public class AccountServiceImpl implements AccountService {
             nicknameProfileDto.setProfile(account.getProfile());
             return nicknameProfileDto;
         }
+    }
+
+
+    @Override
+    public MyPageDto getMyInfo(String userEmail) {
+        Account account = accountRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        System.out.println("----------------------------------");
+        List<Participant> participants = participantRepository.findByAccount(account);
+        int planCount = participants.size();
+
+        int latenessRate = 0;
+
+        if (planCount > 0) {
+            int lateCount = 0;
+
+            for (Participant participant : participants) {
+                if (participant.getLateTime() > 0){
+                    lateCount ++;
+                }
+            }
+            latenessRate = planCount*100/lateCount;
+        }
+
+        MyPageDto myPageDto = new MyPageDto();
+        myPageDto.setAccountId(account.getAccountId());
+        myPageDto.setNickname(account.getNickname());
+        myPageDto.setProfile(account.getProfile());
+        myPageDto.setProfileMessage(account.getProfileMessage());
+        myPageDto.setAverageArrivalTime(account.getAccumulatedTime()/planCount);
+        myPageDto.setLatenessRate(latenessRate);
+        myPageDto.setTotalCost(account.getTotalIn()+account.getTotalOut());
+
+        return myPageDto;
+
     }
 
 }
