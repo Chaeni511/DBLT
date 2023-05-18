@@ -36,6 +36,19 @@ public class PlanServiceImpl implements PlanService {
 
     private final GameManager gameManager;
 
+    // thyme 지급
+    private void giveThyme(String  email, int thyme) {
+        Optional<Account> account = accountRepository.findByEmail(email);
+        if (account.isEmpty()) {
+            throw new IllegalArgumentException("해당 계정이 없습니다.");
+        } else {
+            log.info("thyme 지급 전 thyme 잔액: " + account.get().getThyme());
+
+            account.get().setThyme(account.get().getThyme() + thyme);
+
+            log.info("thyme 지급 성공! thyme 잔액:" + account.get().getThyme());
+        }
+    }
 
     // 약속 생성
     @Override
