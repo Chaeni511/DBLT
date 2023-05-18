@@ -129,7 +129,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         if (body.isEmpty()) {
             throw new IllegalArgumentException("body 해당 아이템이 없습니다.");
         } else {
-            log.info("body: " + body.get().getItemId());
+
 
             if(itemIdList.contains(body.get().getItemId())){
                 myCharacter.setBody(body.get().getItemId());
@@ -141,7 +141,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         if (myCharacterDto.getBodyParts()!=0 && bodyPart.isEmpty()) {
             throw new IllegalArgumentException("bodyPart 해당 아이템이 없습니다.");
         } else {
-            log.info("bodyPart: " + bodyPart.get().getItemId());
+
 
             if(itemIdList.contains(bodyPart.get().getItemId())){
                 myCharacter.setBodyPart(bodyPart.get().getItemId());
@@ -153,7 +153,6 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         if (myCharacterDto.getEyes()!=0 && eye.isEmpty()) {
             throw new IllegalArgumentException("eye 해당 아이템이 없습니다.");
         } else {
-            log.info("eye: " + eye.get().getItemId());
 
             if(itemIdList.contains(eye.get().getItemId())){
                 myCharacter.setEye(eye.get().getItemId());
@@ -165,7 +164,6 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         if (myCharacterDto.getGloves()!=0 && gloves.isEmpty()) {
             throw new IllegalArgumentException("gloves 해당 아이템이 없습니다.");
         } else {
-            log.info("gloves: " + gloves.get().getItemId());
 
             if(itemIdList.contains(gloves.get().getItemId())){
                 myCharacter.setGloves(gloves.get().getItemId());
@@ -177,7 +175,6 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         if (myCharacterDto.getMouthAndNoses()!=0 && mouthAndNose.isEmpty()) {
             throw new IllegalArgumentException("mouthAndNose 해당 아이템이 없습니다.");
         } else {
-            log.info("mouthAndNose: " + mouthAndNose.get().getItemId());
 
             if(itemIdList.contains(mouthAndNose.get().getItemId())){
                 myCharacter.setMouthAndNose(mouthAndNose.get().getItemId());
@@ -189,7 +186,6 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         if (myCharacterDto.getTails()!=0 && tail.isEmpty()) {
             throw new IllegalArgumentException("tail 해당 아이템이 없습니다.");
         } else {
-            log.info("tail: " + tail.get().getItemId());
 
             if(itemIdList.contains(tail.get().getItemId())){
                 myCharacter.setTail(tail.get().getItemId());
