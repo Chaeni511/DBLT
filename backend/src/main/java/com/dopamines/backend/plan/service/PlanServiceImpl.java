@@ -45,8 +45,9 @@ public class PlanServiceImpl implements PlanService {
 
 
     // thyme 지급
-    private void giveThyme(String  email, int thyme) {
-        Optional<Participant> participant = participantRepository.findByAccount_Email(email);
+    private void giveThyme(String  email, int thyme, Plan plan) {
+        Optional<Account> account = accountRepository.findByEmail(email);
+        Optional<Participant> participant = participantRepository.findByPlanAndAccount(plan, account.get());
 
         if (participant.isEmpty()) {
             throw new IllegalArgumentException("해당 계정이 없습니다.");
@@ -86,7 +87,7 @@ public class PlanServiceImpl implements PlanService {
         participantService.createParticipant(account, plan, true);
 
         // 방장한테 20 thyme 지급
-        giveThyme(userEmail, 20);
+        giveThyme(userEmail, 20, plan);
 
         // 참가자 추가
         if (participantIdsStr != null && !participantIdsStr.isEmpty()) {
@@ -99,7 +100,7 @@ public class PlanServiceImpl implements PlanService {
                 participantService.createParticipant(participant, plan, false);
 
                 // 참가자한테 10 thyme 지급
-                giveThyme(participant.getEmail(), 10);
+                giveThyme(participant.getEmail(), 10, plan);
             }
         }
 
@@ -470,12 +471,13 @@ public class PlanServiceImpl implements PlanService {
             for(Participant participant : participants) {
 
                 if(participant.getLateTime() != null && participant.getLateTime() >=0){
+
                     Optional<Account> account = accountRepository.findByEmail(participant.getAccount().getEmail());
 
                     if(account.isEmpty()) {
                         log.info("해당 계정 정보가 없습니다.");
                     } else {
-                        giveThyme(account.get().getEmail(), 50);
+                        giveThyme(account.get().getEmail(), 50, plan);
                     }
                 }
             }
