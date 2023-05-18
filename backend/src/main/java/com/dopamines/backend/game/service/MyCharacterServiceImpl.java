@@ -124,14 +124,16 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         Optional<Item> gloves = itemRepository.findByCategoryAndCode("gloves", myCharacterDto.getGloves());
         Optional<Item> mouthAndNose = itemRepository.findByCategoryAndCode("mouth_and_noses", myCharacterDto.getMouthAndNoses());
         Optional<Item> tail = itemRepository.findByCategoryAndCode("tails", myCharacterDto.getTails());
+
         log.info("body: " + body.get().getCode());
         log.info("bodyPart: " + bodyPart.get().getCode());
         log.info("eye: " + eye.get().getCode());
         log.info("gloves: " + gloves.get().getCode());
         log.info("mouthAndNose: " + mouthAndNose.get().getCode());
         log.info("tail: " + tail.get().getCode());
+
         if (body.isEmpty()) {
-            throw new IllegalArgumentException("해당 아이템이 없습니다.");
+            throw new IllegalArgumentException("1해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(body.get().getItemId())){
                 myCharacter.setBody(body.get().getItemId());
@@ -141,7 +143,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (myCharacterDto.getBodyParts()!=0 && bodyPart.isEmpty()) {
-            throw new IllegalArgumentException("해당 아이템이 없습니다.");
+            throw new IllegalArgumentException("2해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(bodyPart.get().getItemId())){
                 myCharacter.setBodyPart(bodyPart.get().getItemId());
@@ -151,7 +153,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (myCharacterDto.getEyes()!=0 && eye.isEmpty()) {
-            throw new IllegalArgumentException("해당 아이템이 없습니다.");
+            throw new IllegalArgumentException("3해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(eye.get().getItemId())){
                 myCharacter.setEye(eye.get().getItemId());
@@ -161,7 +163,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (myCharacterDto.getGloves()!=0 && gloves.isEmpty()) {
-            throw new IllegalArgumentException("해당 아이템이 없습니다.");
+            throw new IllegalArgumentException("4해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(gloves.get().getItemId())){
                 myCharacter.setGloves(gloves.get().getItemId());
@@ -171,7 +173,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (myCharacterDto.getMouthAndNoses()!=0 && mouthAndNose.isEmpty()) {
-            throw new IllegalArgumentException("해당 아이템이 없습니다.");
+            throw new IllegalArgumentException("5해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(mouthAndNose.get().getItemId())){
                 myCharacter.setMouthAndNose(mouthAndNose.get().getItemId());
@@ -181,7 +183,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (myCharacterDto.getTails()!=0 && tail.isEmpty()) {
-            throw new IllegalArgumentException("해당 아이템이 없습니다.");
+            throw new IllegalArgumentException("6해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(tail.get().getItemId())){
                 myCharacter.setTail(tail.get().getItemId());
