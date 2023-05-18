@@ -120,7 +120,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         Optional<Item> tail = itemRepository.findByCategoryAndCode("tails", myCharacterDto.getTails());
 
         if (body.isEmpty()) {
-            myCharacter.setBody(0);
+            throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(body.get().getItemId())){
                 myCharacter.setBody(body.get().getItemId());
@@ -130,7 +130,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (bodyPart.isEmpty()) {
-            myCharacter.setBodyPart(0);
+            throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(bodyPart.get().getItemId())){
                 myCharacter.setBodyPart(bodyPart.get().getItemId());
@@ -140,7 +140,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (eye.isEmpty()) {
-            myCharacter.setEye(0);
+            throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(eye.get().getItemId())){
                 myCharacter.setEye(eye.get().getItemId());
@@ -150,7 +150,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (gloves.isEmpty()) {
-            myCharacter.setGloves(0);
+            throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(gloves.get().getItemId())){
                 myCharacter.setGloves(gloves.get().getItemId());
@@ -160,7 +160,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (mouthAndNose.isEmpty()) {
-            myCharacter.setMouthAndNose(0);
+            throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(mouthAndNose.get().getItemId())){
                 myCharacter.setMouthAndNose(mouthAndNose.get().getItemId());
@@ -170,7 +170,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         }
 
         if (tail.isEmpty()) {
-            myCharacter.setTail(0);
+            throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(tail.get().getItemId())){
                 myCharacter.setTail(tail.get().getItemId());
