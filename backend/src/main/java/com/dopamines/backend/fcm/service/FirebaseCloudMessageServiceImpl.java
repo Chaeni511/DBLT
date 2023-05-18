@@ -2,7 +2,7 @@ package com.dopamines.backend.fcm.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
-import com.dopamines.backend.fcm.dto.FirebaseCloudMessage;
+import com.dopamines.backend.fcm.dto.FirebaseCloudMessageToken;
 import com.dopamines.backend.fcm.dto.FirebaseCloudMessageTopic;
 import com.dopamines.backend.fcm.dto.GroupTokenListDto;
 import com.dopamines.backend.fcm.entity.FCM;
@@ -23,11 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.*;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -216,8 +211,8 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
     // targetToken에 해당하는 device로 FCM 푸시알림을 전송 요청 (특정 기기에 메시지 전송)
     @Override
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeMessage(targetToken, title, body);
+    public void sendTokenMessageTo(String targetToken, String title, String body, String planId, String type) throws IOException {
+        String message = makeTokenMessage(targetToken, title, body, planId, type);
 
         try {
             // OkHttp3 를 이용해, Http Post Request를 생성
@@ -244,14 +239,18 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
 
 
     // FcmMessage를 만들고, 이를 ObjectMapper을 이용해 String으로 변환하여 반환
-    private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
-        FirebaseCloudMessage fcmMessage = FirebaseCloudMessage.builder()
-                .message(FirebaseCloudMessage.Message.builder()
+    private String makeTokenMessage(String targetToken, String title, String body, String planId, String type) throws JsonProcessingException {
+        FirebaseCloudMessageToken fcmMessage = FirebaseCloudMessageToken.builder()
+                .message(FirebaseCloudMessageToken.Message.builder()
                         .token(targetToken)
-                        .notification(FirebaseCloudMessage.Notification.builder()
+                        .notification(FirebaseCloudMessageToken.Notification.builder()
                                 .title(title)
                                 .body(body)
-                                .image(null)
+                                .build()
+                        )
+                        .data(FirebaseCloudMessageToken.Data.builder()
+                                .planId(planId)
+                                .type(type)
                                 .build()
                         )
                         .build()

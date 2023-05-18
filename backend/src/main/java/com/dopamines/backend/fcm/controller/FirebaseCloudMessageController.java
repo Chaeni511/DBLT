@@ -2,7 +2,7 @@ package com.dopamines.backend.fcm.controller;
 
 import com.dopamines.backend.fcm.dto.GroupTokenListDto;
 import com.dopamines.backend.fcm.dto.TopicRequestDto;
-import com.dopamines.backend.fcm.dto.RequestDto;
+import com.dopamines.backend.fcm.dto.TokenRequestDto;
 import com.dopamines.backend.fcm.dto.TokenDto;
 import com.dopamines.backend.fcm.service.FirebaseCloudMessageService;
 import com.dopamines.backend.plan.service.PlanService;
@@ -149,9 +149,9 @@ public class FirebaseCloudMessageController {
     }
 
 
-    @PostMapping("/push")
-    @Operation(summary = "fcm push를 테스트하는 api 입니다.", description = "targetToken, title, body를 작성하여 보내면 firebase 서버에 메세지 푸시를 요청하여 클라이언트에게 메세지를 푸시합니다")
-    public ResponseEntity<Void> pushMessage(@RequestBody RequestDto requestDto) throws IOException {
+    @PostMapping("/tokenPush")
+    @Operation(summary = "토큰으로 특정 기기에 FCM push를 보내는 api 입니다.", description = "targetToken과 내용을 작성하여 보내면 firebase 서버에 메세지 푸시를 요청하여 클라이언트에게 메세지를 푸시합니다")
+    public ResponseEntity<Void> pushMessage(@RequestBody TokenRequestDto requestDto) throws IOException {
         // 1. targetToken, title, body를 작성하여 서버에 보낸다.
         // 2. 서버는 firebase 서버에 메세지 푸시를 요청한다.
         // 3. 토큰이 확인되면 firebase서버는 클라이언트에게 메세지를 푸시한다.
@@ -159,10 +159,13 @@ public class FirebaseCloudMessageController {
         log.info("Token: " + requestDto.getTargetToken() + " Title: "
                 +requestDto.getTitle() + " Body: " + requestDto.getBody());
 
-        fcmService.sendMessageTo(
+        fcmService.sendTokenMessageTo(
                 requestDto.getTargetToken(),
                 requestDto.getTitle(),
-                requestDto.getBody());
+                requestDto.getBody(),
+                requestDto.getPlanId(),
+                requestDto.getType()
+        );
         return ResponseEntity.ok().build();
     }
 
