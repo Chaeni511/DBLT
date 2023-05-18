@@ -119,7 +119,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         MyCharacter myCharacter = myCharacterRepository.findMyCharacterByAccount_Email(email);
 
         Optional<Item> body = itemRepository.findByCategoryAndCode("bodies", myCharacterDto.getBodies());
-        Optional<Item> bodyPart = itemRepository.findByCategoryAndCode("bodyParts", myCharacterDto.getBodies());
+        Optional<Item> bodyPart = itemRepository.findByCategoryAndCode("body_parts", myCharacterDto.getBodies());
         Optional<Item> eye = itemRepository.findByCategoryAndCode("eyes", myCharacterDto.getEyes());
         Optional<Item> gloves = itemRepository.findByCategoryAndCode("gloves", myCharacterDto.getGloves());
         Optional<Item> mouthAndNose = itemRepository.findByCategoryAndCode("mouth_and_noses", myCharacterDto.getMouthAndNoses());
