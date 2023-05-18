@@ -14,4 +14,6 @@ public class EndPlanParticipantDto {
     private String profile;
     private Long lateTime;
     private Integer designation; // 0 보통, 1 일찍, 2 지각
+    private Boolean paymentAvailability;
+    private String deviceToken;
 }
