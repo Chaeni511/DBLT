@@ -37,10 +37,14 @@ public class MyCharacterController {
             myCharacterService.wearItem(email, myCharacterDto);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
+            log.info("IllegalArgumentException 발생");
             log.info(e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }catch (Exception e) {
+            log.info("그냥 Exception 발생");
             log.info(e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
