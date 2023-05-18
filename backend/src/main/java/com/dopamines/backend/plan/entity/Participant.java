@@ -52,4 +52,10 @@ public class Participant {
     @Column(name = "transaction_money")
     @ColumnDefault("0")
     private int transactionMoney;
+
+    @Column(name = "thyme")
+    @ColumnDefault("0")
+    private int thyme;
+
+
 }
