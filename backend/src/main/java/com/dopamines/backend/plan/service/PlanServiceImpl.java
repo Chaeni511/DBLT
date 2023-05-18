@@ -459,10 +459,10 @@ public class PlanServiceImpl implements PlanService {
 
         if (diffMinutes > 30) {
             plan.setState(0); // 기본 상태
-        } else if (diffMinutes > 0 && plan.getState() <= 0) {
+        } else if (30 >=diffMinutes && diffMinutes > 0 && plan.getState() <= 0) {
             plan.setState(1); // 위치공유 (30분 전 ~ 약속시간)
 
-        } else if (diffMinutes >= -60 && plan.getState() <= 1) {
+        } else if (0 >= diffMinutes && diffMinutes >= -60 && plan.getState() <= 1) {
             gameManager.setGameMoney(plan.getPlanId(), getGameMoney(plan.getPlanId()).getTotalPayment());
 
             // 지각 하지 않은 참가자에게 50 thyme 지급
