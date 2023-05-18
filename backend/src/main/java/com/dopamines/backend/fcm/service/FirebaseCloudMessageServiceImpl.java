@@ -15,11 +15,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.TopicManagementResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.*;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -132,8 +140,25 @@ public class FirebaseCloudMessageServiceImpl implements FirebaseCloudMessageServ
     }
 
 
-    // fcm 주제를 구독 시킴니다.
-//    public void
+    // fcm 주제를 구독 시킵니다.
+    public void SubscribeTopic(List<Long> accountIds, String topic) throws FirebaseMessagingException {
+
+        List<String> registrationTokens = new ArrayList<>();
+
+        // These registration tokens come from the client FCM SDKs.
+        for (Long accountId : accountIds) {
+            Optional<FCM> fcm = fcmRepository.findByAccount_AccountId(accountId);
+            if (fcm.isPresent()) {
+                registrationTokens.add(fcm.get().getDeviceToken());
+            }
+        }
+
+        TopicManagementResponse response = FirebaseMessaging.getInstance().subscribeToTopic(registrationTokens, topic);
+        // See the TopicManagementResponse reference documentation
+        // for the contents of response.
+        log.info(response.getSuccessCount() + " tokens were subscribed successfully");
+
+    }
 
 
     @Override
