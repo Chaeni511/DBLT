@@ -84,7 +84,7 @@ public class WalletServiceImpl implements WalletService {
 
 
         if (poorParticipants.isEmpty()) {
-            log.info("정산이 시작되었습니다.");
+            log.info("planId : {}, title : {} 약속의 정산이 시작되었습니다.", planId, plan.getTitle());
             // 정산 성공
             List<SettlementDto> settlementSuccess = new ArrayList<>();
             LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -142,11 +142,11 @@ public class WalletServiceImpl implements WalletService {
 
             }
 
-            log.info("정산이 완료되었습니다.");
+            log.info("planId : {}, title : {} 약속의 정산이 완료되었습니다.", planId, plan.getTitle());
             return new SettlementResultDto(true, settlementSuccess);
         } else {
             // 정산 실패
-            log.info("정산 실패: 일부 참가자의 지갑 금액이 부족합니다.");
+            log.info("planId : {}, title : {} 약속 정산 실패: 일부 참가자의 지갑 금액이 부족합니다.", planId, plan.getTitle());
             return new SettlementResultDto(false, poorParticipants);
         }
     }
