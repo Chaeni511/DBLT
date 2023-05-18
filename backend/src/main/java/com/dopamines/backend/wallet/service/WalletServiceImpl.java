@@ -95,38 +95,43 @@ public class WalletServiceImpl implements WalletService {
 
             for (Participant participant : participants) {
 
+                Account user = participant.getAccount();
+
                 // 지갑 목록 생성
                 Wallet wallet = new Wallet();
-                wallet.setAccount(account);
+                wallet.setAccount(user);
                 wallet.setPlan(plan);
                 wallet.setMoney(participant.getTransactionMoney());
-                wallet.setTotalMoney(participant.getAccount().getTotalWallet() + participant.getTransactionMoney());
+                wallet.setTotalMoney(user.getTotalWallet() + participant.getTransactionMoney());
                 wallet.setTransactionDate(now.toLocalDate());
                 wallet.setTransactionTime(now.toLocalTime());
 
                 if (participant.getTransactionMoney() < 0) {
+
                     // 잃은 지각비
                     wallet.setType(3);
 
                     // account 누적 지출 지각비
-                    participant.getAccount().setTotalIn(participant.getAccount().getTotalOut() + participant.getTransactionMoney());
+                    user.setTotalOut(user.getTotalOut() + participant.getTransactionMoney());
+
                 } else {
                     // 얻은 지각비
                     wallet.setType(2);
 
                     // account 누적 획득 지각비
-                    participant.getAccount().setTotalIn(participant.getAccount().getTotalIn() + participant.getTransactionMoney());
+                    user.setTotalIn(user.getTotalIn() + participant.getTransactionMoney());
+
                 }
                 walletRepository.save(wallet);
                 // 지갑 전체 금액
-                participant.getAccount().setTotalWallet(participant.getAccount().getTotalWallet() + participant.getTransactionMoney());
-                accountRepository.save(participant.getAccount());
+                user.setTotalWallet(user.getTotalWallet() + participant.getTransactionMoney());
+                accountRepository.save(user);
 
                 Optional<FCM> fcm =  fcmRepository.findByAccount(participant.getAccount());
 
                 SettlementDto settlementDto = new SettlementDto();
-                settlementDto.setAccountId(participant.getAccount().getAccountId());
-                settlementDto.setNickName(participant.getAccount().getNickname());
+                settlementDto.setAccountId(user.getAccountId());
+                settlementDto.setNickName(user.getNickname());
                 settlementDto.setPaymentAmount(participant.getTransactionMoney());
 
                 if (fcm.isPresent()) {
