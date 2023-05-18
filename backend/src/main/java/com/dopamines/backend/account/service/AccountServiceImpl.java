@@ -142,21 +142,27 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public MyPageDto getMyInfo(String userEmail) {
         Account account = accountRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NoSuchElementException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
         List<Participant> participants = participantRepository.findByAccount(account);
 
-        int planCount = participants.size();
+        List<Participant> arrivedParticipants = new ArrayList<>();
 
-        int lateCount = calculateLateCount(participants);
+        for (Participant participant : participants) {
+            if (participant.getIsArrived()) {
+                arrivedParticipants.add(participant);
+            }
+        }
+
+        int planCount = arrivedParticipants.size();
+
+        int lateCount = calculateLateCount(arrivedParticipants);
         int latenessRate = calculateLatenessRate(planCount, lateCount);
-        System.out.println(account.getAccumulatedTime() / planCount );
 
         MyPageDto myPageDto = new MyPageDto();
         myPageDto.setAccountId(account.getAccountId());
         myPageDto.setNickname(account.getNickname());
         myPageDto.setProfile(account.getProfile());
-        myPageDto.setProfileMessage(account.getProfileMessage());
         myPageDto.setAverageArrivalTime(planCount > 0 ? account.getAccumulatedTime() / planCount : 0);
         myPageDto.setLatenessRate(latenessRate);
         myPageDto.setTotalCost(account.getTotalIn() + account.getTotalOut());

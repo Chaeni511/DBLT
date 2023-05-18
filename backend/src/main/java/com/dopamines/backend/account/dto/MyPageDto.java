@@ -13,8 +13,6 @@ public class MyPageDto {
 
     private String profile;
 
-    private String profileMessage;
-
     private int averageArrivalTime;
 
     private int latenessRate;
