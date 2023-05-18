@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface FirebaseCloudMessageRepository extends JpaRepository<FCM, Long> {
 
     Optional<FCM> findByAccount(Account account);
+    Optional<FCM> findByAccount_AccountId(Long accountId);
 }

@@ -2,6 +2,8 @@ package com.dopamines.backend.wallet.service;
 
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
+import com.dopamines.backend.fcm.entity.FCM;
+import com.dopamines.backend.fcm.repository.FirebaseCloudMessageRepository;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
@@ -36,6 +38,8 @@ public class WalletServiceImpl implements WalletService {
     private final ParticipantRepository participantRepository;
 
     private final WalletRepository walletRepository;
+
+    private final FirebaseCloudMessageRepository fcmRepository;
 
 
     // 정산 가능한지 확인 (각 참가자의 지갑 금액이 정산해야하는 금액보다 많은 지 확인) 적은 사람이 있으면 dto로 보내줌
@@ -118,10 +122,17 @@ public class WalletServiceImpl implements WalletService {
                 participant.getAccount().setTotalWallet(participant.getAccount().getTotalWallet() + participant.getTransactionMoney());
                 accountRepository.save(participant.getAccount());
 
+                Optional<FCM> fcm =  fcmRepository.findByAccount(participant.getAccount());
+
                 SettlementDto settlementDto = new SettlementDto();
                 settlementDto.setAccountId(participant.getAccount().getAccountId());
                 settlementDto.setNickName(participant.getAccount().getNickname());
                 settlementDto.setPaymentAmount(participant.getTransactionMoney());
+
+                if (fcm.isPresent()) {
+                    settlementDto.setDeviceToken(fcm.get().getDeviceToken());
+                }
+
                 settlementSuccess.add(settlementDto);
 
             }

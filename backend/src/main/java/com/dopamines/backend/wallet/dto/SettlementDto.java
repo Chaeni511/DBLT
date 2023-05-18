@@ -11,4 +11,5 @@ public class SettlementDto {
     private Long accountId;
     private String nickName;
     private Integer paymentAmount;
+    private String deviceToken;
 }
