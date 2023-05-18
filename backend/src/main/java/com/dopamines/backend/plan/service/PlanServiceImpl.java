@@ -3,6 +3,8 @@ package com.dopamines.backend.plan.service;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.repository.AccountRepository;
 import com.dopamines.backend.account.service.UserService;
+import com.dopamines.backend.fcm.entity.FCM;
+import com.dopamines.backend.fcm.repository.FirebaseCloudMessageRepository;
 import com.dopamines.backend.game.GameManager;
 import com.dopamines.backend.plan.dto.*;
 import com.dopamines.backend.plan.entity.Participant;
@@ -39,6 +41,9 @@ public class PlanServiceImpl implements PlanService {
 
     private final GameManager gameManager;
 
+    private final FirebaseCloudMessageRepository fcmRepository;
+
+
     // thyme 지급
     private void giveThyme(String  email, int thyme) {
         Optional<Participant> participant = participantRepository.findByAccount_Email(email);
@@ -55,6 +60,7 @@ public class PlanServiceImpl implements PlanService {
             participantRepository.save(participant.get());
         }
     }
+
 
     // 약속 생성
     @Override
@@ -214,16 +220,18 @@ public class PlanServiceImpl implements PlanService {
         List<EndPlanParticipantDto> endParticipantList = new ArrayList<>();
         for (Participant endParticipant : endParticipants) {
 
+            Account user = endParticipant.getAccount();
+
             // 칭호 : 1 = 일찍 오는 사람, 2 = 늦게 오는 사람, 0: 정시에 오는사람 (누적시간)
-            int designation = checkDesignation(endParticipant.getAccount().getAccumulatedTime());
+            int designation = checkDesignation(user.getAccumulatedTime());
 
             // 로그인한 유저 정보는 따로 관리
-            if (endParticipant.getAccount().getEmail().equals(userEmail)) {
+            if (user.getEmail().equals(userEmail)) {
                 // 로그인 된 유저 정보
                 MyEndPlanDto myDetail = new MyEndPlanDto();
-                myDetail.setAccountId(endParticipant.getAccount().getAccountId());
-                myDetail.setNickname(endParticipant.getAccount().getNickname());
-                myDetail.setProfile(endParticipant.getAccount().getProfile());
+                myDetail.setAccountId(user.getAccountId());
+                myDetail.setNickname(user.getNickname());
+                myDetail.setProfile(user.getProfile());
                 myDetail.setDesignation(designation);
                 myDetail.setArrivalTime(endParticipant.getArrivalTime());
                 // 지각한 시각 <= 0: 지각안함, 지각한 시각 > 0 : 지각
@@ -236,12 +244,29 @@ public class PlanServiceImpl implements PlanService {
             }
 
             EndPlanParticipantDto endPlanParticipantDto = new EndPlanParticipantDto();
-            endPlanParticipantDto.setAccountId(endParticipant.getAccount().getAccountId());
-            endPlanParticipantDto.setNickname(endParticipant.getAccount().getNickname());
-            endPlanParticipantDto.setProfile(endParticipant.getAccount().getProfile());
+            endPlanParticipantDto.setAccountId(user.getAccountId());
+            endPlanParticipantDto.setNickname(user.getNickname());
+            endPlanParticipantDto.setProfile(user.getProfile());
             endPlanParticipantDto.setDesignation(designation);
             // 지각 시간
             endPlanParticipantDto.setLateTime(endParticipant.getLateTime());
+
+            // 상세페이지 fcm 추가 로직
+            // 토큰
+            Optional<FCM> fcm =  fcmRepository.findByAccount(user);
+            if (fcm.isPresent()) {
+                endPlanParticipantDto.setDeviceToken(fcm.get().getDeviceToken());
+            }
+            // 지갑에 돈 충분함?
+            endPlanParticipantDto.setPaymentAvailability(endParticipant.getTransactionMoney() >= 0 || user.getTotalWallet() >= Math.abs(endParticipant.getTransactionMoney()));
+
+//            endPlanParticipantDto.setPaymentAvailability(true);
+//            if (endParticipant.getTransactionMoney() < 0) {
+//                if (user.getTotalWallet() < Math.abs(endParticipant.getTransactionMoney())) {
+//                    endPlanParticipantDto.setPaymentAvailability(false);
+//                }
+//            }
+
             // 리스트에 저장
             endParticipantList.add(endPlanParticipantDto);
         }
