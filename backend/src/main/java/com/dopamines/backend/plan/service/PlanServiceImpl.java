@@ -458,10 +458,10 @@ public class PlanServiceImpl implements PlanService {
 
         if (diffMinutes > 30) {
             plan.setState(0); // 기본 상태
-        } else if (diffMinutes > 0 && plan.getState() == 0) {
+        } else if (diffMinutes > 0 && plan.getState() <= 0) {
             plan.setState(1); // 위치공유 (30분 전 ~ 약속시간)
 
-        } else if (diffMinutes >= -60 && plan.getState() == 1) {
+        } else if (diffMinutes >= -60 && plan.getState() <= 1) {
             gameManager.setGameMoney(plan.getPlanId(), getGameMoney(plan.getPlanId()).getTotalPayment());
 
             // 지각 하지 않은 참가자에게 50 thyme 지급
@@ -479,7 +479,7 @@ public class PlanServiceImpl implements PlanService {
             }
 
             plan.setState(2); // 게임 활성화 (약속시간 ~ 1시간 후)
-        } else if(diffMinutes < -60 && plan.getState() == 2){
+        } else if(diffMinutes < -60 && plan.getState() <= 2){
             plan.setState(3); // 약속 종료 (1시간 이후)
 
             // participant의 thyme을 account에 업뎃
