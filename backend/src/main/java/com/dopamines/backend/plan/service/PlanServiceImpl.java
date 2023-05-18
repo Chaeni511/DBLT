@@ -11,6 +11,7 @@ import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -38,15 +39,16 @@ public class PlanServiceImpl implements PlanService {
 
     // thyme 지급
     private void giveThyme(String  email, int thyme) {
-        Optional<Account> account = accountRepository.findByEmail(email);
-        if (account.isEmpty()) {
+        Optional<Participant> participant = participantRepository.findByAccount_Email(email);
+
+        if (participant.isEmpty()) {
             throw new IllegalArgumentException("해당 계정이 없습니다.");
         } else {
-            log.info("thyme 지급 전 thyme 잔액: " + account.get().getThyme());
+            log.info("thyme 지급 전 thyme 잔액: " + participant.get().getThyme());
 
-            account.get().setThyme(account.get().getThyme() + thyme);
+            participant.get().setThyme(participant.get().getThyme() + thyme);
 
-            log.info("thyme 지급 성공! thyme 잔액:" + account.get().getThyme());
+            log.info("thyme 지급 성공! thyme 잔액:" + participant.get().getThyme());
         }
     }
 
@@ -434,6 +436,11 @@ public class PlanServiceImpl implements PlanService {
             gameManager.setGameMoney(plan.getPlanId(), getGameMoney(plan.getPlanId()).getTotalPayment());
 
             // 지각 하지 않은 user에게 50 thyme 지급
+            List<Participant> participants = participantRepository.findByPlan(plan);
+
+            for(Participant participant : participants) {
+                if(participant.)
+            }
 
             plan.setState(2); // 게임 활성화 (약속시간 ~ 1시간 후)
         } else {
