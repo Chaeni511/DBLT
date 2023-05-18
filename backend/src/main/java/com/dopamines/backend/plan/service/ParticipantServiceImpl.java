@@ -159,6 +159,13 @@ public class ParticipantServiceImpl implements ParticipantService {
             account.setTotalIn(account.getTotalIn() + finalAmount);
         }
 
+        // 약속 끝 처리(state를 3으로)
+        if(plan.getState() == 2) {
+            plan.setState(3);
+            planRepository.save(plan);
+        }
+
+
         // 결과 dto 생성
         GameResultMoneyDto gameResultMoneyDto = new GameResultMoneyDto();
         gameResultMoneyDto.setPlanId(planId);
