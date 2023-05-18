@@ -468,8 +468,10 @@ public class PlanServiceImpl implements PlanService {
             List<Participant> participants = participantRepository.findByPlan(plan);
 
             for(Participant participant : participants) {
+
                 if(participant.getLateTime() != null && participant.getLateTime() >=0){
                     Optional<Account> account = accountRepository.findByEmail(participant.getAccount().getEmail());
+
                     if(account.isEmpty()) {
                         log.info("해당 계정 정보가 없습니다.");
                     } else {
