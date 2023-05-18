@@ -125,7 +125,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         Optional<Item> mouthAndNose = itemRepository.findByCategoryAndCode("mouth_and_noses", myCharacterDto.getMouthAndNoses());
         Optional<Item> tail = itemRepository.findByCategoryAndCode("tails", myCharacterDto.getTails());
 
-        if (myCharacterDto.getBodies()!=0 && body.isEmpty()) {
+        if (body.isEmpty()) {
             throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(body.get().getItemId())){
