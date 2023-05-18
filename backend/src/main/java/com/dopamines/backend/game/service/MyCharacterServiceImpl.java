@@ -125,7 +125,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         Optional<Item> mouthAndNose = itemRepository.findByCategoryAndCode("mouth_and_noses", myCharacterDto.getMouthAndNoses());
         Optional<Item> tail = itemRepository.findByCategoryAndCode("tails", myCharacterDto.getTails());
 
-        if (body.isEmpty()) {
+        if (myCharacterDto.getBodies()!=0 && body.isEmpty()) {
             throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(body.get().getItemId())){
@@ -135,7 +135,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
             }
         }
 
-        if (bodyPart.isEmpty()) {
+        if (myCharacterDto.getBodyParts()!=0 && bodyPart.isEmpty()) {
             throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(bodyPart.get().getItemId())){
@@ -145,7 +145,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
             }
         }
 
-        if (eye.isEmpty()) {
+        if (myCharacterDto.getEyes()!=0 && eye.isEmpty()) {
             throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(eye.get().getItemId())){
@@ -155,7 +155,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
             }
         }
 
-        if (gloves.isEmpty()) {
+        if (myCharacterDto.getGloves()!=0 && gloves.isEmpty()) {
             throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(gloves.get().getItemId())){
@@ -165,7 +165,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
             }
         }
 
-        if (mouthAndNose.isEmpty()) {
+        if (myCharacterDto.getMouthAndNoses()!=0 && mouthAndNose.isEmpty()) {
             throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(mouthAndNose.get().getItemId())){
@@ -175,7 +175,7 @@ public class MyCharacterServiceImpl implements MyCharacterService {
             }
         }
 
-        if (tail.isEmpty()) {
+        if (myCharacterDto.getTails()!=0 && tail.isEmpty()) {
             throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
             if(itemIdList.contains(tail.get().getItemId())){
