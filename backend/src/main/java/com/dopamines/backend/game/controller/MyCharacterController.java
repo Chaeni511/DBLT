@@ -36,7 +36,10 @@ public class MyCharacterController {
         try {
             myCharacterService.wearItem(email, myCharacterDto);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            log.info(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
