@@ -11,13 +11,15 @@ import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -49,6 +51,8 @@ public class PlanServiceImpl implements PlanService {
             participant.get().setThyme(participant.get().getThyme() + thyme);
 
             log.info("thyme 지급 성공! thyme 잔액:" + participant.get().getThyme());
+
+            participantRepository.save(participant.get());
         }
     }
 
@@ -429,21 +433,28 @@ public class PlanServiceImpl implements PlanService {
 
         if (diffMinutes > 30) {
             plan.setState(0); // 기본 상태
-        } else if (diffMinutes > 0) {
+        } else if (diffMinutes > 0 && plan.getState() == 0) {
             plan.setState(1); // 위치공유 (30분 전 ~ 약속시간)
 
-        } else if (diffMinutes >= -60 && plan.getState() != 3) {
+        } else if (diffMinutes >= -60 && plan.getState() == 1) {
             gameManager.setGameMoney(plan.getPlanId(), getGameMoney(plan.getPlanId()).getTotalPayment());
 
-            // 지각 하지 않은 user에게 50 thyme 지급
+            // 지각 하지 않은 참가자에게 50 thyme 지급
             List<Participant> participants = participantRepository.findByPlan(plan);
 
             for(Participant participant : participants) {
-                if(participant.)
+                if(participant.getLateTime() != null && participant.getLateTime() >=0){
+                    Optional<Account> account = accountRepository.findByEmail(participant.getAccount().getEmail());
+                    if(account.isEmpty()) {
+                        log.info("해당 계정 정보가 없습니다.");
+                    } else {
+                        giveThyme(account.get().getEmail(), 50);
+                    }
+                }
             }
 
             plan.setState(2); // 게임 활성화 (약속시간 ~ 1시간 후)
-        } else {
+        } else if(diffMinutes < -60 && plan.getState() == 2){
             plan.setState(3); // 약속 종료 (1시간 이후)
         }
 
