@@ -75,21 +75,4 @@ public class AccountController {
         }
 
     }
-
-//    @GetMapping("/myPage")
-//    @Operation(summary = "마이페이지 정보를 불러오는 api 입니다.")
-//    public ResponseEntity<MyPageDto> getMyInfo(HttpServletRequest request) {
-//
-//        try {
-//            String userEmail = request.getRemoteUser();
-//            MyPageDto myPageDto = accountService.getMyInfo(userEmail);
-//            return ResponseEntity.ok(myPageDto);
-//        } catch (IllegalArgumentException e) {
-//            log.error("API 호출 중 예외 발생: {}", e.getMessage());
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//        } catch (Exception e) {
-//            log.error("API 호출 중 예외 발생: {}", e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
 }
