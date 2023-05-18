@@ -410,7 +410,7 @@ public class PlanServiceImpl implements PlanService {
             plan.setState(0); // 기본 상태
         } else if (diffMinutes > 0) {
             plan.setState(1); // 위치공유 (30분 전 ~ 약속시간)
-        } else if (diffMinutes >= -60) {
+        } else if (diffMinutes >= -60 && plan.getState() != 3) {
             gameManager.setGameMoney(plan.getPlanId(), getGameMoney(plan.getPlanId()).getTotalPayment());
             plan.setState(2); // 게임 활성화 (약속시간 ~ 1시간 후)
         } else {
