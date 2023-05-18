@@ -240,7 +240,7 @@ public class WalletServiceImpl implements WalletService {
         int totalWallet = account.get().getTotalWallet();
 
         // money가 잔액보다 클 때
-        if(totalWallet<money) {
+        if(totalWallet < money) {
             throw new RuntimeException("잔액이 부족하여 출금할 수 없습니다.");
         }
         // Account 정보 업뎃
