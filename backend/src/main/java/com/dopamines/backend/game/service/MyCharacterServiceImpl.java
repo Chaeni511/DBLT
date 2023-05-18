@@ -124,7 +124,12 @@ public class MyCharacterServiceImpl implements MyCharacterService {
         Optional<Item> gloves = itemRepository.findByCategoryAndCode("gloves", myCharacterDto.getGloves());
         Optional<Item> mouthAndNose = itemRepository.findByCategoryAndCode("mouth_and_noses", myCharacterDto.getMouthAndNoses());
         Optional<Item> tail = itemRepository.findByCategoryAndCode("tails", myCharacterDto.getTails());
-
+        log.info("body: " + body.get().getCode());
+        log.info("bodyPart: " + bodyPart.get().getCode());
+        log.info("eye: " + eye.get().getCode());
+        log.info("gloves: " + gloves.get().getCode());
+        log.info("mouthAndNose: " + mouthAndNose.get().getCode());
+        log.info("tail: " + tail.get().getCode());
         if (body.isEmpty()) {
             throw new IllegalArgumentException("해당 아이템이 없습니다.");
         } else {
