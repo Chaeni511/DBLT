@@ -36,9 +36,9 @@ public class WalletController {
             @RequestParam @DateTimeFormat(pattern = "HH:mm:ss") LocalTime transactionTime,
             String receipt
     ) {
+        System.out.println(transactionDate);
+        System.out.println(transactionTime);
         String email = request.getRemoteUser();
-        log.info("transactionTime+" + String.valueOf(transactionTime));
-        log.info("transactionDate" + String.valueOf(transactionDate));
 
         try {
             walletService.chargeWallet(email, money, method, transactionDate, transactionTime, receipt);
