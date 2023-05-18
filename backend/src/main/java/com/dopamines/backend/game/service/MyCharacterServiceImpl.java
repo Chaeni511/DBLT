@@ -97,6 +97,12 @@ public class MyCharacterServiceImpl implements MyCharacterService {
     @Override
     public void wearItem(String email, MyCharacterDto myCharacterDto){
         Optional<Account> account = accountRepository.findByEmail(email);
+        log.info("myCharacterDto.getBodies(): " + myCharacterDto.getBodies());
+        log.info("myCharacterDto.getBodyParts(): " + myCharacterDto.getBodyParts());
+        log.info("myCharacterDto.getEyes(): " + myCharacterDto.getEyes());
+        log.info("myCharacterDto.getGloves(): " + myCharacterDto.getGloves());
+        log.info("myCharacterDto.getMouthAndNoses(): " + myCharacterDto.getMouthAndNoses());
+        log.info("myCharacterDto.getTails(): " + myCharacterDto.getTails());
 
         // 내 인벤토리 가져오기
         List<Inventory> inventoryList = inventoryRepository.findAllByAccount(account.get());
