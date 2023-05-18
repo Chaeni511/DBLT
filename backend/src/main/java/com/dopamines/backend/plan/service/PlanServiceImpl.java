@@ -456,6 +456,21 @@ public class PlanServiceImpl implements PlanService {
             plan.setState(2); // 게임 활성화 (약속시간 ~ 1시간 후)
         } else if(diffMinutes < -60 && plan.getState() == 2){
             plan.setState(3); // 약속 종료 (1시간 이후)
+
+            // participant의 thyme을 account에 업뎃
+            List<Participant> participants = participantRepository.findByPlan(plan);
+
+            for(Participant participant : participants) {
+                Optional<Account> account = accountRepository.findByEmail(participant.getAccount().getEmail());
+                if(account.isEmpty()) {
+                    log.info("해당 계정 정보가 없습니다.");
+                } else {
+                    account.get().setThyme(account.get().getThyme() + participant.getThyme());
+                    accountRepository.save(account.get());
+                    log.info("participant의 thyme을 account에 업뎃함");
+                }
+
+            }
         }
 
         planRepository.save(plan);
