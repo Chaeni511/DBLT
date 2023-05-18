@@ -73,6 +73,9 @@ public class PlanServiceImpl implements PlanService {
         // 방장 참가자로 추가
         participantService.createParticipant(account, plan, true);
 
+        // 방장한테 20 thyme 지급
+        giveThyme(userEmail, 20);
+
         // 참가자 추가
         if (participantIdsStr != null && !participantIdsStr.isEmpty()) {
             String[] participantIds = participantIdsStr.split(",");
@@ -82,6 +85,9 @@ public class PlanServiceImpl implements PlanService {
                 }
                 Account participant = userService.findByAccountId(Long.valueOf(participantId));
                 participantService.createParticipant(participant, plan, false);
+
+                // 참가자한테 10 thyme 지급
+                giveThyme(participant.getEmail(), 10);
             }
         }
 
