@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 @Getter
-public class FirebaseCloudMessage {
+public class FirebaseCloudMessageToken {
     private boolean validateOnly;
     private Message message;
 
@@ -17,6 +17,7 @@ public class FirebaseCloudMessage {
     public static class Message {
         private Notification notification;
         private String token;
+        private Data data;
     }
 
     @Builder
@@ -25,6 +26,13 @@ public class FirebaseCloudMessage {
     public static class Notification {
         private String title;
         private String body;
-        private String image;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Data {
+        private String planId;
+        private String type;
     }
 }

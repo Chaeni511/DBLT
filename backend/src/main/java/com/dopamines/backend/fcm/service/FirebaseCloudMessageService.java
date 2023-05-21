@@ -23,7 +23,7 @@ public interface FirebaseCloudMessageService {
     List<String> getGroupTokens(Long planId);
 
     // 특정 기기에 메시지 전송
-    void sendMessageTo(String targetToken, String title, String body) throws IOException;
+    void sendTokenMessageTo(String targetToken, String title, String body, String planId, String type) throws IOException;
 
     // 주제로 메시지 전송
     void sendTopicMessageTo(String topic, String title, String body, String planId, String type) throws IOException;

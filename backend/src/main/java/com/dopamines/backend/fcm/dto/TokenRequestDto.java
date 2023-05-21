@@ -5,8 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class RequestDto {
+public class TokenRequestDto {
     private String title;
     private String body;
+    private String planId;
+    private String type;
     private String targetToken;
 }
