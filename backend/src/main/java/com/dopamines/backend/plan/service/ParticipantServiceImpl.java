@@ -176,13 +176,8 @@ public class ParticipantServiceImpl implements ParticipantService {
         gameResultMoneyDto.setFinalAmount(finalAmount);
         gameResultMoneyDto.setParticipantCount(countParticipant);
         gameResultMoneyDto.setRank(rank);
-        if(gameResultMoneyDto.getIsLate()) {
-            gameResultMoneyDto.setThyme(0);
-        } else {
-            gameResultMoneyDto.setThyme(500);
-            account.setThyme(account.getThyme() + 500);
-            accountRepository.save(account);
-        }
+        gameResultMoneyDto.setThyme(account.getThyme());
+
         if (participant.getIsHost()){
             gameResultMoneyDto.setGetBalance(quotient+remainder);
         } else {
