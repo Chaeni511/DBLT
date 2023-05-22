@@ -69,7 +69,7 @@ public class NotificationScheduler {
                         "toDetailPlanFragment"
                 );
 
-                log.info(plan.getTitle(), " : 약속 30분 전입니다. 위치 공유가 시작됩니다.");
+                log.info(plan.getTitle() + " : 약속 30분 전입니다. 위치 공유가 시작됩니다.");
             } else if (minutesDifference == 0) {
                 fcmService.sendTopicMessageTo(
                         String.valueOf(plan.getPlanId()),
@@ -79,7 +79,7 @@ public class NotificationScheduler {
                         "toDetailPlanFragment"
                 );
 
-                log.info(plan.getTitle(), " : 약속 시간입니다. 게임에 입장할 수 있습니다.");
+                log.info(plan.getTitle() + " : 약속 시간입니다. 게임에 입장할 수 있습니다.");
             } else if (minutesDifference == 60 && photoRepository.findByPlan(plan).isEmpty()) {
                 fcmService.sendTopicMessageTo(
                         String.valueOf(plan.getPlanId()),
@@ -89,12 +89,12 @@ public class NotificationScheduler {
                         "toDetailPlanFragment"
                 );
 
-                log.info(plan.getTitle(), " : 약속 1시간 지났습니다. 약속 사진을 찍어 주세요.");
+                log.info(plan.getTitle() + " : 약속 1시간 지났습니다. 약속 사진을 찍어 주세요.");
             } else if (minutesDifference == 120 && photoRepository.findByPlan(plan).isEmpty()) {
                 fcmService.sendTopicMessageTo(
                         String.valueOf(plan.getPlanId()),
                         "약속 기록",
-                        "[" + plan.getTitle() + "] 사진으로 기록을 남겨보세요.",
+                        "[" + plan.getTitle() + "] 사진으로 추억을 남겨보세요.",
                         String.valueOf(plan.getPlanId()),
                         "toDetailPlanFragment"
                 );
