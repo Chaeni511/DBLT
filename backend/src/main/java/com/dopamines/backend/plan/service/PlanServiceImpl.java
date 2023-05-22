@@ -557,5 +557,19 @@ public class PlanServiceImpl implements PlanService {
         return true;
     }
 
+    //////////////////////////////// fcm //////////////////////////////
+    // 3시간 전후 약속 알림
+    @Override
+    public List<Plan> getPlansWithinThreeHours() {
+        LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        LocalTime threeHoursBefore = currentDateTime.minusHours(3).toLocalTime();
+        LocalTime threeHoursAfter = currentDateTime.plusHours(3).toLocalTime();
+
+//        List<Plan> plans = planRepository.findByPlanDateAndPlanTimeBetween(currentDateTime.toLocalDate(), threeHoursBefore.toLocalTime(), threeHoursAfter.toLocalTime());
+
+        List<Plan> plans = planRepository.findByPlanTimeBetween(threeHoursBefore, threeHoursAfter);
+
+        return plans;
+    }
 
 }

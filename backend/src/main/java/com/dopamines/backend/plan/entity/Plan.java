@@ -20,6 +20,7 @@ public class Plan {
     @Column(name = "plan_id")
     private Long planId;
 
+    @Column(name = "title")
     private String title;
 
     @Column(name = "plan_date")
@@ -29,17 +30,22 @@ public class Plan {
     private LocalTime planTime;
 
     // 주소 이름
+    @Column(name = "location")
     private String location;
 
     // 주소
+    @Column(name = "address")
     private String address;
 
     // 위도
+    @Column(name = "latitude")
     private Double latitude;
 
     // 경도
+    @Column(name = "longitude")
     private Double longitude;
 
+    @Column(name = "cost")
     private Integer cost;
 
     @ColumnDefault("0")
