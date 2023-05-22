@@ -3,7 +3,7 @@ package com.dopamines.backend.plan.controller;
 import com.dopamines.backend.account.entity.Account;
 import com.dopamines.backend.account.service.UserService;
 import com.dopamines.backend.plan.dto.EndPlanDto;
-import com.dopamines.backend.plan.dto.PlanDto;
+import com.dopamines.backend.plan.dto.OngoingPlanDto;
 import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.dto.GameMoneyDto;
 import com.dopamines.backend.plan.entity.Plan;
@@ -15,7 +15,6 @@ import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -181,9 +180,9 @@ public class PlanController {
     @Operation(summary = "진행 중인 약속 상세 정보를 불러오는 api 입니다.", description = "PlanId를 입력하여 약속 상세 정보를 불러옵니다.<br>" +
             "designation은 칭호이며 0 보통, 1 일찍, 2 지각을 나타냅니다. status는 0 기본, 1 위치공유(30분 전~약속시간), 2 게임 활성화(약속시간~1시간 후), 3 약속 종료(1시간 이후)을 나타냅니다.<br/>" +
             "diffDay가 음수이면 아직 시작하지 않은 약속, 양수이면 지난 약속 입니다.")
-    public ResponseEntity<PlanDto> planDetail(@RequestParam("planId") Long planId) {
+    public ResponseEntity<OngoingPlanDto> planDetail(@RequestParam("planId") Long planId) {
 
-        PlanDto planDto = planService.getPlanDetail(planId);
+        OngoingPlanDto planDto = planService.getPlanDetail(planId);
         return new ResponseEntity<>(planDto, HttpStatus.OK);
     }
 

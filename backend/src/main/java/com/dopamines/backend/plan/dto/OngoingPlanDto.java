@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PlanDto {
+public class OngoingPlanDto {
     private Long planId;
     private String title;
     private LocalDate planDate;
@@ -24,5 +24,6 @@ public class PlanDto {
     private Long diffDay;
     private Integer participantCount;
     private Integer state;
-    private List<ParticipantDto> participantList;
+    private Boolean isPhoto;
+    private List<OngoingParticipantDto> participantList;
 }

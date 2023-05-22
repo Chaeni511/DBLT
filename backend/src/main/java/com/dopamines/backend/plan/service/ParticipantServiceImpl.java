@@ -102,6 +102,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
 
     // 게임으로 획득한 돈을 참가자의 거래금액에 등록하고 회원계정의 누적금액으로 업데이트합니다.
+    @Override
     public GameResultMoneyDto registerGetMoney(String userEmail, Long planId, Integer getGameMoney) {
         int balance = gameManager.getGameMoney(planId);
         // 약속 정보 가져오기

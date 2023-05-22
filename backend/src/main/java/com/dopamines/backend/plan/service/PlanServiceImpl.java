@@ -11,6 +11,9 @@ import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
 import com.dopamines.backend.plan.repository.PlanRepository;
+import com.dopamines.backend.review.entity.Photo;
+import com.dopamines.backend.review.repository.PhotoRepository;
+import com.dopamines.backend.review.service.PhotoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,13 +38,15 @@ public class PlanServiceImpl implements PlanService {
 
     private final ParticipantRepository participantRepository;
 
-    private final ParticipantServiceImpl participantService;
+    private final ParticipantService participantService;
 
     private final AccountRepository accountRepository;
 
     private final GameManager gameManager;
 
     private final FirebaseCloudMessageRepository fcmRepository;
+
+    private final PhotoRepository photoRepository;
 
 
     // thyme 지급
@@ -138,14 +143,16 @@ public class PlanServiceImpl implements PlanService {
 
     // 진행 중인 약속 상세 정보
     @Override
-    public PlanDto getPlanDetail(Long planId) {
+    public OngoingPlanDto getPlanDetail(Long planId) {
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 약속의 약속 정보가 없습니다."));
 
         // 시간에 따른 약속 상태 변경
         updatePlanStatus(plan);
 
-        PlanDto planDto = new PlanDto();
+        boolean isPhoto = photoRepository.findByPlan(plan).isPresent();
+
+        OngoingPlanDto planDto = new OngoingPlanDto();
         planDto.setPlanId(planId);
         planDto.setTitle(plan.getTitle());
         planDto.setPlanDate(plan.getPlanDate());
@@ -156,6 +163,7 @@ public class PlanServiceImpl implements PlanService {
         planDto.setLatitude(plan.getLatitude());
         planDto.setLongitude(plan.getLongitude());
         planDto.setState(plan.getState());
+        planDto.setIsPhoto(isPhoto);
 
         // D-day 계산
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
@@ -171,13 +179,13 @@ public class PlanServiceImpl implements PlanService {
         planDto.setParticipantCount(participants.size());
 
         // 참가자 정보 dto 추가
-        List<ParticipantDto> participantDtoList = new ArrayList<>();
+        List<OngoingParticipantDto> participantDtoList = new ArrayList<>();
         for (Participant participant : participants) {
 
             // 칭호 : 1 = 일찍 오는 사람, 2 = 늦게 오는 사람, 0: 정시에 오는사람 (누적시간)
             int designation = checkDesignation(participant.getAccount().getAccumulatedTime());
 
-            ParticipantDto participantDto = new ParticipantDto();
+            OngoingParticipantDto participantDto = new OngoingParticipantDto();
             participantDto.setAccountId(participant.getAccount().getAccountId());
             participantDto.setNickname(participant.getAccount().getNickname());
             participantDto.setProfile(participant.getAccount().getProfile());

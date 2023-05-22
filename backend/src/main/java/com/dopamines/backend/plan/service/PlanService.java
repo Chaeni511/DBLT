@@ -2,7 +2,7 @@ package com.dopamines.backend.plan.service;
 
 import com.dopamines.backend.plan.dto.EndPlanDto;
 import com.dopamines.backend.plan.dto.GameMoneyDto;
-import com.dopamines.backend.plan.dto.PlanDto;
+import com.dopamines.backend.plan.dto.OngoingPlanDto;
 import com.dopamines.backend.plan.dto.PlanListDto;
 import com.dopamines.backend.plan.entity.Plan;
 
@@ -26,7 +26,7 @@ public interface PlanService {
     List<Long> getMyPlanIds(String userEmail);
 
     // 진행 중인 약속 상세 정보
-    PlanDto getPlanDetail(Long planId);
+    OngoingPlanDto getPlanDetail(Long planId);
 
     // 진행 중인 약속 상세 정보
     EndPlanDto getEndPlanDetail(Long planId, String userEmail);

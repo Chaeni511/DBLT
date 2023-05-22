@@ -5,6 +5,7 @@ import com.dopamines.backend.account.service.UserService;
 import com.dopamines.backend.plan.entity.Participant;
 import com.dopamines.backend.plan.entity.Plan;
 import com.dopamines.backend.plan.repository.ParticipantRepository;
+import com.dopamines.backend.plan.repository.PlanRepository;
 import com.dopamines.backend.plan.service.PlanService;
 import com.dopamines.backend.review.dto.PhotoDateDto;
 import com.dopamines.backend.review.dto.PhotoDetailDto;
@@ -30,7 +31,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     private final PhotoRepository photoRepository;
 
-    private final PlanService planService;
+    private final PlanRepository planRepository;
 
     private final UserService userService;
 
@@ -39,8 +40,10 @@ public class PhotoServiceImpl implements PhotoService {
     // 인증을 사진을 등록하는 함수
     @Override
     public Long savePicture(Long planId, String file) {
+//        Plan plan = planService.getPlanById(planId);
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
 
-        Plan plan = planService.getPlanById(planId);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         Photo photo = Photo.builder()
@@ -56,7 +59,10 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public PhotoDetailDto getPhoto(Long planId){
-        Plan plan = planService.getPlanById(planId);
+//        Plan plan = planService.getPlanById(planId);
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
+
         Optional<Photo> photo = photoRepository.findByPlan(plan);
         PhotoDetailDto photoDto = new PhotoDetailDto();
         photoDto.setPlanId(planId);
@@ -74,7 +80,9 @@ public class PhotoServiceImpl implements PhotoService {
     // 사진 있는지 확인
     @Override
     public boolean isPhotoRegistered(Long planId) {
-        Plan plan = planService.getPlanById(planId);
+//        Plan plan = planService.getPlanById(planId);
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 planId 입니다."));
 
         Optional<Photo> photo = photoRepository.findByPlan(plan);
         return photo.isPresent();
