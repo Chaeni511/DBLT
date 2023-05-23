@@ -30,7 +30,7 @@ public class NotificationScheduler {
 //    @Scheduled(cron = "0/5 * * * * ?") // 20초 마다 실행
     @Scheduled(cron = "0 * * * * *") // 매 분마다 실행
     public void pushPlanAlarm() throws IOException {
-        System.out.println("스케줄러가 매 분 마다 동작해요!");
+//        System.out.println("스케줄러가 매 분 마다 동작해요!");
 
         LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         LocalDate yesterday = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1);
@@ -41,6 +41,9 @@ public class NotificationScheduler {
         // List<Plan> plans = planRepository.findAll();
 
         for (Plan plan : plans) {
+
+            // System.out.println(plan.getTitle() + " : " + plan.getPlanDate());
+
             LocalDateTime planDateTime = LocalDateTime.of(plan.getPlanDate(), plan.getPlanTime());
             Duration duration = Duration.between(currentDateTime, planDateTime);
             // 시간 차이 분으로 환산
@@ -57,6 +60,7 @@ public class NotificationScheduler {
                 );
 
                 log.info(plan.getTitle() + " : 약속 1 시간 전입니다.");
+
             } else if (minutesDifference == -30) {
                 fcmService.sendTopicMessageTo(
                         String.valueOf(plan.getPlanId()),
