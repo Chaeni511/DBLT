@@ -10,10 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 
 @Slf4j
@@ -30,18 +27,18 @@ public class NotificationScheduler {
     @Autowired
     private FirebaseCloudMessageService fcmService;
 
-//    @Scheduled(cron = "0 * * * * *") // 매 분마다 실행
 //    @Scheduled(cron = "0/5 * * * * ?") // 20초 마다 실행
+    @Scheduled(cron = "0 * * * * *") // 매 분마다 실행
     public void pushPlanAlarm() throws IOException {
         System.out.println("스케줄러가 매 분 마다 동작해요!");
 
         LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-
-//        LocalTime startTime = LocalTime.now(ZoneId.of("Asia/Seoul")).minusHours(3);
-//        LocalTime endTime = LocalTime.now(ZoneId.of("Asia/Seoul")).plusHours(3);
+        LocalDate yesterday = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1);
+        LocalDate tomorrow = LocalDate.now(ZoneId.of("Asia/Seoul")).plusDays(1);
+        List<Plan> plans = planRepository.findByPlanDateBetween(yesterday, tomorrow);
 
         // 약속 전체 검색
-        List<Plan> plans = planRepository.findAll();
+        // List<Plan> plans = planRepository.findAll();
 
         for (Plan plan : plans) {
             LocalDateTime planDateTime = LocalDateTime.of(plan.getPlanDate(), plan.getPlanTime());
@@ -54,7 +51,7 @@ public class NotificationScheduler {
                 fcmService.sendTopicMessageTo(
                         String.valueOf(plan.getPlanId()),
                         "약속 1시간 전",
-                        "[" + plan.getTitle() + "] 1시간 후에 예정되어 있습니다!",
+                        "[" + plan.getTitle() + "] 1시간 후에 예정되어 있습니다.",
                         String.valueOf(plan.getPlanId()),
                         "toDetailPlanFragment"
                 );
@@ -102,7 +99,5 @@ public class NotificationScheduler {
                 log.info(plan.getTitle(), " : 약속 2시간 지났습니다. 약속 사진을 아직 찍지 않았다면 찍어주세요.");
             }
         }
-
     }
-
 }
